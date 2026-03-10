@@ -1,0 +1,14 @@
+# Environment variables
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Source material (local only, not for repo)
+Relevent Training Material/
