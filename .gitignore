@@ -12,3 +12,6 @@ Thumbs.db
 
 # Source material (local only, not for repo)
 Relevent Training Material/
+
+# Dependencies
+node_modules/

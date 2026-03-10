@@ -282,11 +282,507 @@
       examIndex: 0,
       examAnswers: [],
       examAnswered: false,
+      examStartTime: 0,
+      examTimeLimit: 25 * 60, // 25 minutes in seconds
     };
 
-    const CONCEPTS = [];
-    const FORMULAS = [];
-    const QUESTIONS = [];
+    // Load weak topics from localStorage
+    try {
+      const saved = localStorage.getItem('physicsBot_weakTopics');
+      if (saved) state.weakTopics = JSON.parse(saved);
+    } catch(e) {}
+
+    // ── CONCEPTS (water-pipe analogies, no formulas until concept is established) ──
+    const CONCEPTS = [
+      {
+        title: "Electric Current",
+        topic: "current",
+        waterAnalogy: "Think of electric current like water flowing through pipes. Current is the rate at which water (charge) flows past a point — measured in amperes (amps), like gallons per minute.",
+        explanation: "Electric current is the flow of electric charge through a conductor. It's caused by the movement of electrons through a wire. Current flows from positive to negative (convention), though electrons actually flow the opposite direction.",
+        keyPoints: [
+          "Current (I) is measured in Amperes (A)",
+          "1 Ampere = 1 Coulomb of charge per second",
+          "Current flows from higher potential to lower potential"
+        ]
+      },
+      {
+        title: "Voltage (Potential Difference)",
+        topic: "voltage",
+        waterAnalogy: "Voltage is like water pressure in a pipe. Higher pressure pushes more water through. A battery creates 'pressure' that pushes charges through a circuit.",
+        explanation: "Voltage (V) is the electric potential difference between two points. It represents the 'push' that drives current through a circuit. Voltage is measured in Volts (V).",
+        keyPoints: [
+          "Voltage is measured in Volts (V)",
+          "A battery provides a fixed voltage (like 9V or 12V)",
+          "Voltage causes current to flow in a circuit"
+        ]
+      },
+      {
+        title: "Resistance",
+        topic: "resistance",
+        waterAnalogy: "Resistance is like the narrowness of a pipe. A narrow pipe restricts water flow — more resistance means less current for the same pressure (voltage).",
+        explanation: "Resistance (R) is a measure of how much a material opposes the flow of electric current. Different materials have different resistances. Resistance is measured in Ohms (Ω).",
+        keyPoints: [
+          "Resistance is measured in Ohms (Ω)",
+          "Longer wires = more resistance",
+          "Thinner wires = more resistance",
+          "Higher resistivity materials = more resistance"
+        ]
+      },
+      {
+        title: "Resistors in Series",
+        topic: "series",
+        waterAnalogy: "Series resistors are like pipes connected end-to-end in a single line. The water must pass through each one. The total restriction is the sum of all individual restrictions.",
+        explanation: "When resistors are connected in series, they form a single path for current. The same current flows through each resistor. The total (equivalent) resistance is simply the sum of individual resistances.",
+        formula: "R_total = R₁ + R₂ + R₃ + ...",
+        keyPoints: [
+          "Same current through each resistor",
+          "Voltages add up across each resistor",
+          "Total resistance = sum of individual resistances",
+          "Adding resistors in series always increases total resistance"
+        ]
+      },
+      {
+        title: "Resistors in Parallel",
+        topic: "parallel",
+        waterAnalogy: "Parallel resistors are like multiple pipes branching off from the main line. Water has multiple paths to take. Each path adds more total flow capacity, reducing the overall restriction.",
+        explanation: "When resistors are connected in parallel, they provide separate paths for current. Each resistor experiences the same voltage. The total resistance decreases as more parallel paths are added.",
+        formula: "1/R_total = 1/R₁ + 1/R₂ + 1/R₃ + ...",
+        keyPoints: [
+          "Same voltage across each parallel branch",
+          "Currents add up at junction points",
+          "Total resistance is less than the smallest individual resistor",
+          "Adding more parallel paths decreases total resistance"
+        ]
+      },
+      {
+        title: "Kirchhoff's Junction Rule",
+        topic: "kirchhoff-junction",
+        waterAnalogy: "At a pipe junction, all water flowing in must flow out — you can't lose or gain water. The total in equals total out.",
+        explanation: "Kirchhoff's Junction Rule (Current Law) states that the total current entering a junction must equal the total current leaving the junction. This is based on conservation of charge.",
+        formula: "Σ I_in = Σ I_out",
+        keyPoints: [
+          "Also called Kirchhoff's Current Law (KCL)",
+          "Based on conservation of electric charge",
+          "Charge cannot accumulate at a junction",
+          "Example: If 3A enters and two branches exit, I₁ + I₂ = 3A"
+        ]
+      },
+      {
+        title: "Kirchhoff's Loop Rule",
+        topic: "kirchhoff-loop",
+        waterAnalogy: "Going around a closed loop of pipes, any gain in pressure (from a pump) must be used up by restrictions (resistors). The net change in pressure around any closed loop is zero.",
+        explanation: "Kirchhoff's Loop Rule (Voltage Law) states that the sum of all potential differences around any closed circuit loop must equal zero. This is based on conservation of energy.",
+        formula: "Σ V = 0 (around any closed loop)",
+        keyPoints: [
+          "Also called Kirchhoff's Voltage Law (KVL)",
+          "Based on conservation of energy",
+          "Voltage rises = voltage drops in a loop",
+          "Use this to analyze complex circuits"
+        ]
+      },
+      {
+        title: "Electromotive Force (emf)",
+        topic: "emf",
+        waterAnalogy: "A battery is like a water pump — it creates the 'pressure' (voltage) that pushes charges around the circuit. The maximum pressure the pump can create is called its electromotive force.",
+        explanation: "Electromotive force (emf, symbol ε) is the maximum potential difference a battery can provide. It's measured in Volts but isn't actually a 'force' — it's the energy per unit charge provided by the battery.",
+        keyPoints: [
+          "emf is measured in Volts (V)",
+          "A 9V battery provides 9V emf",
+          "Terminal voltage is usually less than emf due to internal resistance",
+          "The term 'electromotive force' is historical — it's a voltage"
+        ]
+      },
+      {
+        title: "Internal Resistance",
+        topic: "internal-resistance",
+        waterAnalogy: "Even the best water pump has some internal friction — it takes some of the pump's effort just to keep the pump itself working. This 'uses up' some of the pressure before it reaches the pipes.",
+        explanation: "Batteries and generators have internal resistance (r), which reduces the actual voltage (terminal voltage) when current flows. The terminal voltage is less than the emf by the amount Ir.",
+        formula: "V_terminal = ε - Ir",
+        keyPoints: [
+          "Real batteries aren't ideal — they have internal resistance",
+          "Terminal voltage drops when current increases",
+          "The voltage lost internally = I × r",
+          "Important for high-current applications"
+        ]
+      },
+      {
+        title: "Ammeters and Voltmeters",
+        topic: "meters",
+        waterAnalogy: "An ammeter is like a flow meter placed IN the pipe — it must let all the water pass through it. A voltmeter is like a pressure gauge attached to the pipe — it measures pressure difference between two points without affecting flow.",
+        explanation: "Ammeters measure current and must be connected in series (so current passes through them). They should have very low resistance. Voltmeters measure voltage and are connected in parallel across components. They should have very high resistance.",
+        keyPoints: [
+          "Ammeter: connects IN SERIES, measures current",
+          "Voltmeter: connects IN PARALLEL, measures voltage",
+          "Ideal ammeter: zero resistance (doesn't affect circuit)",
+          "Ideal voltmeter: infinite resistance (doesn't draw current)"
+        ]
+      },
+      {
+        title: "Capacitors",
+        topic: "capacitors",
+        waterAnalogy: "A capacitor is like a balloon attached to a pipe — it can stretch and store water (charge) under pressure, then release it back when the pressure drops. It stores energy in an electric field.",
+        explanation: "A capacitor is a device that stores electric charge and energy in an electric field. It consists of two conducting plates separated by an insulator (dielectric). Capacitance (C) measures how much charge a capacitor stores per unit voltage.",
+        formula: "C = Q/V (Capacitance = Charge / Voltage)",
+        keyPoints: [
+          "Capacitance measured in Farads (F), usually µF or pF",
+          "Capacitors store energy in an electric field",
+          "Voltage across capacitor cannot change instantly",
+          "Capacitors block DC current after fully charged"
+        ]
+      },
+      {
+        title: "RC Circuits - Charging",
+        topic: "rc-charging",
+        waterAnalogy: "Filling a capacitor with charge is like filling a balloon — at first it's easy (lots of current), but as it fills up, it gets harder for more water to fit in. The flow slows down until it stops.",
+        explanation: "When a capacitor charges through a resistor, the current starts high and decreases exponentially. The voltage across the capacitor rises exponentially toward the applied voltage. The time constant τ = RC determines how fast this happens.",
+        formula: "V(t) = ε(1 - e^(-t/RC))",
+        keyPoints: [
+          "Time constant τ = RC (in seconds)",
+          "At t = τ, capacitor reaches 63.2% of final voltage",
+          "After 5τ, practically fully charged (>99%)",
+          "Current is maximum at start, decreases to zero"
+        ]
+      },
+      {
+        title: "RC Circuits - Discharging",
+        topic: "rc-discharging",
+        waterAnalogy: "A discharging capacitor is like a balloon releasing air — at first it empties quickly, then slower as the pressure (voltage) drops. The flow slows exponentially.",
+        explanation: "When a charged capacitor discharges through a resistor, both the current and voltage decrease exponentially. The energy stored in the capacitor is dissipated as heat in the resistor.",
+        formula: "V(t) = V₀ × e^(-t/RC)",
+        keyPoints: [
+          "At t = τ, capacitor voltage drops to 36.8% of initial",
+          "After 5τ, practically fully discharged (<1%)",
+          "Current direction reverses during discharge",
+          "All initial energy eventually becomes thermal energy"
+        ]
+      },
+      {
+        title: "Complex Circuit Analysis",
+        topic: "complex-circuits",
+        waterAnalogy: "A complex circuit with series and parallel parts is like a plumbing system with some pipes in series and some branching in parallel. Solve it step by step: find the equivalent resistance of each section.",
+        explanation: "Complex circuits combine series and parallel arrangements. The strategy is to identify sections, simplify them step by step, find equivalent resistances, then work backward to find individual voltages and currents.",
+        keyPoints: [
+          "Find resistors in simplest parallel/series groups",
+          "Replace each group with equivalent resistance",
+          "Work from complex to simple, then back",
+          "Use Ohm's Law, Kirchhoff's rules as needed"
+        ]
+      }
+    ];
+
+    // ── FORMULAS ──
+    const FORMULAS = [
+      {
+        name: "Ohm's Law",
+        formula: "V = IR",
+        variables: [
+          { symbol: "V", meaning: "Voltage (potential difference)", unit: "Volts (V)" },
+          { symbol: "I", meaning: "Electric current", unit: "Amperes (A)" },
+          { symbol: "R", meaning: "Resistance", unit: "Ohms (Ω)" }
+        ],
+        topic: "resistance"
+      },
+      {
+        name: "Resistance of a Wire",
+        formula: "R = ρL/A",
+        variables: [
+          { symbol: "R", meaning: "Resistance", unit: "Ohms (Ω)" },
+          { symbol: "ρ", meaning: "Resistivity of material", unit: "Ω·m" },
+          { symbol: "L", meaning: "Length of wire", unit: "meters (m)" },
+          { symbol: "A", meaning: "Cross-sectional area", unit: "m²" }
+        ],
+        topic: "resistance"
+      },
+      {
+        name: "Series Resistance",
+        formula: "R_total = R₁ + R₂ + R₃",
+        variables: [
+          { symbol: "R_total", meaning: "Equivalent total resistance", unit: "Ohms (Ω)" },
+          { symbol: "R₁, R₂, R₃", meaning: "Individual resistances in series", unit: "Ohms (Ω)" }
+        ],
+        topic: "series"
+      },
+      {
+        name: "Parallel Resistance (Two)",
+        formula: "R_total = (R₁R₂)/(R₁+R₂)",
+        variables: [
+          { symbol: "R_total", meaning: "Equivalent total resistance", unit: "Ohms (Ω)" },
+          { symbol: "R₁, R₂", meaning: "Individual resistances in parallel", unit: "Ohms (Ω)" }
+        ],
+        topic: "parallel"
+      },
+      {
+        name: "Parallel Resistance (General)",
+        formula: "1/R_total = 1/R₁ + 1/R₂ + 1/R₃",
+        variables: [
+          { symbol: "R_total", meaning: "Equivalent total resistance", unit: "Ohms (Ω)" },
+          { symbol: "R₁, R₂, R₃", meaning: "Individual resistances in parallel", unit: "Ohms (Ω)" }
+        ],
+        topic: "parallel"
+      },
+      {
+        name: "Power in Circuit",
+        formula: "P = IV = I²R = V²/R",
+        variables: [
+          { symbol: "P", meaning: "Electrical power", unit: "Watts (W)" },
+          { symbol: "I", meaning: "Current", unit: "Amperes (A)" },
+          { symbol: "V", meaning: "Voltage", unit: "Volts (V)" },
+          { symbol: "R", meaning: "Resistance", unit: "Ohms (Ω)" }
+        ],
+        topic: "power"
+      },
+      {
+        name: "Junction Rule",
+        formula: "Σ I_in = Σ I_out",
+        variables: [
+          { symbol: "Σ I_in", meaning: "Sum of currents entering junction", unit: "Amperes (A)" },
+          { symbol: "Σ I_out", meaning: "Sum of currents leaving junction", unit: "Amperes (A)" }
+        ],
+        topic: "kirchhoff-junction"
+      },
+      {
+        name: "Loop Rule",
+        formula: "Σ V = 0",
+        variables: [
+          { symbol: "Σ V", meaning: "Sum of all voltage changes around closed loop", unit: "Volts (V)" }
+        ],
+        topic: "kirchhoff-loop"
+      },
+      {
+        name: "Terminal Voltage",
+        formula: "V = ε - Ir",
+        variables: [
+          { symbol: "V", meaning: "Terminal voltage (actual output)", unit: "Volts (V)" },
+          { symbol: "ε", meaning: "Electromotive force (battery emf)", unit: "Volts (V)" },
+          { symbol: "I", meaning: "Current flowing", unit: "Amperes (A)" },
+          { symbol: "r", meaning: "Internal resistance", unit: "Ohms (Ω)" }
+        ],
+        topic: "internal-resistance"
+      },
+      {
+        name: "Capacitor Charging Voltage",
+        formula: "V = ε(1 - e^(-t/RC))",
+        variables: [
+          { symbol: "V", meaning: "Voltage across capacitor at time t", unit: "Volts (V)" },
+          { symbol: "ε", meaning: "Applied emf (source voltage)", unit: "Volts (V)" },
+          { symbol: "t", meaning: "Time since charging started", unit: "seconds (s)" },
+          { symbol: "R", meaning: "Series resistance", unit: "Ohms (Ω)" },
+          { symbol: "C", meaning: "Capacitance", unit: "Farads (F)" }
+        ],
+        topic: "rc-charging"
+      },
+      {
+        name: "RC Time Constant",
+        formula: "τ = RC",
+        variables: [
+          { symbol: "τ", meaning: "Time constant (tau)", unit: "seconds (s)" },
+          { symbol: "R", meaning: "Resistance", unit: "Ohms (Ω)" },
+          { symbol: "C", meaning: "Capacitance", unit: "Farads (F)" }
+        ],
+        topic: "rc-charging"
+      },
+      {
+        name: "Capacitor Discharging",
+        formula: "V = V₀ × e^(-t/RC)",
+        variables: [
+          { symbol: "V", meaning: "Voltage at time t", unit: "Volts (V)" },
+          { symbol: "V₀", meaning: "Initial voltage", unit: "Volts (V)" },
+          { symbol: "t", meaning: "Time since discharge started", unit: "seconds (s)" },
+          { symbol: "R", meaning: "Resistance", unit: "Ohms (Ω)" },
+          { symbol: "C", meaning: "Capacitance", unit: "Farads (F)" }
+        ],
+        topic: "rc-discharging"
+      },
+      {
+        name: "Capacitance Definition",
+        formula: "C = Q/V",
+        variables: [
+          { symbol: "C", meaning: "Capacitance", unit: "Farads (F)" },
+          { symbol: "Q", meaning: "Charge stored", unit: "Coulombs (C)" },
+          { symbol: "V", meaning: "Voltage across capacitor", unit: "Volts (V)" }
+        ],
+        topic: "capacitors"
+      },
+      {
+        name: "Energy in Capacitor",
+        formula: "U = ½CV² = ½QV² = Q²/2C",
+        variables: [
+          { symbol: "U", meaning: "Stored energy", unit: "Joules (J)" },
+          { symbol: "C", meaning: "Capacitance", unit: "Farads (F)" },
+          { symbol: "V", meaning: "Voltage", unit: "Volts (V)" },
+          { symbol: "Q", meaning: "Charge", unit: "Coulombs (C)" }
+        ],
+        topic: "capacitors"
+      }
+    ];
+
+    // ── QUESTIONS (Multiple Choice) ──
+    const QUESTIONS = [
+      {
+        topic: "series",
+        question: "Three resistors of 2Ω, 3Ω, and 5Ω are connected in series. What is the total resistance?",
+        choices: ["10 Ω", "1.03 Ω", "6 Ω", "0.96 Ω"],
+        correct: 0,
+        explanation: "In series, resistances simply add: R_total = 2 + 3 + 5 = 10 Ω."
+      },
+      {
+        topic: "parallel",
+        question: "Two 10Ω resistors are connected in parallel. What is the equivalent resistance?",
+        choices: ["20 Ω", "5 Ω", "0.2 Ω", "10 Ω"],
+        correct: 1,
+        explanation: "For two equal resistors in parallel: R = R₁R₂/(R₁+R₂) = (10×10)/(10+10) = 100/20 = 5 Ω."
+      },
+      {
+        topic: "series",
+        question: "In a series circuit with three identical resistors, how does the voltage across each resistor compare?",
+        choices: ["Equal across all three", "Higher across the first", "Higher across the last", "Zero across all"],
+        correct: 0,
+        explanation: "In series, the same current flows through each resistor, and if they're identical, each has equal voltage drop (V = IR)."
+      },
+      {
+        topic: "parallel",
+        question: "In a parallel circuit with three branches, how does the current through each branch compare?",
+        choices: ["Same through each branch", "Depends on branch resistances", "Always zero in some branches", "Cannot be determined"],
+        correct: 1,
+        explanation: "In parallel, each branch has the same voltage across it, but the current through each depends on its resistance (I = V/R)."
+      },
+      {
+        topic: "kirchhoff-junction",
+        question: "At a circuit junction, 5A enters from the left and 2A leaves to the right. How much current leaves through the third branch?",
+        choices: ["7A", "3A", "2.5A", "Cannot be determined"],
+        correct: 1,
+        explanation: "By Kirchhoff's Junction Rule: I_in = I_out. So 5A = 2A + I_third, meaning I_third = 3A."
+      },
+      {
+        topic: "kirchhoff-loop",
+        question: "Going around a closed loop, you encounter: +12V battery, then -4V across a resistor. What's the next voltage change to complete the loop?",
+        choices: ["+8V", "-8V", "+16V", "-16V"],
+        correct: 1,
+        explanation: "By Kirchhoff's Loop Rule, sum of voltages around loop = 0. So: 12 + (-4) + V = 0, giving V = -8V."
+      },
+      {
+        topic: "resistance",
+        question: "A wire's length is doubled and its cross-sectional area is halved. How does its resistance change?",
+        choices: ["4 times", "2 times", "Stays the same", "Half"],
+        correct: 0,
+        explanation: "R = ρL/A. If L doubles and A halves, then R_new = ρ(2L)/(A/2) = 4(ρL/A) = 4R. Resistance quadruples."
+      },
+      {
+        topic: "internal-resistance",
+        question: "A 12V battery with 0.5Ω internal resistance delivers 2A to a load. What is the terminal voltage?",
+        choices: ["13V", "12V", "11V", "10V"],
+        correct: 2,
+        explanation: "Terminal voltage V = ε - Ir = 12V - (2A × 0.5Ω) = 12V - 1V = 11V."
+      },
+      {
+        topic: "power",
+        question: "A 100Ω resistor draws 0.5A. What power does it dissipate?",
+        choices: ["50W", "25W", "200W", "0.005W"],
+        correct: 1,
+        explanation: "P = I²R = (0.5)² × 100 = 0.25 × 100 = 25W. Or P = IV = 0.5 × 50 = 25W."
+      },
+      {
+        topic: "rc-charging",
+        question: "In an RC circuit with R = 10kΩ and C = 100µF, what is the time constant τ?",
+        choices: ["1 second", "10 seconds", "1000 seconds", "0.1 seconds"],
+        correct: 1,
+        explanation: "τ = RC = (10,000Ω) × (100×10⁻⁶F) = 10,000 × 0.0001 = 1 second."
+      },
+      {
+        topic: "rc-charging",
+        question: "A capacitor in an RC circuit reaches 63.2% of its final voltage after how many time constants?",
+        choices: ["1 τ", "2 τ", "0.5 τ", "5 τ"],
+        correct: 0,
+        explanation: "By definition, after one time constant (t = τ), V = ε(1 - e⁻¹) = ε(1 - 0.368) = 0.632ε = 63.2% of final."
+      },
+      {
+        topic: "rc-discharging",
+        question: "A charged capacitor discharges through a resistor. After 5 time constants, what percentage of initial voltage remains?",
+        choices: ["Less than 1%", "5%", "36.8%", "0%"],
+        correct: 0,
+        explanation: "After 5τ: V = V₀ × e⁻⁵ = V₀ × 0.0067 = 0.67% of V₀, which is essentially <1%."
+      },
+      {
+        topic: "capacitors",
+        question: "A 100µF capacitor is charged to 10V. How much charge is stored?",
+        choices: ["1000 µC", "10 µC", "0.001 C", "1000 C"],
+        correct: 0,
+        explanation: "Q = CV = (100×10⁻⁶F) × 10V = 1000×10⁻⁶C = 1000 µC."
+      },
+      {
+        topic: "complex-circuits",
+        question: "A 4Ω resistor is in series with a parallel combination of 6Ω and 3Ω. What's the total resistance?",
+        choices: ["7 Ω", "13 Ω", "6 Ω", "4.5 Ω"],
+        correct: 2,
+        explanation: "Parallel: (6×3)/(6+3) = 18/9 = 2Ω. Then series: 4 + 2 = 6Ω total."
+      },
+      {
+        topic: "meters",
+        question: "To measure the voltage across a resistor, how should a voltmeter be connected?",
+        choices: ["In series with the resistor", "In parallel with the resistor", "Before the resistor only", "After the resistor only"],
+        correct: 1,
+        explanation: "A voltmeter measures potential difference and must be connected in parallel across the component."
+      },
+      {
+        topic: "meters",
+        question: "An ideal ammeter should have what resistance?",
+        choices: ["Zero ohms", "Very high resistance", "Exactly 1 ohm", "Infinite resistance"],
+        correct: 0,
+        explanation: "An ideal ammeter has zero resistance so it doesn't change the current when inserted into a circuit."
+      },
+      {
+        topic: "emf",
+        question: "What is the main difference between emf and terminal voltage of a battery?",
+        choices: ["They're the same thing", "emf is the ideal voltage, terminal is less due to internal resistance", "Terminal is always higher", "emf only applies to AC"],
+        correct: 1,
+        explanation: "emf (ε) is the maximum voltage a battery can provide. Terminal voltage is less because some voltage is lost driving current through the battery's internal resistance."
+      },
+      {
+        topic: "parallel",
+        question: "Adding more resistors in parallel always:",
+        choices: ["Increases total resistance", "Decreases total resistance", "Has no effect", "Depends on the resistor values"],
+        correct: 1,
+        explanation: "Adding more parallel paths always decreases total resistance, because 1/R_total = sum of 1/R_each always gets larger."
+      },
+      {
+        topic: "series",
+        question: "Two identical light bulbs are connected in series to a battery. Compared to one bulb alone, the brightness is:",
+        choices: ["Brighter", "Dimmer", "Same brightness", "Bulb burns out"],
+        correct: 1,
+        explanation: "In series, each bulb gets half the voltage (for two equal bulbs), so each dissipates less power and is dimmer."
+      },
+      {
+        topic: "power",
+        question: "A 60W light bulb is rated for 120V. What's its resistance when operating?",
+        choices: ["7200 Ω", "2 Ω", "240 Ω", "0.5 Ω"],
+        correct: 2,
+        explanation: "From P = V²/R: R = V²/P = (120)²/60 = 14400/60 = 240Ω."
+      },
+      {
+        topic: "rc-charging",
+        question: "When charging a capacitor, the current is maximum:",
+        choices: ["At the end of charging", "At the start of charging", "Midway through charging", "Constant throughout"],
+        correct: 1,
+        explanation: "Current starts at maximum (I = ε/R) and decreases exponentially as the capacitor charges and voltage builds up."
+      }
+    ];
+
+    // Save weak topics to localStorage
+    function saveWeakTopics() {
+      try {
+        localStorage.setItem('physicsBot_weakTopics', JSON.stringify(state.weakTopics));
+      } catch(e) {}
+    }
+
+    // Shuffle array
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
 
     // ── ROUTER ──
     function goHome() { state.mode = 'home'; renderHome(); setActiveTab(0); }
