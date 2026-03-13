@@ -1,52 +1,94 @@
 # Physics Study Bot
 
-An interactive physics study app focused on electric current, resistance, circuits, Kirchhoff's rules, and RC circuits. It is designed as a fast, no-install study tool that runs entirely in the browser from a single HTML file.
+<p align="center">
+  A single-file, gamified physics study app for circuits, current, Kirchhoff's rules, and RC circuits.
+</p>
 
-This project started as a practical exam-prep tool and evolved into a more engaging learning experience with progression mechanics, weak-topic reinforcement, and a mock-exam flow.
+<p align="center">
+  <a href="https://physics-study-bot.vercel.app"><strong>Live Demo</strong></a>
+  |
+  <a href="https://github.com/romanxmanuel/Physics-Study-Bot"><strong>GitHub Repo</strong></a>
+</p>
+
+<p align="center">
+  <img src="./assets/social-preview.png" alt="Physics Study Bot social preview" width="900" />
+</p>
+
+## Overview
+
+Physics Study Bot is an interactive study app built to make high-pressure exam prep feel focused, fast, and genuinely engaging.
+
+It teaches the material, drills weak spots, and keeps the user moving through a feedback loop of:
+
+- learn the concept
+- lock in the formula
+- answer a question
+- get immediate explanation
+- build streaks and momentum
+- simulate the real exam
+
+The app runs entirely from a single `index.html` file with no framework, no build step, and no backend.
 
 ## Live Project
 
-Live URL: [physics-study-bot.vercel.app](https://physics-study-bot.vercel.app)
+- Production: [physics-study-bot.vercel.app](https://physics-study-bot.vercel.app)
 
-## Why I Built It
+## Why This Project Matters
 
-Most study tools for intro physics either feel static or require more setup than they are worth for a student under time pressure. I wanted something that:
+A lot of study tools are either static note dumps or heavy platforms that create friction before learning even starts. This project was built around a different goal:
 
-- opens instantly with no install
-- works offline
-- explains concepts in plain English
-- reinforces weak areas automatically
-- feels engaging enough to keep someone in focused study mode
+- open instantly
+- feel polished
+- work offline
+- explain hard topics clearly
+- create enough challenge and progression to keep someone in flow
 
-## What It Does
+This turned into a hybrid of a study guide, practice engine, and lightweight game loop.
 
-- `Learn` mode teaches the core ideas with plain-language explanations and analogies
-- `Formulas` mode breaks down the equations with variables, units, and meaning
-- `Practice` mode runs a question bank with feedback, explanations, and weak-topic requeueing
-- `Mock Exam` mode gives a timed 16-question run with a built-in formula sheet
-- gamification adds streaks, XP, levels, achievements, boss rounds, and a focus HUD
-- progress persists in `localStorage`
+## Features
+
+- `Learn` mode with plain-English explanations and intuitive analogies
+- `Formulas` mode with equation breakdowns, units, and meaning
+- `Practice` mode with instant feedback and topic reinforcement
+- weak-topic tracking with requeue behavior after repeated misses
+- `Mock Exam` mode with timer, formula sheet, and review screen
+- persistent progression using XP, levels, streaks, and achievements
+- responsive dark UI built for long study sessions
+
+## Screenshots
+
+### Home / Study Dashboard
+
+![Physics Study Bot home screen](./assets/home-preview.png)
+
+### Mock Exam / Formula Sheet
+
+![Physics Study Bot mock exam screen](./assets/exam-preview.png)
 
 ## Technical Highlights
 
 - pure `HTML`, `CSS`, and vanilla `JavaScript`
-- no framework, no bundler, no runtime dependencies for the app itself
-- single-file architecture in `index.html`
-- static hosting friendly, including Vercel
-- question/content system stored as JavaScript data objects
-- state-driven mode rendering with no external libraries
+- single-file application architecture in `index.html`
+- static deployment with no build command required
+- state-driven rendering without any library abstraction
+- local persistence through `localStorage`
+- social preview metadata for clean link sharing on Vercel/GitHub
 
 ## Product Decisions
 
-- kept the app single-file to minimize friction and make deployment trivial
-- used a dark, mobile-friendly UI so it feels good in long study sessions
-- designed the feedback loop around momentum: correct streaks, focused challenge, and immediate explanations
-- prioritized utility over flashy effects, so every interaction either teaches, tests, or reinforces
+- kept the app single-file to minimize setup friction
+- designed the interaction model around momentum, not just content display
+- used gamification carefully so it supports learning instead of distracting from it
+- made the deploy target static hosting so the project is easy to ship and maintain
 
 ## Project Structure
 
 ```text
 Physics Study Bot/
+|- assets/
+|  |- exam-preview.png
+|  |- home-preview.png
+|  `- social-preview.png
 |- index.html
 |- write_html.mjs
 |- extract_pptx.js
@@ -54,33 +96,33 @@ Physics Study Bot/
 `- Relevent Training Material/   (ignored from Git)
 ```
 
-## Running It Locally
+## Running Locally
 
-You can open the app directly:
+Open the app directly:
 
 ```bash
 start index.html
 ```
 
-Or serve it locally if you want a browser-based dev workflow:
+Or serve it with a tiny local server:
 
 ```bash
 python -m http.server 4173
 ```
 
-Then open `http://localhost:4173`.
+Then visit `http://localhost:4173`.
 
 ## Deployment
 
-This app is static and deploys cleanly to Vercel with no build step.
+This project is deployed as a static site on Vercel.
 
-- Framework preset: `Other`
-- Build command: leave empty
-- Output directory: leave empty
+- framework preset: `Other`
+- build command: none
+- output directory: none
 
 ## Source Material
 
-The study content was built from personal course materials for UCF Physics 2 coverage around:
+The app content was built from personal UCF Physics 2 study material covering:
 
 - electric current
 - Ohm's law
@@ -91,14 +133,15 @@ The study content was built from personal course materials for UCF Physics 2 cov
 - emf and internal resistance
 - RC charging and discharging
 
-The raw training files are intentionally excluded from the public repo.
+The raw training files are intentionally excluded from the public repository.
 
 ## Future Improvements
 
-- add answer review filters by topic and chapter
-- add a dedicated mastery dashboard
-- add animations and sound design carefully, without harming clarity
-- broaden the content set beyond the current exam scope
+- richer mastery analytics by chapter/topic
+- reset-progress controls inside the app
+- a broader question bank
+- more deliberate motion and sound design
+- expanded physics coverage beyond the current exam unit
 
 ## License
 
