@@ -846,7 +846,7 @@
     .pack-switcher-row {
       display: flex;
       gap: 10px;
-      align-items: stretch;
+      align-items: center;
       flex-wrap: wrap;
     }
     .pack-switcher-select {
@@ -859,6 +859,19 @@
       color: var(--text);
       font: inherit;
       outline: none;
+    }
+    .pack-switcher-or {
+      flex: 0 0 auto;
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+      font-size: 0.9rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.82);
     }
     .pack-switcher-note {
       margin-top: 8px;
@@ -2930,6 +2943,7 @@ const QUESTIONS = [
                 </option>
               `).join('')}
             </select>
+            <div class="pack-switcher-or">OR</div>
             <button class="btn btn-primary" onclick="goMode('scope')">Create New Pack</button>
           </div>
           <div class="pack-switcher-note">
