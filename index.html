@@ -2437,6 +2437,7 @@ const QUESTIONS = [
     function renderScopeStudio() {
       syncHeaderTitle();
       const pack = getActiveStudyPack();
+      const isPreparing = state.scopeStudio.busy === 'prepare';
       const isGenerating = state.scopeStudio.busy === 'generate';
       const canRun = state.scopeStudio.files.length > 0;
       const totalBytes = state.scopeStudio.files.reduce((sum, file) => sum + (file.size || 0), 0);
@@ -2475,7 +2476,7 @@ const QUESTIONS = [
               <textarea id="exam-context-input" class="textarea-input" placeholder="Optional. Example: Focus on joins, aggregate functions, and DDL for Exam 2." oninput="updateScopeStudioField('examContext', this.value)">${escapeHtml(state.scopeStudio.examContext)}</textarea>
             </div>
             <div class="btn-row">
-              <button class="btn btn-primary" onclick="generateCustomPack()" ${canRun && !state.scopeStudio.busy ? '' : 'disabled'}>${isGenerating ? 'Generating…' : 'Generate Pack'}</button>
+              <button class="btn btn-primary" onclick="generateCustomPack()" ${canRun && !state.scopeStudio.busy ? '' : 'disabled'}>${isPreparing ? 'Preparing…' : isGenerating ? 'Generating…' : 'Generate Pack'}</button>
               ${!isDefaultPackActive() ? '<button class="btn btn-secondary" onclick="resetToDefaultPack()">Switch Back To Built-in Pack</button>' : ''}
             </div>
             ${state.scopeStudio.prepProgress ? `<div class="status-callout">${escapeHtml(state.scopeStudio.prepProgress)}</div>` : ''}
