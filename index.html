@@ -1517,6 +1517,24 @@
       gap: 8px;
       margin-top: 12px;
     }
+    .rank-showcase-reward-line {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      color: rgba(255,255,255,0.95);
+    }
+    .rank-showcase-next {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .rank-showcase-next-title {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-top: 4px;
+      color: #f8fafc;
+    }
     .rank-reward-chip {
       display: inline-flex;
       align-items: center;
@@ -1608,6 +1626,18 @@
       color: rgba(255,255,255,0.82);
       font-size: 0.82rem;
       margin-top: 6px;
+    }
+    .rank-showcase-tier-reward {
+      position: relative;
+      z-index: 1;
+      margin-top: 12px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: rgba(255,255,255,0.96);
     }
     .rank-showcase-emblem {
       position: relative;
@@ -1771,14 +1801,14 @@
     const STREAK_FIVE_AUDIO_URL = './assets/sounds/streak-five.mp3';
 
     const RANK_TIERS = [
-      { key: 'iron', name: 'Iron', minXp: 0, upkeep: 'Starter border', bg: 'linear-gradient(145deg, #202532, #10141d)', trim: 'rgba(150,160,184,0.35)', glow: 'rgba(120,130,160,0.18)', core: 'rgba(220,228,255,0.18)', energy: 0.18, perks: ['Rank border', 'Focus HUD'] },
-      { key: 'bronze', name: 'Bronze', minXp: 110, upkeep: 'First climb', bg: 'linear-gradient(145deg, #4b2207, #b45309 58%, #f97316)', trim: 'rgba(255,196,126,0.42)', glow: 'rgba(249,115,22,0.26)', core: 'rgba(255,215,170,0.28)', energy: 0.28, perks: ['1 reroll each practice run', 'Faster win flare'] },
-      { key: 'silver', name: 'Silver', minXp: 260, upkeep: 'Cleaner mechanics', bg: 'linear-gradient(145deg, #2a303b, #636b79 58%, #cfd5df)', trim: 'rgba(214,222,236,0.45)', glow: 'rgba(203,213,225,0.24)', core: 'rgba(255,255,255,0.25)', energy: 0.34, perks: ['Weak-topic intel', '1 rematch bank'] },
-      { key: 'gold', name: 'Gold', minXp: 500, upkeep: 'Ranked confidence', bg: 'linear-gradient(145deg, #594008, #c48900 55%, #facc15)', trim: 'rgba(255,236,157,0.48)', glow: 'rgba(250,204,21,0.3)', core: 'rgba(255,247,188,0.34)', energy: 0.42, perks: ['1 streak shield', 'Boss bounty x1.15'] },
-      { key: 'emerald', name: 'Emerald', minXp: 820, upkeep: 'Macro online', bg: 'linear-gradient(145deg, #063b39, #0f766e 45%, #22d3ee)', trim: 'rgba(137,255,245,0.52)', glow: 'rgba(34,211,238,0.34)', core: 'rgba(173,255,250,0.34)', energy: 0.56, perks: ['2 rerolls each run', 'Bonus rematch bank'] },
-      { key: 'diamond', name: 'Diamond', minXp: 1220, upkeep: 'High execution', bg: 'linear-gradient(145deg, #0a1f56, #1d4ed8 48%, #7dd3fc)', trim: 'rgba(165,221,255,0.6)', glow: 'rgba(96,165,250,0.38)', core: 'rgba(210,244,255,0.38)', energy: 0.68, perks: ['Boss bounty x1.3', '2 streak shields'] },
-      { key: 'master', name: 'Master', minXp: 1710, upkeep: 'Lobby respect', bg: 'linear-gradient(145deg, #33105f, #7c3aed 45%, #ec4899)', trim: 'rgba(244,179,255,0.66)', glow: 'rgba(217,70,239,0.46)', core: 'rgba(255,208,244,0.42)', energy: 0.82, perks: ['3 rerolls each run', 'Boss bounty x1.45'] },
-      { key: 'challenger', name: 'Challenger', minXp: 2380, upkeep: 'Top of ladder', bg: 'linear-gradient(145deg, #4a060d, #b91c1c 42%, #fb923c 72%, #fff2cf)', trim: 'rgba(255,235,180,0.84)', glow: 'rgba(251,146,60,0.6)', core: 'rgba(255,245,214,0.56)', energy: 1, perks: ['4 rerolls each run', 'Boss bounty x1.6', '2 rematch banks'] },
+      { key: 'iron', name: 'Iron', minXp: 0, upkeep: 'Starter frame', bg: 'linear-gradient(145deg, #202532, #10141d)', trim: 'rgba(150,160,184,0.35)', glow: 'rgba(120,130,160,0.18)', core: 'rgba(220,228,255,0.18)', energy: 0.18, perks: ['Lobby badge and rank frame', 'Focus HUD always on'] },
+      { key: 'bronze', name: 'Bronze', minXp: 110, upkeep: 'First climb package', bg: 'linear-gradient(145deg, #4b2207, #b45309 58%, #f97316)', trim: 'rgba(255,196,126,0.42)', glow: 'rgba(249,115,22,0.26)', core: 'rgba(255,215,170,0.28)', energy: 0.28, perks: ['1 practice reroll per queue', 'Faster reward flare on clean clears'] },
+      { key: 'silver', name: 'Silver', minXp: 260, upkeep: 'Cleaner mechanics', bg: 'linear-gradient(145deg, #2a303b, #636b79 58%, #cfd5df)', trim: 'rgba(214,222,236,0.45)', glow: 'rgba(203,213,225,0.24)', core: 'rgba(255,255,255,0.25)', energy: 0.34, perks: ['Weak-topic intel panel', '1 delayed rematch bank'] },
+      { key: 'gold', name: 'Gold', minXp: 500, upkeep: 'Streak protection online', bg: 'linear-gradient(145deg, #594008, #c48900 55%, #facc15)', trim: 'rgba(255,236,157,0.48)', glow: 'rgba(250,204,21,0.3)', core: 'rgba(255,247,188,0.34)', energy: 0.42, perks: ['1 streak shield', 'Boss bounty +15%', 'Promo flash gets brighter'] },
+      { key: 'emerald', name: 'Emerald', minXp: 820, upkeep: 'Tempo control', bg: 'linear-gradient(145deg, #063b39, #0f766e 45%, #22d3ee)', trim: 'rgba(137,255,245,0.52)', glow: 'rgba(34,211,238,0.34)', core: 'rgba(173,255,250,0.34)', energy: 0.56, perks: ['2 practice rerolls', 'Bigger weak-topic rematch bank', 'Sharper lobby banner'] },
+      { key: 'diamond', name: 'Diamond', minXp: 1220, upkeep: 'High execution', bg: 'linear-gradient(145deg, #0a1f56, #1d4ed8 48%, #7dd3fc)', trim: 'rgba(165,221,255,0.6)', glow: 'rgba(96,165,250,0.38)', core: 'rgba(210,244,255,0.38)', energy: 0.68, perks: ['Boss bounty +30%', '2 streak shields', 'Premium promo sweep'] },
+      { key: 'master', name: 'Master', minXp: 1710, upkeep: 'Lobby respect', bg: 'linear-gradient(145deg, #33105f, #7c3aed 45%, #ec4899)', trim: 'rgba(244,179,255,0.66)', glow: 'rgba(217,70,239,0.46)', core: 'rgba(255,208,244,0.42)', energy: 0.82, perks: ['3 practice rerolls', 'Boss bounty +45%', 'Elite rank banner'] },
+      { key: 'challenger', name: 'Challenger', minXp: 2380, upkeep: 'Crown tier', bg: 'linear-gradient(145deg, #4a060d, #b91c1c 42%, #fb923c 72%, #fff2cf)', trim: 'rgba(255,235,180,0.84)', glow: 'rgba(251,146,60,0.6)', core: 'rgba(255,245,214,0.56)', energy: 1, perks: ['4 practice rerolls', 'Boss bounty +60%', '2 rematch banks', 'Crown-frame lobby treatment'] },
     ];
 
     const EARLY_REWARD_TABLE = [
@@ -3264,26 +3294,40 @@ function initSoundHooks() {
 
     function buildRankShowcase(level) {
       const currentIndex = getTierIndex();
+      const currentTier = level.tier;
+      const nextTier = level.nextTier;
+      const currentRewardLabel = currentTier.perks[0];
+      const nextRewardLabel = nextTier ? nextTier.perks[0] : 'No higher reward gate left';
       return `
         <section class="rank-showcase">
           <div class="rank-showcase-head">
             <div>
               <div class="card-label">Why rank up?</div>
-              <h3 class="rank-showcase-title">Every rank makes the study arena hit harder</h3>
-              <p class="rank-showcase-copy">The ladder is the visible reason to keep queuing. Higher tiers unlock stronger session perks, louder promos, and a more elite banner identity every time you level up your study habits.</p>
+              <h3 class="rank-showcase-title">Every rank is a stronger study kit</h3>
+              <p class="rank-showcase-copy">The ladder should feel like a reward track, not a spreadsheet. Each tier gives you a cleaner queue, better recovery tools, louder promotion moments, and a banner that looks more expensive the further you climb.</p>
               <div class="rank-showcase-bullets">
-                <div>Early tiers hand out rerolls and faster reward bursts so the grind hooks quickly.</div>
-                <div>Mid tiers add streak shields, bigger boss bounties, and deeper weak-topic rematch control.</div>
-                <div>Top tiers look louder and feel stronger so the climb feels worth chasing, not just abstract XP.</div>
+                <div>Bronze and Silver are about fast recovery: rerolls, weak-topic intel, and rematch control.</div>
+                <div>Gold and Emerald start protecting streaks and stretching every clean answer into more value.</div>
+                <div>Diamond through Challenger are prestige tiers: stronger boss payouts, premium banners, and more tools per run.</div>
               </div>
             </div>
             <div class="rank-showcase-current">
-              <div class="card-label">Current ladder state</div>
+              <div class="card-label">Current reward package</div>
               <h3>${level.tier.name}</h3>
               <p>${level.nextTier ? `${level.xpToNext} XP to ${level.nextTier.name}` : 'You are sitting at the top of the ladder.'}</p>
+              <div class="rank-showcase-reward-line">${currentTier.upkeep}</div>
+              <div class="rank-showcase-reward-line">Current headliner: ${currentRewardLabel}</div>
               <div class="xp-track"><div class="xp-fill" style="width:${level.pct}%"></div></div>
               <div class="rank-showcase-rewards">
-                ${(level.nextTier ? level.nextTier.perks : level.tier.perks).map((perk) => `<span class="rank-reward-chip">${perk}</span>`).join('')}
+                ${currentTier.perks.map((perk) => `<span class="rank-reward-chip">${perk}</span>`).join('')}
+              </div>
+              <div class="rank-showcase-next">
+                <div class="card-label">Next reward gate</div>
+                <div class="rank-showcase-next-title">${nextTier ? `${level.xpToNext} XP to ${nextTier.name}` : 'No higher gate left'}</div>
+                <div class="rank-showcase-reward-line">${nextRewardLabel}</div>
+                <div class="rank-showcase-rewards">
+                  ${(nextTier ? nextTier.perks : currentTier.perks).map((perk) => `<span class="rank-reward-chip">${perk}</span>`).join('')}
+                </div>
               </div>
             </div>
           </div>
@@ -3311,6 +3355,7 @@ function initSoundHooks() {
                     <div class="rank-showcase-tier-cost">${tier.upkeep}</div>
                   </div>
                   <div class="rank-showcase-emblem"><span>${emblem}</span></div>
+                  <div class="rank-showcase-tier-reward">${tier.perks[0]}</div>
                   <ul>
                     ${tier.perks.map((perk) => `<li>${perk}</li>`).join('')}
                   </ul>
@@ -3398,6 +3443,7 @@ function initSoundHooks() {
       const nextPerk = level.nextTier
         ? `${level.xpToNext} XP to ${level.nextTier.name}`
         : 'Top rank reached';
+      const nextRewardLine = level.nextTier ? level.nextTier.upkeep : 'Final reward package claimed';
       return `
         ${state.promoFlashKey ? `<div class="promo-flash show" style="background:${level.tier.bg}"></div>` : ''}
         ${state.rankPromoToast ? `
@@ -3447,6 +3493,7 @@ function initSoundHooks() {
             <div class="card-label">Next promo line</div>
             <h3 style="font-size:1rem">${level.nextTier ? level.nextTier.name : 'Apex Scholar'}</h3>
             <p>${nextPerk}</p>
+            <div class="rank-showcase-reward-line">${nextRewardLine}</div>
             <div class="rank-perk-list">
               ${(level.nextTier ? level.nextTier.perks : level.tier.perks).map((perk) => `<div class="rank-perk">${perk}</div>`).join('')}
             </div>
@@ -4379,8 +4426,9 @@ function initSoundHooks() {
                     <div class="rank-badge-cost">${level.current}/${level.needed} XP inside this tier</div>
                   </div>
                   <div style="min-width:220px;flex:1">
-                    <div class="card-label">Next reward gate</div>
+                    <div class="card-label">Next reward package</div>
                     <h3 style="font-size:1.05rem">${level.nextTier ? `${level.xpToNext} XP to ${level.nextTier.name}` : 'All rank perks unlocked'}</h3>
+                    <div class="rank-showcase-reward-line">${level.nextTier ? level.nextTier.upkeep : 'Apex kit secured'}</div>
                     <div class="rank-perk-list">
                       ${(level.nextTier ? level.nextTier.perks : level.tier.perks).map((perk) => `<div class="rank-perk">${perk}</div>`).join('')}
                     </div>
