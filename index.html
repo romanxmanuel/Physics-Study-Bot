@@ -1577,6 +1577,7 @@
     const EXAM_DURATION_SECONDS = 25 * 60;
     const EXAM_QUESTION_COUNT = 16;
     const QUEUE_POP_AUDIO_URL = './assets/sounds/match-found.mp3';
+    const ACCEPT_MATCH_AUDIO_URL = './assets/sounds/accept-match.mp3';
     const CORRECT_ANSWER_AUDIO_URL = './assets/sounds/answer-correct.mp3';
     const WRONG_ANSWER_AUDIO_URL = './assets/sounds/answer-wrong.mp3';
     const RANK_UP_AUDIO_URL = './assets/sounds/rank-up.mp3';
@@ -2695,6 +2696,7 @@ function initSoundHooks() {
         ensureAudioCtx().then((ctx) => {
           [
             getHostedAudio('__studyBotQueueAudio', QUEUE_POP_AUDIO_URL),
+            getHostedAudio('__studyBotAcceptAudio', ACCEPT_MATCH_AUDIO_URL),
             getHostedAudio('__studyBotCorrectAudio', CORRECT_ANSWER_AUDIO_URL),
             getHostedAudio('__studyBotWrongAudio', WRONG_ANSWER_AUDIO_URL),
             getHostedAudio('__studyBotStreakFiveAudio', STREAK_FIVE_AUDIO_URL),
@@ -2707,6 +2709,7 @@ function initSoundHooks() {
           if (ctx) {
             [
               ['queue-pop', QUEUE_POP_AUDIO_URL],
+              ['queue-accept', ACCEPT_MATCH_AUDIO_URL],
               ['answer-correct', CORRECT_ANSWER_AUDIO_URL],
               ['answer-wrong', WRONG_ANSWER_AUDIO_URL],
               ['streak-five', STREAK_FIVE_AUDIO_URL],
@@ -2838,6 +2841,16 @@ function initSoundHooks() {
           }
           const queueAudio = getHostedAudio('__studyBotQueueAudio', QUEUE_POP_AUDIO_URL);
           if (playHostedAudio(queueAudio, 0.65)) {
+            return;
+          }
+        }
+
+        if (detail.type === 'queue-accept') {
+          if (playBufferedAudio('queue-accept', ACCEPT_MATCH_AUDIO_URL, 0.78)) {
+            return;
+          }
+          const acceptAudio = getHostedAudio('__studyBotAcceptAudio', ACCEPT_MATCH_AUDIO_URL);
+          if (playHostedAudio(acceptAudio, 0.74)) {
             return;
           }
         }
@@ -3859,6 +3872,7 @@ function initSoundHooks() {
       } else if (window.__studyBotStopHostedAudio && window.__studyBotQueueAudio) {
         window.__studyBotStopHostedAudio(window.__studyBotQueueAudio);
       }
+      emitSoundHook('queue-accept', { mode: state.pendingMode });
       const mode = state.pendingMode;
       const context = state.pendingModeContext;
       state.pendingMode = '';
