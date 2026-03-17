@@ -799,6 +799,8 @@
     const PROFILE_KEY = 'physicsBot_profile';
     const CUSTOM_PACK_KEY = 'physicsBot_customStudyPack';
     const PACK_MODE_KEY = 'physicsBot_packMode';
+    const MAX_SCOPE_FILES = 8;
+    const MAX_SCOPE_TOTAL_BYTES = 4 * 1024 * 1024;
     const EXAM_DURATION_SECONDS = 25 * 60;
     const EXAM_QUESTION_COUNT = 16;
 
@@ -2030,10 +2032,33 @@ const QUESTIONS = [
       state.scopeStudio[key] = value;
     }
 
+    function formatBytes(bytes) {
+      if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+      if (bytes >= 1024) return `${Math.round(bytes / 1024)} KB`;
+      return `${bytes} B`;
+    }
+
     function handleStudyFiles(input) {
-      state.scopeStudio.files = Array.from(input.files || []);
+      const files = Array.from(input.files || []);
+      const totalBytes = files.reduce((sum, file) => sum + (file.size || 0), 0);
       state.scopeStudio.error = '';
       state.scopeStudio.success = '';
+
+      if (files.length > MAX_SCOPE_FILES) {
+        state.scopeStudio.files = [];
+        state.scopeStudio.error = `That upload is too wide. Use up to ${MAX_SCOPE_FILES} files at once, then generate another pack if you need more material.`;
+        renderScopeStudio();
+        return;
+      }
+
+      if (totalBytes > MAX_SCOPE_TOTAL_BYTES) {
+        state.scopeStudio.files = [];
+        state.scopeStudio.error = `That upload is too large for one request. You selected ${formatBytes(totalBytes)}, but this flow should stay under about ${formatBytes(MAX_SCOPE_TOTAL_BYTES)}. Try the 3 to 6 most relevant files first.`;
+        renderScopeStudio();
+        return;
+      }
+
+      state.scopeStudio.files = files;
       renderScopeStudio();
     }
 
@@ -2066,6 +2091,15 @@ const QUESTIONS = [
         throw new Error('Add at least one file before running the study-pack generator.');
       }
 
+      if (state.scopeStudio.files.length > MAX_SCOPE_FILES) {
+        throw new Error(`Use up to ${MAX_SCOPE_FILES} files at once.`);
+      }
+
+      const totalBytes = state.scopeStudio.files.reduce((sum, file) => sum + (file.size || 0), 0);
+      if (totalBytes > MAX_SCOPE_TOTAL_BYTES) {
+        throw new Error(`This upload is ${formatBytes(totalBytes)}. Keep it under about ${formatBytes(MAX_SCOPE_TOTAL_BYTES)} for one request.`);
+      }
+
       const formData = new FormData();
       formData.append('action', action);
       formData.append('examContext', state.scopeStudio.examContext || '');
@@ -2076,7 +2110,17 @@ const QUESTIONS = [
         method: 'POST',
         body: formData,
       });
-      const payload = await response.json();
+      const raw = await response.text();
+      let payload = null;
+
+      try {
+        payload = raw ? JSON.parse(raw) : null;
+      } catch (error) {
+        if (raw.includes('Request Entity Too Large') || raw.includes('FUNCTION_PAYLOAD_TOO_LARGE')) {
+          throw new Error(`This upload is too large for the server to accept in one shot. Cut it down to the most relevant files and keep the total closer to ${formatBytes(MAX_SCOPE_TOTAL_BYTES)}.`);
+        }
+        throw new Error('The server returned a non-JSON error response. This usually means the upload was rejected before the app route could process it.');
+      }
 
       if (!response.ok || !payload.ok) {
         throw new Error(payload.error || 'The study-pack request failed.');
@@ -2157,7 +2201,7 @@ const QUESTIONS = [
         <div class="card hero-panel">
           <div class="card-label">Upload & scope studio</div>
           <h2>Generate the site from new class material</h2>
-          <p>Upload slides, PDFs, notes, or screenshots. The app will detect likely chapters, let you tighten the exam scope, and then generate a fresh study pack for Learn, Formulas, Practice, and the Mock Exam.</p>
+          <p>Upload slides, PDFs, notes, or screenshots. The app will detect likely chapters, and scope/tags are optional if the files are clean enough. Then it generates a fresh study pack for Learn, Formulas, Practice, and the Mock Exam.</p>
           <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px">
             <div class="topic-pill">${state.scopeStudio.files.length} files ready</div>
             <div class="topic-pill">${selectedScopes.length} scope tags selected</div>
@@ -2170,19 +2214,20 @@ const QUESTIONS = [
             <label class="upload-dropzone">
               <input type="file" multiple accept=".pptx,.pdf,.txt,.md,.png,.jpg,.jpeg,.webp" onchange="handleStudyFiles(this)">
               <strong>Drop in class files or click to browse</strong>
-              <p>Best results come from lecture slides, review PDFs, study guides, and clean screenshots. Supported: PPTX, PDF, TXT, MD, PNG, JPG, WEBP.</p>
+              <p>Best results come from the 3 to 6 most relevant lecture slides, review PDFs, study guides, and clean screenshots. Supported: PPTX, PDF, TXT, MD, PNG, JPG, WEBP.</p>
             </label>
             ${state.scopeStudio.files.length ? `
               <div class="file-chip-row">
                 ${state.scopeStudio.files.map((file) => `<span class="file-chip">${escapeHtml(file.name)}</span>`).join('')}
               </div>` : ''}
+            <p style="margin-top:12px;color:var(--text-dim);font-size:0.85rem">Practical limit: up to ${MAX_SCOPE_FILES} files and about ${formatBytes(MAX_SCOPE_TOTAL_BYTES)} total per run. If your course dump is larger, split it into a few focused batches.</p>
             <div style="margin-top:18px">
               <label class="field-label" for="exam-context-input">Exam context</label>
               <textarea id="exam-context-input" class="textarea-input" placeholder="Example: Exam 3 covers Chapters 24-26, mostly Gauss's law and electric flux, plus one conceptual problem on conductors." oninput="updateScopeStudioField('examContext', this.value)">${escapeHtml(state.scopeStudio.examContext)}</textarea>
             </div>
             <div style="margin-top:16px">
               <label class="field-label" for="extra-focus-input">Manual scope tags</label>
-              <input id="extra-focus-input" class="text-input" type="text" placeholder="Example: Chapter 24, Gauss's Law, electric flux" value="${escapeHtml(state.scopeStudio.extraFocus)}" oninput="updateScopeStudioField('extraFocus', this.value)">
+              <input id="extra-focus-input" class="text-input" type="text" placeholder="Optional. Example: Chapter 24, Gauss's Law, electric flux" value="${escapeHtml(state.scopeStudio.extraFocus)}" oninput="updateScopeStudioField('extraFocus', this.value)">
             </div>
             ${selectedScopes.length ? `
               <div class="scope-chip-row">
