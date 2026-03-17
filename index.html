@@ -218,7 +218,6 @@
       mask: conic-gradient(from 160deg, transparent 0deg 48deg, #000 52deg 320deg, transparent 324deg 360deg);
       -webkit-mask: conic-gradient(from 160deg, transparent 0deg 48deg, #000 52deg 320deg, transparent 324deg 360deg);
       box-shadow: 0 0 24px rgba(34,211,238,0.8), inset 0 0 14px rgba(34,211,238,0.36);
-      animation: queueRingSpin 3.8s linear infinite;
     }
     .queue-pop-ring::after {
       inset: 32px;
@@ -282,6 +281,63 @@
       color: var(--text-dim);
       font-size: 0.92rem;
     }
+    .queue-pop-urgency {
+      position: relative;
+      z-index: 1;
+      width: min(72%, 320px);
+      margin-top: 2px;
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+    }
+    .queue-pop-urgency-copy {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(248,250,252,0.72);
+    }
+    .queue-pop-urgency-track {
+      position: relative;
+      width: 100%;
+      height: 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(212,175,55,0.3);
+      background: linear-gradient(180deg, rgba(8,23,39,0.95), rgba(4,11,20,0.98));
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 18px rgba(34,211,238,0.12);
+    }
+    .queue-pop-urgency-fill {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      transform-origin: left center;
+      background: linear-gradient(90deg, rgba(56,189,248,0.92), rgba(125,211,252,0.85) 35%, rgba(250,204,21,0.88) 78%, rgba(251,113,133,0.86));
+      box-shadow: 0 0 20px rgba(56,189,248,0.28);
+      animation: queueWindowDrain 5.6s linear forwards;
+    }
+    .queue-pop-urgency-glow {
+      position: absolute;
+      top: 50%;
+      left: -20%;
+      width: 36%;
+      height: 180%;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+      mix-blend-mode: screen;
+      filter: blur(6px);
+      opacity: 0.9;
+      animation: queueUrgencySweep 5.6s ease-out forwards;
+      pointer-events: none;
+    }
+    .queue-pop-urgency-ends {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(148,163,184,0.9);
+    }
     .queue-pop-actions {
       position: absolute;
       left: 50%;
@@ -330,9 +386,15 @@
       text-transform: uppercase;
       cursor: pointer;
     }
-    @keyframes queueRingSpin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    @keyframes queueWindowDrain {
+      0% { transform: scaleX(1); filter: saturate(1); }
+      70% { transform: scaleX(0.34); filter: saturate(1.1); }
+      100% { transform: scaleX(0); filter: saturate(1.25); }
+    }
+    @keyframes queueUrgencySweep {
+      0% { left: -24%; opacity: 0.35; }
+      18% { opacity: 0.95; }
+      100% { left: 96%; opacity: 0.18; }
     }
 
     /* ── GAME LAYER ── */
@@ -1542,6 +1604,7 @@
       mode: 'home',
       pendingMode: '',
       pendingModeContext: null,
+      queuePopTimerId: null,
       learnIndex: 0,
       formulaIndex: 0,
       practiceQueue: [],
@@ -3661,12 +3724,20 @@ function initSoundHooks() {
 
     function goHome() {
       clearExamTimer();
+      clearQueuePopTimer();
       state.pendingMode = '';
       state.pendingModeContext = null;
       renderQueuePop();
       state.mode = 'home';
       renderHome();
       setActiveTab(0);
+    }
+
+    function clearQueuePopTimer() {
+      if (state.queuePopTimerId) {
+        clearTimeout(state.queuePopTimerId);
+        state.queuePopTimerId = null;
+      }
     }
 
     function requiresQueueAccept(mode) {
@@ -3714,6 +3785,7 @@ function initSoundHooks() {
     }
 
     function openQueuePop(mode, context = null) {
+      clearQueuePopTimer();
       if (window.__studyBotStopSound) {
         window.__studyBotStopSound('queue-pop');
       } else if (window.__studyBotStopHostedAudio && window.__studyBotQueueAudio) {
@@ -3721,6 +3793,11 @@ function initSoundHooks() {
       }
       state.pendingMode = mode;
       state.pendingModeContext = context;
+      state.queuePopTimerId = setTimeout(() => {
+        if (state.pendingMode === mode) {
+          declineQueuePop();
+        }
+      }, 5600);
       renderQueuePop();
     }
 
@@ -3743,6 +3820,17 @@ function initSoundHooks() {
               <div class="queue-pop-title">${meta.title}</div>
               <div class="queue-pop-meta">${meta.details.map((detail) => `<span>${detail}</span>`).join('<span>•</span>')}</div>
               <p class="queue-pop-copy">${meta.copy}</p>
+              <div class="queue-pop-urgency">
+                <div class="queue-pop-urgency-copy">Accept window closing fast</div>
+                <div class="queue-pop-urgency-track">
+                  <div class="queue-pop-urgency-fill"></div>
+                  <div class="queue-pop-urgency-glow"></div>
+                </div>
+                <div class="queue-pop-urgency-ends">
+                  <span>Queue live</span>
+                  <span>~6s</span>
+                </div>
+              </div>
             </div>
             <div class="queue-pop-actions">
               <button class="queue-accept-btn" onclick="acceptQueuePop()">ACCEPT</button>
@@ -3753,6 +3841,7 @@ function initSoundHooks() {
     }
 
     function declineQueuePop() {
+      clearQueuePopTimer();
       if (window.__studyBotStopSound) {
         window.__studyBotStopSound('queue-pop');
       } else if (window.__studyBotStopHostedAudio && window.__studyBotQueueAudio) {
@@ -3764,6 +3853,7 @@ function initSoundHooks() {
     }
 
     function acceptQueuePop() {
+      clearQueuePopTimer();
       if (window.__studyBotStopSound) {
         window.__studyBotStopSound('queue-pop');
       } else if (window.__studyBotStopHostedAudio && window.__studyBotQueueAudio) {
