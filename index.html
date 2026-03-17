@@ -4444,6 +4444,7 @@ function initSoundHooks() {
                 <div class="btn-row">
                   <button class="btn btn-primary btn-match" onclick="goMode('practice')">Find Match</button>
                   <button class="btn btn-secondary" onclick="${firstRunState ? "goMode('scope')" : "goMode('learn')"}">${firstRunState ? 'Create Pack' : 'Open Learn'}</button>
+                  ${firstRunState ? '' : '<button class="btn btn-secondary" onclick="goMode(\'formulas\')">Open Reference</button>'}
                 </div>
               </div>
             </section>
@@ -4475,7 +4476,6 @@ function initSoundHooks() {
                 <div class="launch-footer-copy">Mock Exam keeps the League-style queue fantasy, but it is the disciplined mode: timed run, no coasting, and a real post-game breakdown.</div>
                 <div class="btn-row">
                   <button class="btn btn-primary btn-match" onclick="goMode('exam')">Take Mock Exam</button>
-                  <button class="btn btn-secondary" onclick="goMode('formulas')">Open Reference</button>
                 </div>
               </div>
             </section>
