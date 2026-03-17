@@ -106,6 +106,7 @@ export async function POST(request) {
     const formData = await request.formData();
     const action = String(formData.get('action') || 'analyze').toLowerCase();
     const examContext = String(formData.get('examContext') || '').trim().slice(0, 4000);
+    const packName = String(formData.get('packName') || '').trim().slice(0, 120);
     const selectedScopes = parseSelectedScopes(formData.get('selectedScopes'));
     const uploads = formData
       .getAll('files')
@@ -144,6 +145,7 @@ export async function POST(request) {
       examContext,
       selectedScopes,
       detectedScopes,
+      packName,
     });
 
     return jsonResponse({
