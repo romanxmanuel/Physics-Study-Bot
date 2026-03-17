@@ -2999,6 +2999,7 @@ const QUESTIONS = [
       pack.title = nextTitle.trim().slice(0, 120) || pack.title;
       if (state.activePackId === packId) state.recentPackAnnouncement = pack.title;
       saveCustomPackState();
+      syncHeaderTitle();
       renderScopeStudio();
     }
 
@@ -3998,9 +3999,9 @@ function initSoundHooks() {
                   <span class="pill-soft">${(pack.questions || []).length} questions</span>
                 </div>
                 <div class="btn-row" style="margin-top:14px">
-                  ${isActive ? '<button class="btn btn-secondary" disabled>Currently Active</button>' : `<button class="btn btn-primary" onclick="${pack.id === 'default' ? 'resetToDefaultPack()' : `activatePack(${JSON.stringify(pack.id)})`}">Switch To This Pack</button>`}
-                  ${pack.id !== 'default' ? `<button class="btn btn-secondary" onclick="renameSavedPack(${JSON.stringify(pack.id)})">Rename</button>` : ''}
-                  ${pack.id !== 'default' ? `<button class="btn btn-secondary" onclick="deleteSavedPack(${JSON.stringify(pack.id)})">Delete</button>` : ''}
+                  ${isActive ? '<button class="btn btn-secondary" disabled>Currently Active</button>' : `<button class="btn btn-primary" onclick='${pack.id === 'default' ? 'resetToDefaultPack()' : `activatePack(${JSON.stringify(pack.id)})`}'>Switch To This Pack</button>`}
+                  ${pack.id !== 'default' ? `<button class="btn btn-secondary" onclick='renameSavedPack(${JSON.stringify(pack.id)})'>Rename</button>` : ''}
+                  ${pack.id !== 'default' ? `<button class="btn btn-secondary" onclick='deleteSavedPack(${JSON.stringify(pack.id)})'>Delete</button>` : ''}
                 </div>
               </div>`;
           }).join('')}
