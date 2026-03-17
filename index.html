@@ -50,7 +50,7 @@
     header {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 0 24px;
+      padding: 0 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -59,7 +59,7 @@
     }
     header h1 { font-size: 1rem; font-weight: 600; color: var(--accent); }
     header h1 span { color: var(--text-dim); font-weight: 400; }
-    main { flex: 1; padding: 32px 24px; max-width: 800px; margin: 0 auto; width: 100%; }
+    main { flex: 1; padding: 18px 16px 24px; max-width: 1360px; margin: 0 auto; width: 100%; }
 
     /* ── NAV TABS ── */
     .nav-tabs {
@@ -81,7 +81,7 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 28px;
+      padding: 20px;
       box-shadow: var(--shadow);
     }
     .card + .card { margin-top: 16px; }
@@ -162,7 +162,7 @@
     }
     .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
     .btn-success { background: var(--green); color: #0f2a1e; }
-    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
     .btn-match {
       min-width: 220px;
       justify-content: center;
@@ -401,6 +401,7 @@
     .hero-panel {
       position: relative;
       overflow: hidden;
+      padding: 18px;
       background:
         radial-gradient(circle at top left, rgba(108,122,255,0.18), transparent 34%),
         radial-gradient(circle at bottom right, rgba(251,191,36,0.12), transparent 30%),
@@ -417,7 +418,7 @@
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
-      margin-top: 18px;
+      margin-top: 12px;
     }
     .hud-card {
       background: rgba(255,255,255,0.03);
@@ -456,7 +457,7 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
-      margin-top: 16px;
+      margin-top: 12px;
     }
     .mission-card {
       background: var(--surface2);
@@ -474,8 +475,8 @@
       background: linear-gradient(135deg, rgba(108,122,255,0.12), rgba(251,191,36,0.1));
       border: 1px solid rgba(108,122,255,0.25);
       border-radius: 14px;
-      padding: 14px 16px;
-      margin-bottom: 16px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
     }
     .focus-title {
       font-size: 0.78rem;
@@ -643,17 +644,17 @@
     .formula-sheet hr { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
 
     /* ── HOME SCREEN ── */
-    .home-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 20px; }
+    .home-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
     .home-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 24px;
+      padding: 18px;
       cursor: pointer;
       transition: all 0.15s;
     }
     .home-card:hover { border-color: var(--accent); transform: translateY(-2px); }
-    .home-card-icon { font-size: 2rem; margin-bottom: 12px; }
+    .home-card-icon { font-size: 1.6rem; margin-bottom: 8px; }
     .home-card h3 { font-size: 1.1rem; margin-bottom: 6px; }
     .home-card p { font-size: 0.85rem; color: var(--text-dim); }
     .home-card .badge {
@@ -664,11 +665,11 @@
     .home-grid-secondary {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 16px;
+      gap: 12px;
+      margin-top: 12px;
     }
     .home-card.secondary {
-      padding: 18px;
+      padding: 14px;
       background: rgba(255,255,255,0.03);
     }
     .home-card.secondary h3 {
@@ -679,10 +680,10 @@
       margin-bottom: 10px;
     }
     .action-rail {
-      margin-top: 18px;
+      margin-top: 12px;
       border: 1px solid rgba(106,227,255,0.24);
       border-radius: 18px;
-      padding: 18px;
+      padding: 14px;
       background:
         radial-gradient(circle at top right, rgba(244,114,182,0.16), transparent 30%),
         radial-gradient(circle at bottom left, rgba(56,189,248,0.14), transparent 36%),
@@ -737,7 +738,7 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
-      margin-top: 14px;
+      margin-top: 10px;
       position: relative;
       z-index: 1;
     }
@@ -753,13 +754,13 @@
       color: var(--text);
     }
     .action-rail-meta {
-      margin-top: 16px;
+      margin-top: 12px;
       display: flex;
       justify-content: space-between;
       gap: 14px;
       align-items: center;
       flex-wrap: wrap;
-      padding: 14px 16px;
+      padding: 12px 14px;
       border-radius: 16px;
       border: 1px solid rgba(108,122,255,0.22);
       background: linear-gradient(135deg, rgba(108,122,255,0.11), rgba(52,211,153,0.08));
@@ -793,10 +794,10 @@
       font-size: 0.84rem;
     }
     .pack-command-box {
-      margin-top: 18px;
+      margin-top: 12px;
       border: 1px solid rgba(212,175,55,0.22);
       border-radius: 18px;
-      padding: 18px;
+      padding: 14px;
       background:
         radial-gradient(circle at top left, rgba(212,175,55,0.14), transparent 28%),
         radial-gradient(circle at bottom right, rgba(56,189,248,0.12), transparent 34%),
@@ -831,7 +832,7 @@
     }
     .pack-switcher-panel {
       min-width: min(100%, 390px);
-      padding: 14px;
+      padding: 12px;
       border-radius: 16px;
       border: 1px solid rgba(212,175,55,0.18);
       background: rgba(255,255,255,0.03);
@@ -869,13 +870,13 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
-      margin-top: 18px;
+      margin-top: 12px;
     }
     .lobby-launch-card {
       position: relative;
       overflow: hidden;
       border-radius: 20px;
-      padding: 20px;
+      padding: 16px;
       min-height: 100%;
       border: 1px solid rgba(106,227,255,0.18);
       background:
@@ -943,7 +944,7 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
-      margin-top: 16px;
+      margin-top: 12px;
     }
     .launch-insight {
       padding: 11px 12px;
@@ -963,7 +964,7 @@
       font-size: 0.82rem;
     }
     .launch-footer {
-      margin-top: 18px;
+      margin-top: 12px;
       display: flex;
       justify-content: space-between;
       gap: 12px;
@@ -984,7 +985,7 @@
       margin-top: 8px;
     }
     .compact-home-section {
-      margin-top: 16px;
+      margin-top: 12px;
       border: 1px solid var(--border);
       border-radius: 16px;
       background: rgba(255,255,255,0.03);
@@ -993,7 +994,7 @@
     .compact-home-section summary {
       list-style: none;
       cursor: pointer;
-      padding: 16px 18px;
+      padding: 12px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -1006,7 +1007,7 @@
       background: rgba(255,255,255,0.02);
     }
     .compact-home-section .details-body {
-      padding: 16px 18px 18px;
+      padding: 12px 14px 14px;
     }
     .summary-kicker {
       font-size: 0.78rem;
@@ -1028,13 +1029,13 @@
       display: grid;
       grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.8fr);
       gap: 16px;
-      margin-top: 16px;
+      margin-top: 12px;
     }
     .pack-status {
       background: linear-gradient(135deg, rgba(108,122,255,0.13), rgba(52,211,153,0.08));
       border: 1px solid rgba(108,122,255,0.2);
       border-radius: 14px;
-      padding: 18px;
+      padding: 14px;
     }
     .pack-status h3 {
       font-size: 1.05rem;
@@ -1043,7 +1044,7 @@
     .pack-source-list {
       display: grid;
       gap: 10px;
-      margin-top: 16px;
+      margin-top: 12px;
     }
     .pack-source {
       border: 1px solid var(--border);
@@ -1067,14 +1068,14 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 22px;
+      padding: 16px;
       box-shadow: var(--shadow);
     }
     .upload-dropzone {
       display: block;
       border: 1px dashed rgba(108,122,255,0.45);
       border-radius: 14px;
-      padding: 18px;
+      padding: 14px;
       background: linear-gradient(135deg, rgba(108,122,255,0.08), rgba(167,139,250,0.05));
       cursor: pointer;
       transition: border-color 0.15s, transform 0.15s;
@@ -1168,8 +1169,8 @@
       background: rgba(248,113,113,0.08);
     }
     .active-pack-banner {
-      margin-top: 16px;
-      padding: 16px 18px;
+      margin-top: 12px;
+      padding: 12px 14px;
       border-radius: 18px;
       border: 1px solid rgba(96,165,250,0.35);
       background: linear-gradient(120deg, rgba(17,24,39,0.92), rgba(15,23,42,0.88), rgba(12,74,110,0.86), rgba(17,24,39,0.92));
@@ -1185,10 +1186,10 @@
     .pack-library {
       display: grid;
       gap: 12px;
-      margin-top: 16px;
+      margin-top: 12px;
     }
     .pack-library-item {
-      padding: 14px 16px;
+      padding: 12px 14px;
       border-radius: 18px;
       border: 1px solid rgba(148,163,184,0.18);
       background: rgba(15,23,42,0.72);
@@ -1804,7 +1805,44 @@
     }
 
     /* ── RESPONSIVE ── */
+    @media (max-width: 980px) {
+      main { padding: 14px 14px 18px; }
+      header {
+        height: auto;
+        min-height: 56px;
+        padding: 10px 12px;
+        align-items: flex-start;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      header h1 { font-size: 0.95rem; }
+      .nav-tabs {
+        width: 100%;
+        overflow-x: auto;
+      }
+      .nav-tab {
+        flex: 0 0 auto;
+        white-space: nowrap;
+      }
+      .card,
+      .hero-panel,
+      .pack-command-box,
+      .lobby-launch-card,
+      .pack-status,
+      .upload-panel,
+      .scope-panel,
+      .rank-showcase-current,
+      .rank-card,
+      .roadmap-card,
+      .boost-card { padding: 14px; }
+      .btn-row { gap: 8px; margin-top: 12px; }
+      .btn,
+      .btn-match { width: 100%; justify-content: center; }
+      .home-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .rank-showcase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
     @media (max-width: 640px) {
+      main { padding: 12px 10px 16px; }
       .home-grid,
       .home-grid-secondary,
       .action-step-row,
@@ -1822,7 +1860,31 @@
       .mission-track-grid,
       .roadmap-grid,
       .hud-subgrid { grid-template-columns: 1fr; }
-      .rank-showcase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .rank-showcase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .card,
+      .hero-panel,
+      .pack-command-box,
+      .lobby-launch-card,
+      .pack-status,
+      .upload-panel,
+      .scope-panel,
+      .rank-showcase-current,
+      .rank-card,
+      .roadmap-card,
+      .boost-card { padding: 12px; }
+      .home-card { padding: 14px; }
+      .home-card.secondary { padding: 12px; }
+      .home-card-icon { font-size: 1.35rem; margin-bottom: 6px; }
+      .rank-showcase-tier { min-height: 248px; padding: 12px 10px; }
+      .rank-showcase-tier-name { font-size: 0.92rem; }
+      .rank-showcase-tier-cost,
+      .rank-showcase-tier-reward,
+      .rank-showcase-tier ul { font-size: 0.66rem; }
+      .rank-showcase-banner { min-height: 64px; }
+      .rank-showcase-face { min-height: 58px; }
+      .queue-pop-overlay { padding: 12px; }
+      .queue-pop-core { width: min(82%, 300px); gap: 10px; }
+      .queue-pop-icon { width: 64px; height: 64px; font-size: 1.6rem; }
     }
   </style>
 </head>
