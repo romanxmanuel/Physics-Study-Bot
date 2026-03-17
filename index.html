@@ -2604,24 +2604,48 @@ const QUESTIONS = [
       };
     }
 
-    function initSoundHooks() {
+function initSoundHooks() {
       if (window.__studyBotSoundHooksReady) return;
       window.__studyBotSoundHooksReady = true;
 
-      const playCue = (detail = {}) => {
+      const ensureAudioCtx = async () => {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
+        if (!AudioCtx) return null;
         const ctx = window.__studyBotAudioCtx || new AudioCtx();
         window.__studyBotAudioCtx = ctx;
-        if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+        if (ctx.state === 'suspended') {
+          try {
+            await ctx.resume();
+          } catch (error) {
+            return null;
+          }
+        }
+        return ctx;
+      };
+
+      const unlockOnGesture = () => {
+        ensureAudioCtx().finally(() => {
+          window.removeEventListener('pointerdown', unlockOnGesture, true);
+          window.removeEventListener('keydown', unlockOnGesture, true);
+        });
+      };
+
+      window.addEventListener('pointerdown', unlockOnGesture, true);
+      window.addEventListener('keydown', unlockOnGesture, true);
+
+      const playCue = (detail = {}) => {
+        const ctx = window.__studyBotAudioCtx;
+        if (!ctx || ctx.state !== 'running') return;
 
         const now = ctx.currentTime;
         const gain = ctx.createGain();
-        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.setValueAtTime(detail.type === 'answer-submit' ? 0.18 : detail.type === 'boss-clear' ? 0.22 : detail.type === 'queue-pop' ? 0.24 : 0.2, now);
         gain.connect(ctx.destination);
 
         const tones = detail.type === 'answer-submit'
           ? [659.25]
+          : detail.type === 'queue-pop'
+            ? [783.99, 987.77, 1174.66]
           : detail.type === 'boss-clear'
             ? [392, 523.25, 659.25]
             : detail.tier === 'challenger'
@@ -2633,15 +2657,15 @@ const QUESTIONS = [
         tones.forEach((freq, index) => {
           const osc = ctx.createOscillator();
           const oscGain = ctx.createGain();
-          osc.type = detail.type === 'answer-submit' ? 'sine' : detail.type === 'boss-clear' ? 'triangle' : 'sawtooth';
+          osc.type = detail.type === 'answer-submit' ? 'sine' : detail.type === 'boss-clear' || detail.type === 'queue-pop' ? 'triangle' : 'sawtooth';
           osc.frequency.setValueAtTime(freq, now + index * 0.08);
           oscGain.gain.setValueAtTime(0.0001, now + index * 0.08);
-          oscGain.gain.exponentialRampToValueAtTime(detail.type === 'answer-submit' ? 0.02 : detail.type === 'boss-clear' ? 0.03 : 0.045, now + index * 0.08 + 0.01);
-          oscGain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.08 + (detail.type === 'answer-submit' ? 0.16 : 0.22));
+          oscGain.gain.exponentialRampToValueAtTime(detail.type === 'answer-submit' ? 0.12 : detail.type === 'boss-clear' ? 0.16 : detail.type === 'queue-pop' ? 0.14 : 0.18, now + index * 0.08 + 0.01);
+          oscGain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.08 + (detail.type === 'answer-submit' ? 0.2 : detail.type === 'queue-pop' ? 0.34 : 0.26));
           osc.connect(oscGain);
           oscGain.connect(gain);
           osc.start(now + index * 0.08);
-          osc.stop(now + index * 0.08 + (detail.type === 'answer-submit' ? 0.18 : 0.24));
+          osc.stop(now + index * 0.08 + (detail.type === 'answer-submit' ? 0.22 : detail.type === 'queue-pop' ? 0.36 : 0.28));
         });
       };
 
@@ -3520,6 +3544,7 @@ const QUESTIONS = [
         layer.innerHTML = '';
         return;
       }
+      emitSoundHook('queue-pop', { mode: state.pendingMode });
       const meta = getQueuePopMeta(state.pendingMode);
       layer.innerHTML = `
         <div class="queue-pop-overlay" onclick="declineQueuePop()">
