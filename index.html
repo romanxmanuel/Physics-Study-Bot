@@ -1514,9 +1514,11 @@
     const MAX_SCOPE_TOTAL_BYTES = 24 * 1024 * 1024;
     const EXAM_DURATION_SECONDS = 25 * 60;
     const EXAM_QUESTION_COUNT = 16;
-    const QUEUE_POP_AUDIO_URL = './assets/sounds/queue-pop.mp3';
-    const CORRECT_ANSWER_AUDIO_URL = 'https://dw.zobj.net/download/v1/bdhvoP6nqgsu2hYxVdQ12Qu3Fgh59yiN0ufzXExc2EAVjwPjl-eBuB2Q-9ux7SmSn7MjXkHVBEhuSgSgsIzpemimV-4y4bB2fUykEj6TukDBlBMeEMl5uDbGGHQU/?a=&c=72&f=lol_defense_ping.mp3';
-    const WRONG_ANSWER_AUDIO_URL = 'https://dw.zobj.net/download/v1/bmwmt9mpuOjgP0O_9ItbYJJOvmwUujp6qp956ofzyxmF3x3XuN7coWNm0VCS1og1KrN-0OtRGUIiFKu6m7rBdKdF36Z7z1jQ1IiWB4tCsVqC3DvbtTRNul17IV5w/?a=&c=72&f=lol_warning_ping.mp3';
+    const QUEUE_POP_AUDIO_URL = './assets/sounds/match-found.mp3';
+    const CORRECT_ANSWER_AUDIO_URL = './assets/sounds/answer-correct.mp3';
+    const WRONG_ANSWER_AUDIO_URL = './assets/sounds/answer-wrong.mp3';
+    const STREAK_FIVE_AUDIO_URL = './assets/sounds/streak-five.mp3';
+    const RANK_UP_AUDIO_URL = './assets/sounds/rank-up.mp3';
 
     const RANK_TIERS = [
       { key: 'iron', name: 'Iron', minXp: 0, upkeep: 'Starter border', bg: 'linear-gradient(145deg, #202532, #10141d)', trim: 'rgba(150,160,184,0.35)', glow: 'rgba(120,130,160,0.18)', core: 'rgba(220,228,255,0.18)', energy: 0.18, perks: ['Rank border', 'Focus HUD'] },
@@ -2666,7 +2668,9 @@ function initSoundHooks() {
       const playCue = (detail = {}) => {
         if (detail.type === 'queue-pop') {
           const queueAudio = getHostedAudio('__studyBotQueueAudio', QUEUE_POP_AUDIO_URL);
-          playHostedAudio(queueAudio, 0.65);
+          if (playHostedAudio(queueAudio, 0.65)) {
+            return;
+          }
         }
 
         if (detail.type === 'answer-submit') {
@@ -2674,6 +2678,20 @@ function initSoundHooks() {
             ? getHostedAudio('__studyBotCorrectAudio', CORRECT_ANSWER_AUDIO_URL)
             : getHostedAudio('__studyBotWrongAudio', WRONG_ANSWER_AUDIO_URL);
           if (playHostedAudio(answerAudio, detail.result === 'correct' ? 0.55 : 0.6)) {
+            return;
+          }
+        }
+
+        if (detail.type === 'streak-5') {
+          const streakAudio = getHostedAudio('__studyBotStreakFiveAudio', STREAK_FIVE_AUDIO_URL);
+          if (playHostedAudio(streakAudio, 0.62)) {
+            return;
+          }
+        }
+
+        if (detail.type === 'rank-promo') {
+          const rankUpAudio = getHostedAudio('__studyBotRankUpAudio', RANK_UP_AUDIO_URL);
+          if (playHostedAudio(rankUpAudio, 0.68)) {
             return;
           }
         }
@@ -2688,6 +2706,8 @@ function initSoundHooks() {
 
         const tones = detail.type === 'answer-submit'
           ? [659.25]
+          : detail.type === 'streak-5'
+            ? [523.25, 659.25, 783.99]
           : detail.type === 'queue-pop'
             ? [783.99, 987.77, 1174.66]
           : detail.type === 'boss-clear'
@@ -2910,6 +2930,7 @@ function initSoundHooks() {
         if (bossBonus) state.rewardBursts.push(`+${bossBonus} bounty`);
         if (surgeBonus) state.rewardBursts.push(`+${surgeBonus} heater`);
 
+        if (state.currentStreak === 5) emitSoundHook('streak-5', { streak: 5 });
         if (state.currentStreak >= 5) unlockAchievement('streak_5');
         if (state.currentStreak >= 10) unlockAchievement('streak_10');
         if (elapsedMs <= 12000) {
