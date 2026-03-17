@@ -2029,26 +2029,28 @@ const QUESTIONS = [
         gain.gain.setValueAtTime(0.0001, now);
         gain.connect(ctx.destination);
 
-        const tones = detail.type === 'boss-clear'
-          ? [392, 523.25, 659.25]
-          : detail.tier === 'challenger'
-            ? [440, 554.37, 739.99]
-            : detail.tier === 'master'
-              ? [392, 493.88, 659.25]
-              : [329.63, 392, 523.25];
+        const tones = detail.type === 'answer-submit'
+          ? [659.25]
+          : detail.type === 'boss-clear'
+            ? [392, 523.25, 659.25]
+            : detail.tier === 'challenger'
+              ? [440, 554.37, 739.99]
+              : detail.tier === 'master'
+                ? [392, 493.88, 659.25]
+                : [329.63, 392, 523.25];
 
         tones.forEach((freq, index) => {
           const osc = ctx.createOscillator();
           const oscGain = ctx.createGain();
-          osc.type = detail.type === 'boss-clear' ? 'triangle' : 'sawtooth';
+          osc.type = detail.type === 'answer-submit' ? 'sine' : detail.type === 'boss-clear' ? 'triangle' : 'sawtooth';
           osc.frequency.setValueAtTime(freq, now + index * 0.08);
           oscGain.gain.setValueAtTime(0.0001, now + index * 0.08);
-          oscGain.gain.exponentialRampToValueAtTime(detail.type === 'boss-clear' ? 0.03 : 0.045, now + index * 0.08 + 0.01);
-          oscGain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.08 + 0.22);
+          oscGain.gain.exponentialRampToValueAtTime(detail.type === 'answer-submit' ? 0.02 : detail.type === 'boss-clear' ? 0.03 : 0.045, now + index * 0.08 + 0.01);
+          oscGain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.08 + (detail.type === 'answer-submit' ? 0.16 : 0.22));
           osc.connect(oscGain);
           oscGain.connect(gain);
           osc.start(now + index * 0.08);
-          osc.stop(now + index * 0.08 + 0.24);
+          osc.stop(now + index * 0.08 + (detail.type === 'answer-submit' ? 0.18 : 0.24));
         });
       };
 
@@ -3249,6 +3251,7 @@ const QUESTIONS = [
       const bossRound = isBossRound(state.practiceIndex);
       state.practiceAnswered = true;
       state.selectedChoice = choiceIndex;
+      emitSoundHook('answer-submit', { soundCue: 'answer-submit', result: isRight ? 'correct' : 'incorrect', mode: 'practice' });
       const { gainedXp, rankPromo } = applyAnswerOutcome({ isRight, mode: 'practice', elapsedMs, bossRound });
       state.practiceResults.push({ q: question, chosen: choiceIndex, isRight, gainedXp, elapsedMs, bossRound, rankPromo });
       if (bossRound && isRight) emitSoundHook('boss-clear', { soundCue: 'boss-clear', mode: 'practice' });
@@ -3432,6 +3435,7 @@ const QUESTIONS = [
       const isRight = choiceIndex === question.answer;
       const elapsedMs = Date.now() - state.questionStartedAt;
       const bossRound = isBossRound(state.examIndex);
+      emitSoundHook('answer-submit', { soundCue: 'answer-submit', result: isRight ? 'correct' : 'incorrect', mode: 'exam' });
       const { gainedXp, rankPromo } = applyAnswerOutcome({ isRight, mode: 'exam', elapsedMs, bossRound });
       state.examAnswers[state.examIndex] = {
         q: question,
