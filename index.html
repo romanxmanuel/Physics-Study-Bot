@@ -1832,7 +1832,10 @@
       .nav-tabs {
         width: 100%;
         overflow-x: auto;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
       }
+      .nav-tabs::-webkit-scrollbar { display: none; }
       .nav-tab {
         flex: 0 0 auto;
         white-space: nowrap;
@@ -1856,6 +1859,23 @@
     }
     @media (max-width: 640px) {
       main { padding: 12px 10px 16px; }
+      header {
+        padding: 8px 10px;
+        gap: 8px;
+      }
+      .nav-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+        padding: 4px;
+        overflow: visible;
+      }
+      .nav-tab {
+        min-width: 0;
+        font-size: 0.76rem;
+        padding: 8px 8px;
+        text-align: center;
+      }
       .home-grid,
       .home-grid-secondary,
       .action-step-row,
@@ -1898,6 +1918,73 @@
       .queue-pop-overlay { padding: 12px; }
       .queue-pop-core { width: min(82%, 300px); gap: 10px; }
       .queue-pop-icon { width: 64px; height: 64px; font-size: 1.6rem; }
+      .queue-pop-actions {
+        bottom: 18px;
+        width: min(78%, 260px);
+      }
+      .queue-accept-btn,
+      .queue-decline-btn {
+        width: 100%;
+      }
+      .formula-sheet {
+        padding: 12px;
+      }
+    }
+    @media (max-width: 480px) {
+      main { padding: 10px 8px 14px; }
+      header h1 {
+        font-size: 0.86rem;
+      }
+      header h1 span {
+        display: none;
+      }
+      .nav-tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .hud-grid {
+        grid-template-columns: 1fr;
+      }
+      .rank-showcase-grid {
+        grid-template-columns: 1fr;
+      }
+      .rank-showcase-tier {
+        min-height: 220px;
+      }
+      .queue-pop-shell {
+        width: min(100%, 360px);
+      }
+      .queue-pop-ring::before {
+        inset: 12px;
+      }
+      .queue-pop-ring::after {
+        inset: 22px;
+      }
+      .queue-pop-title {
+        font-size: 1.45rem;
+      }
+      .queue-pop-meta,
+      .queue-pop-copy,
+      .queue-pop-urgency-ends {
+        font-size: 0.72rem;
+      }
+      .queue-pop-core {
+        width: min(84%, 250px);
+      }
+      .queue-pop-urgency {
+        width: min(82%, 240px);
+      }
+      .pack-switcher-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .pack-switcher-or {
+        min-height: auto;
+        padding: 2px 0;
+      }
+      .action-rail-meta-grid,
+      .launch-insight-grid {
+        gap: 8px;
+      }
     }
   </style>
 </head>
