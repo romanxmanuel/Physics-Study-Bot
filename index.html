@@ -578,7 +578,36 @@
       padding: 14px 16px;
       border-radius: 16px;
       color: #fff;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.16),
+        0 16px 32px rgba(0,0,0,0.28),
+        0 0 0 1px var(--tier-trim, rgba(255,255,255,0.16)),
+        0 0 calc(24px * var(--tier-energy, 0.35)) var(--tier-glow, rgba(255,255,255,0.12));
+      position: relative;
+      overflow: hidden;
+    }
+    .rank-badge::before,
+    .roadmap-tier::before {
+      content: '';
+      position: absolute;
+      inset: -20% auto auto -25%;
+      width: 70%;
+      height: 180%;
+      background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,calc(0.06 + var(--tier-energy, 0.3) * 0.14)) 45%, transparent 70%);
+      transform: rotate(14deg);
+      pointer-events: none;
+    }
+    .rank-badge::after,
+    .roadmap-tier::after {
+      content: '';
+      position: absolute;
+      inset: auto -18% -30% auto;
+      width: 140px;
+      height: 140px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--tier-core, rgba(255,255,255,0.24)) 0%, transparent 70%);
+      opacity: calc(0.35 + var(--tier-energy, 0.3) * 0.55);
+      pointer-events: none;
     }
     .rank-badge-label {
       font-size: 0.72rem;
@@ -633,16 +662,21 @@
     .roadmap-tier {
       border-radius: 14px;
       padding: 12px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--tier-trim, var(--border));
+      background: var(--tier-bg, rgba(255,255,255,0.03));
       min-height: 150px;
       position: relative;
       overflow: hidden;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 0 calc(26px * var(--tier-energy, 0.25)) var(--tier-glow, transparent);
     }
     .roadmap-tier.current {
       border-color: rgba(255,255,255,0.5);
       transform: translateY(-2px);
-      box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+      box-shadow:
+        0 18px 34px rgba(0,0,0,0.22),
+        0 0 calc(34px * var(--tier-energy, 0.3)) var(--tier-glow, transparent);
     }
     .roadmap-tier.next {
       border-color: rgba(251,191,36,0.45);
@@ -769,14 +803,14 @@
     const EXAM_QUESTION_COUNT = 16;
 
     const RANK_TIERS = [
-      { key: 'rookie', name: 'Rookie Circuit', minXp: 0, upkeep: '0 RP risk', color: 'linear-gradient(135deg, #4b5563, #1f2937)', perks: ['Starter badge', 'Warm-up streak glow'] },
-      { key: 'bronze', name: 'Charge Bronze', minXp: 40, upkeep: '-4 RP tilt shield', color: 'linear-gradient(135deg, #92400e, #f97316)', perks: ['Bronze badge', 'Fast answer pulse'] },
-      { key: 'silver', name: 'Current Silver', minXp: 100, upkeep: '-8 RP pressure cost', color: 'linear-gradient(135deg, #6b7280, #d1d5db)', perks: ['Silver badge', 'Boss round marker'] },
-      { key: 'gold', name: 'Voltage Gold', minXp: 180, upkeep: '-12 RP tension cost', color: 'linear-gradient(135deg, #ca8a04, #fde047)', perks: ['Gold badge', 'Combo surge unlock'] },
-      { key: 'plasma', name: 'Plasma Platinum', minXp: 300, upkeep: '-18 RP focus cost', color: 'linear-gradient(135deg, #0f766e, #22d3ee)', perks: ['Platinum badge', 'Higher boss bonuses'] },
-      { key: 'diamond', name: 'Field Diamond', minXp: 460, upkeep: '-25 RP pressure cost', color: 'linear-gradient(135deg, #2563eb, #93c5fd)', perks: ['Diamond badge', 'Exam finish aura'] },
-      { key: 'master', name: 'Kirchhoff Master', minXp: 680, upkeep: '-35 RP stress cost', color: 'linear-gradient(135deg, #6d28d9, #d8b4fe)', perks: ['Master badge', 'Elite streak prestige'] },
-      { key: 'apex', name: 'Apex Scholar', minXp: 980, upkeep: '-50 RP focus tax', color: 'linear-gradient(135deg, #7f1d1d, #fb7185)', perks: ['Apex crest', 'Full rank prestige frame'] },
+      { key: 'sparring', name: 'Sparring Queue', minXp: 0, upkeep: 'No LP bleed', bg: 'linear-gradient(145deg, #202532, #10141d)', trim: 'rgba(150,160,184,0.35)', glow: 'rgba(120,130,160,0.18)', core: 'rgba(220,228,255,0.18)', energy: 0.18, perks: ['Starter crest', 'Warm-up glow'] },
+      { key: 'lanecraft', name: 'Lanecraft', minXp: 40, upkeep: '-4 LP pressure', bg: 'linear-gradient(145deg, #4b2207, #b45309 58%, #f97316)', trim: 'rgba(255,196,126,0.42)', glow: 'rgba(249,115,22,0.26)', core: 'rgba(255,215,170,0.28)', energy: 0.28, perks: ['Fast-solve pulse', 'First blood streak tag'] },
+      { key: 'wave', name: 'Wave Control', minXp: 100, upkeep: '-8 LP pressure', bg: 'linear-gradient(145deg, #2a303b, #636b79 58%, #cfd5df)', trim: 'rgba(214,222,236,0.45)', glow: 'rgba(203,213,225,0.24)', core: 'rgba(255,255,255,0.25)', energy: 0.34, perks: ['Combo flare', 'Objective warning flare'] },
+      { key: 'objective', name: 'Objective Tempo', minXp: 180, upkeep: '-12 LP tension', bg: 'linear-gradient(145deg, #594008, #c48900 55%, #facc15)', trim: 'rgba(255,236,157,0.48)', glow: 'rgba(250,204,21,0.3)', core: 'rgba(255,247,188,0.34)', energy: 0.42, perks: ['Objective surge', 'Hot-streak frame'] },
+      { key: 'pressure', name: 'Map Pressure', minXp: 300, upkeep: '-18 LP tension', bg: 'linear-gradient(145deg, #063b39, #0f766e 45%, #22d3ee)', trim: 'rgba(137,255,245,0.52)', glow: 'rgba(34,211,238,0.34)', core: 'rgba(173,255,250,0.34)', energy: 0.56, perks: ['Boss bounty', 'Clutch shimmer'] },
+      { key: 'baron', name: 'Baron Window', minXp: 460, upkeep: '-25 LP stress', bg: 'linear-gradient(145deg, #0a1f56, #1d4ed8 48%, #7dd3fc)', trim: 'rgba(165,221,255,0.6)', glow: 'rgba(96,165,250,0.38)', core: 'rgba(210,244,255,0.38)', energy: 0.68, perks: ['Elite streak aura', 'Exam push banner'] },
+      { key: 'elder', name: 'Elder Spike', minXp: 680, upkeep: '-35 LP burn', bg: 'linear-gradient(145deg, #33105f, #7c3aed 45%, #ec4899)', trim: 'rgba(244,179,255,0.66)', glow: 'rgba(217,70,239,0.46)', core: 'rgba(255,208,244,0.42)', energy: 0.82, perks: ['Promo burst', 'Pressure-mode finish glow'] },
+      { key: 'nexus', name: 'Nexus Crown', minXp: 980, upkeep: '-50 LP collapse risk', bg: 'linear-gradient(145deg, #4a060d, #b91c1c 42%, #fb923c 72%, #fff2cf)', trim: 'rgba(255,235,180,0.84)', glow: 'rgba(251,146,60,0.6)', core: 'rgba(255,245,214,0.56)', energy: 1, perks: ['Prestige frame', 'Mythic promo burst', 'Top-tier banner'] },
     ];
 
     const EARLY_REWARD_TABLE = [
@@ -1709,9 +1743,9 @@ const QUESTIONS = [
     }
 
     function getFlowLabel() {
-      if (state.currentStreak >= 10) return 'Deep Focus';
-      if (state.currentStreak >= 6) return 'Locked In';
-      if (state.currentStreak >= 3) return 'Momentum';
+      if (state.currentStreak >= 10) return 'Closing Out';
+      if (state.currentStreak >= 6) return 'Snowballing';
+      if (state.currentStreak >= 3) return 'Winning Lane';
       return 'Warm-up';
     }
 
@@ -1747,22 +1781,22 @@ const QUESTIONS = [
       const examReady = state.profile.achievements.exam_80 ? 1 : 0;
       return [
         {
-          title: 'Ignite',
-          body: 'Build a 5-answer streak to lock in the first serious combo loop.',
+          title: 'Lane Lead',
+          body: 'Build a 5-answer streak to start snowballing the session.',
           current: bestStreak,
           target: 5,
           progressLabel: `${bestStreak}/5 best streak`,
         },
         {
-          title: 'Quickdraw',
-          body: 'Land 3 fast solves under 12 seconds for the speed badge.',
+          title: 'Power Spike',
+          body: 'Land 3 fast solves under 12 seconds to unlock the first tempo spike.',
           current: fastAnswers,
           target: 3,
           progressLabel: `${fastAnswers}/3 fast clears`,
         },
         {
-          title: 'Exam Ready',
-          body: 'Hit 80% on a mock exam to prove the system is working.',
+          title: 'Promo Check',
+          body: 'Hit 80% on a mock exam to prove the build is ready for ranked pressure.',
           current: examReady,
           target: 1,
           progressLabel: examReady ? 'Unlocked' : 'Locked',
@@ -1773,8 +1807,8 @@ const QUESTIONS = [
     function getNextBestAction() {
       if (!state.customPack) {
         return {
-          title: 'Build a custom exam pack',
-          body: 'Upload your latest lecture files so the whole site retunes around your actual test scope.',
+          title: 'Queue into your real exam scope',
+          body: 'Upload the latest lecture files so the site locks onto the exact chapter pool you are about to be tested on.',
           action: 'goMode(\'scope\')',
           cta: 'Open Upload & Scope',
         };
@@ -1782,8 +1816,8 @@ const QUESTIONS = [
 
       if (state.profile.bestStreak < 5) {
         return {
-          title: 'Push to a 5-hit streak',
-          body: 'The first real reward spike comes fast. One clean run in Practice will start the momentum loop.',
+          title: 'Take early lane control',
+          body: 'The first real reward spike comes fast. One clean Practice run is enough to start snowballing.',
           action: 'startPractice()',
           cta: 'Start Practice Run',
         };
@@ -1791,16 +1825,16 @@ const QUESTIONS = [
 
       if (!state.profile.achievements.exam_80) {
         return {
-          title: 'Convert momentum into a mock exam pass',
-          body: 'Your next meaningful unlock is the exam badge. Use the active pack and push for 80% or better.',
+          title: 'Convert tempo into a promo win',
+          body: 'Your next meaningful unlock is the promo badge. Use the active pack and push for 80% or better.',
           action: 'startExam()',
           cta: 'Take Mock Exam',
         };
       }
 
       return {
-        title: 'Farm weak spots for rank gains',
-        body: 'You are past the onboarding loop. Drill the weakest topics and keep ranking up the active pack.',
+        title: 'Pressure weak lanes',
+        body: 'You are out of onboarding. Farm the weakest topics, keep your tempo, and push the ladder higher.',
         action: 'startPractice()',
         cta: 'Drill Weak Topics',
       };
@@ -1811,7 +1845,7 @@ const QUESTIONS = [
       return `
         <div class="roadmap-grid">
           ${RANK_TIERS.map((tier, index) => `
-            <div class="roadmap-tier ${index === currentIndex ? 'current' : ''} ${index === currentIndex + 1 ? 'next' : ''}" style="background:${tier.color}">
+            <div class="roadmap-tier ${index === currentIndex ? 'current' : ''} ${index === currentIndex + 1 ? 'next' : ''}" style="--tier-bg:${tier.bg};--tier-trim:${tier.trim};--tier-glow:${tier.glow};--tier-core:${tier.core};--tier-energy:${tier.energy}">
               <div class="roadmap-tier-label">Tier ${index + 1}</div>
               <div class="roadmap-tier-name">${tier.name}</div>
               <div class="roadmap-tier-cost">${tier.minXp} XP · ${tier.upkeep}</div>
@@ -1841,11 +1875,11 @@ const QUESTIONS = [
         const surgeBonus = surgeRoll > 0.92 ? 18 : surgeRoll > 0.72 ? 9 : surgeRoll > 0.42 ? 4 : 0;
         gainedXp = base + speedBonus + comboBonus + bossBonus + surgeBonus;
 
-        state.rewardBursts.push(`+${base} XP clear`);
-        if (speedBonus) state.rewardBursts.push(`+${speedBonus} quickdraw`);
-        if (comboBonus) state.rewardBursts.push(`+${comboBonus} combo`);
-        if (bossBonus) state.rewardBursts.push(`+${bossBonus} boss`);
-        if (surgeBonus) state.rewardBursts.push(`+${surgeBonus} surge`);
+        state.rewardBursts.push(`+${base} XP clean clear`);
+        if (speedBonus) state.rewardBursts.push(`+${speedBonus} power spike`);
+        if (comboBonus) state.rewardBursts.push(`+${comboBonus} snowball`);
+        if (bossBonus) state.rewardBursts.push(`+${bossBonus} objective`);
+        if (surgeBonus) state.rewardBursts.push(`+${surgeBonus} heater`);
 
         if (state.currentStreak >= 5) unlockAchievement('streak_5');
         if (state.currentStreak >= 10) unlockAchievement('streak_10');
@@ -1895,7 +1929,7 @@ const QUESTIONS = [
           </div>
           <div class="focus-metrics">
             <span class="metric-pill ${state.currentStreak >= 6 ? 'hot' : ''}">Streak ${state.currentStreak}</span>
-            <span class="metric-pill">Combo x${getComboMultiplier().toFixed(2)}</span>
+            <span class="metric-pill">Snowball x${getComboMultiplier().toFixed(2)}</span>
             <span class="metric-pill">Session XP +${state.sessionXp}</span>
             <span class="metric-pill">Accuracy ${accuracy}%</span>
           </div>
@@ -1922,7 +1956,7 @@ const QUESTIONS = [
         </div>
         <div class="hud-subgrid">
           <div class="boost-card">
-            <div class="card-label">Next rank trigger</div>
+            <div class="card-label">Next promo line</div>
             <h3 style="font-size:1rem">${level.nextTier ? level.nextTier.name : 'Apex Scholar'}</h3>
             <p>${nextPerk}</p>
             <div class="rank-perk-list">
@@ -1930,7 +1964,7 @@ const QUESTIONS = [
             </div>
           </div>
           <div class="boost-card">
-            <div class="card-label">Live mission focus</div>
+            <div class="card-label">Win conditions</div>
             ${missionTracks.slice(0, 2).map((track) => `
               <div style="margin-bottom:10px">
                 <strong style="display:block">${track.title}</strong>
@@ -2330,7 +2364,7 @@ const QUESTIONS = [
             <div class="rank-card">
               <div class="card-label">Rank ladder</div>
               <div class="rank-current">
-                <div class="rank-badge" style="background:${level.tier.color}">
+                <div class="rank-badge" style="background:${level.tier.bg};--tier-trim:${level.tier.trim};--tier-glow:${level.tier.glow};--tier-core:${level.tier.core};--tier-energy:${level.tier.energy}">
                   <div class="rank-badge-label">Current rank</div>
                   <div class="rank-badge-name">${level.tier.name}</div>
                   <div class="rank-badge-cost">${level.current}/${level.needed} XP inside this tier</div>
@@ -2349,14 +2383,14 @@ const QUESTIONS = [
             <div class="roadmap-card">
               <div class="card-label">Why rank up?</div>
               <h3 style="font-size:1rem">Every tier advertises what it unlocks</h3>
-              <p>Users should never wonder what XP does. Each tier below shows the vibe, pressure cost, and perk bundle tied to that level.</p>
+              <p>The ladder should read like a competitive climb. Every tier shows its pressure profile, visual identity, and perk bundle up front.</p>
             </div>
           </div>
         </div>
         <div class="card" style="margin-top:16px">
           <div class="card-label">Rank roadmap</div>
           <h2 style="font-size:1.15rem">All visible progression tiers</h2>
-          <p>Fast early promotions, then longer grinds once the habit loop is already established.</p>
+          <p>Quick early climbs, then steeper promo lines once the study habit is already locked in.</p>
           ${buildRankRoadmap()}
         </div>
         <div class="pack-banner">
@@ -2377,7 +2411,7 @@ const QUESTIONS = [
           </div>
         </div>
         <div class="quick-path">
-          <div class="card-label">Best next move</div>
+          <div class="card-label">Best next queue</div>
           <h3>${nextAction.title}</h3>
           <p>${nextAction.body}</p>
           <div class="btn-row">
@@ -2387,7 +2421,7 @@ const QUESTIONS = [
         <div class="card" style="margin-top:16px;background:var(--surface2)">
           <div class="card-label">Progress snapshot</div>
           <p>${strongestPrompt}</p>
-          <p>${weakTopics.length ? 'Weak topics are re-drilled after repeated misses and are available for targeted practice from the results screen.' : 'Start with Learn if you need the concepts from scratch, or jump into Practice if you want to test what you already know.'}</p>
+            <p>${weakTopics.length ? 'Weak topics keep getting queued back up after repeated misses, so the site keeps pressure on the lanes you are still dropping.' : 'Start with Learn if the scope is fresh, or jump straight into Practice if you want to contest tempo immediately.'}</p>
           <div class="achievement-row">
             ${achievements.map((item) => `<span class="achievement ${item.unlocked ? 'unlocked' : ''}">${item.label}</span>`).join('')}
           </div>
@@ -2406,25 +2440,25 @@ const QUESTIONS = [
           <div class="home-card" onclick="goMode('learn')">
             <div class="home-card-icon">📘</div>
             <h3>1. Learn</h3>
-            <p>Learn the active scope fast. This is the quickest way to make the first rank jumps feel easy.</p>
+            <p>Get the lane matchup first. This is the fastest way to make the early promo lines feel free.</p>
             <span class="badge">${concepts.length} cards</span>
           </div>
           <div class="home-card" onclick="goMode('formulas')">
             <div class="home-card-icon">🧮</div>
             <h3>2. Formulas</h3>
-            <p>Use this when you want clean equation recall and more consistent speed-bonus clears.</p>
+            <p>Use this when you want cleaner equation recall and more reliable power-spike clears.</p>
             <span class="badge">${formulas.length} cards</span>
           </div>
           <div class="home-card" onclick="goMode('practice')">
             <div class="home-card-icon">🎯</div>
             <h3>3. Practice</h3>
-            <p>The main progression loop. Fast XP, streak surges, boss rounds, and weak-topic retakes all live here.</p>
+            <p>The main climb loop. Fast XP, snowball stacks, objective rounds, and weak-topic rematches all live here.</p>
             <span class="badge">${questions.length} questions</span>
           </div>
           <div class="home-card" onclick="goMode('exam')">
             <div class="home-card-icon">📝</div>
             <h3>4. Mock Exam</h3>
-            <p>Pressure test your current rank and chase the exam badge with a full timed run.</p>
+            <p>Pressure test your current rank and chase the promo badge with a full timed run.</p>
             <span class="badge">${Math.min(EXAM_QUESTION_COUNT, questions.length)}-question exam</span>
           </div>
           <div class="home-card" onclick="goMode('scope')">
