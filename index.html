@@ -1996,6 +1996,67 @@ const QUESTIONS = [
       return { label: 'Thin', pct: 28 };
     }
 
+    function getCoverageQuality(pack) {
+      const conceptTopics = [...new Set((pack.concepts || []).map((item) => item.topic).filter(Boolean))];
+      const questionTopics = new Set((pack.questions || []).map((item) => item.topic).filter(Boolean));
+      if (!conceptTopics.length) {
+        return { label: 'Unknown', pct: 0, covered: 0, total: 0, hardFail: false };
+      }
+      const covered = conceptTopics.filter((topic) => questionTopics.has(topic)).length;
+      const pct = Math.round((covered / conceptTopics.length) * 100);
+      return {
+        label: pct >= 85 ? 'Broad' : pct >= 60 ? 'Decent' : 'Patchy',
+        pct,
+        covered,
+        total: conceptTopics.length,
+        hardFail: pct < 55,
+      };
+    }
+
+    function initSoundHooks() {
+      if (window.__studyBotSoundHooksReady) return;
+      window.__studyBotSoundHooksReady = true;
+
+      const playCue = (detail = {}) => {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = window.__studyBotAudioCtx || new AudioCtx();
+        window.__studyBotAudioCtx = ctx;
+        if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+
+        const now = ctx.currentTime;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.connect(ctx.destination);
+
+        const tones = detail.type === 'boss-clear'
+          ? [392, 523.25, 659.25]
+          : detail.tier === 'challenger'
+            ? [440, 554.37, 739.99]
+            : detail.tier === 'master'
+              ? [392, 493.88, 659.25]
+              : [329.63, 392, 523.25];
+
+        tones.forEach((freq, index) => {
+          const osc = ctx.createOscillator();
+          const oscGain = ctx.createGain();
+          osc.type = detail.type === 'boss-clear' ? 'triangle' : 'sawtooth';
+          osc.frequency.setValueAtTime(freq, now + index * 0.08);
+          oscGain.gain.setValueAtTime(0.0001, now + index * 0.08);
+          oscGain.gain.exponentialRampToValueAtTime(detail.type === 'boss-clear' ? 0.03 : 0.045, now + index * 0.08 + 0.01);
+          oscGain.gain.exponentialRampToValueAtTime(0.0001, now + index * 0.08 + 0.22);
+          osc.connect(oscGain);
+          oscGain.connect(gain);
+          osc.start(now + index * 0.08);
+          osc.stop(now + index * 0.08 + 0.24);
+        });
+      };
+
+      document.addEventListener('studybot:sound-hook', (event) => {
+        playCue(event.detail || {});
+      });
+    }
+
     function unlockAchievement(key) {
       if (!state.profile.achievements[key]) {
         state.profile.achievements[key] = true;
@@ -2536,12 +2597,15 @@ const QUESTIONS = [
       const pack = state.scopeStudio.previewPack;
       if (!pack) return '';
       const questionQuality = getQuestionBankQuality((pack.questions || []).length);
+      const coverageQuality = getCoverageQuality(pack);
+      const hardFail = (pack.questions || []).length < 16 || coverageQuality.hardFail;
 
       return `
         <div class="card" style="margin-top:16px;border-color:rgba(96,165,250,0.35);box-shadow:0 24px 60px rgba(2,6,23,0.26)">
           <div class="card-label">Draft preview</div>
           <h2 style="font-size:1.2rem">${escapeHtml(pack.title)}</h2>
           <p>${escapeHtml(pack.subtitle || 'Generated study pack')}</p>
+          ${hardFail ? `<div class="status-callout error">Draft quality warning: this pack is still too thin for a strong run. Regenerate with richer source material or tighter lecture files before activating.</div>` : ''}
           <div class="scope-chip-row" style="margin-top:12px">
             <span class="topic-pill">${(pack.scope || []).length ? escapeHtml(pack.scope.join(' • ')) : 'Focused scope'}</span>
             <span class="topic-pill">${(pack.concepts || []).length} learn</span>
@@ -2555,6 +2619,14 @@ const QUESTIONS = [
             </div>
             <div class="quality-bar"><div class="quality-fill" style="width:${questionQuality.pct}%"></div></div>
             <p style="margin-top:8px;color:var(--text-dim)">${(pack.questions || []).length} questions generated. The app now auto-expands weak packs until they cross the minimum threshold when possible.</p>
+          </div>
+          <div class="quality-meter">
+            <div class="quality-label-row">
+              <span>Topic coverage</span>
+              <strong style="color:var(--text)">${coverageQuality.label}</strong>
+            </div>
+            <div class="quality-bar"><div class="quality-fill" style="width:${coverageQuality.pct}%"></div></div>
+            <p style="margin-top:8px;color:var(--text-dim)">${coverageQuality.covered}/${coverageQuality.total} concept topics currently have at least one practice question.</p>
           </div>
           <div class="btn-row" style="margin-top:16px">
             <button class="btn btn-primary" onclick="acceptPreviewPack()">Activate This Pack</button>
@@ -3462,6 +3534,7 @@ const QUESTIONS = [
         </div>`;
     }
 
+    initSoundHooks();
     syncHeaderTitle();
     renderHome();
   </script>
