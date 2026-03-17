@@ -372,7 +372,7 @@
     .formula-sheet hr { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
 
     /* ── HOME SCREEN ── */
-    .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+    .home-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 20px; }
     .home-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -389,6 +389,175 @@
       display: inline-block; margin-top: 12px;
       background: var(--surface2); border-radius: 99px;
       padding: 2px 10px; font-size: 0.75rem; color: var(--accent);
+    }
+    .home-grid-secondary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .home-card.secondary {
+      padding: 18px;
+      background: rgba(255,255,255,0.03);
+    }
+    .home-card.secondary h3 {
+      font-size: 1rem;
+    }
+    .home-card.secondary .home-card-icon {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    .action-rail {
+      margin-top: 18px;
+      border: 1px solid rgba(106,227,255,0.24);
+      border-radius: 18px;
+      padding: 18px;
+      background:
+        radial-gradient(circle at top right, rgba(244,114,182,0.16), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(56,189,248,0.14), transparent 36%),
+        linear-gradient(135deg, rgba(10,16,28,0.96), rgba(22,30,52,0.9));
+      box-shadow: 0 18px 42px rgba(6,10,18,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+      position: relative;
+      overflow: hidden;
+    }
+    .action-rail::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.05) 48%, transparent 65%);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .action-rail-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .action-rail h3 {
+      font-size: 1.08rem;
+      margin-bottom: 8px;
+    }
+    .action-lead {
+      position: relative;
+      z-index: 1;
+    }
+    .action-rail p {
+      color: var(--text-dim);
+      max-width: 720px;
+    }
+    .queue-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(244,114,182,0.26);
+      background: rgba(244,114,182,0.08);
+      color: #fbcfe8;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .action-step-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    .action-step {
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    }
+    .action-step strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+    .action-rail-meta {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(108,122,255,0.22);
+      background: linear-gradient(135deg, rgba(108,122,255,0.11), rgba(52,211,153,0.08));
+      position: relative;
+      z-index: 1;
+    }
+    .action-rail-meta h3 {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+    .action-rail-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      width: 100%;
+    }
+    .action-meta-card {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+    }
+    .action-meta-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.82rem;
+      color: var(--accent2);
+    }
+    .action-meta-card span {
+      color: var(--text-dim);
+      font-size: 0.84rem;
+    }
+    .compact-pack-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .compact-home-section {
+      margin-top: 16px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      overflow: hidden;
+    }
+    .compact-home-section summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+    }
+    .compact-home-section summary::-webkit-details-marker { display: none; }
+    .compact-home-section[open] summary {
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+    .compact-home-section .details-body {
+      padding: 16px 18px 18px;
+    }
+    .summary-kicker {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
     }
 
     /* ── STATUS INDICATOR ── */
@@ -825,6 +994,211 @@
       line-height: 1.5;
     }
     .roadmap-tier li { margin-bottom: 4px; }
+    .rank-showcase {
+      margin-top: 18px;
+      border-radius: 22px;
+      border: 1px solid rgba(244,190,96,0.18);
+      background:
+        radial-gradient(circle at top center, rgba(251,191,36,0.12), transparent 30%),
+        linear-gradient(180deg, rgba(7,10,18,0.98), rgba(12,17,30,0.96));
+      box-shadow: 0 22px 48px rgba(4,8,18,0.38);
+      overflow: hidden;
+    }
+    .rank-showcase-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+      gap: 18px;
+      padding: 20px 20px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .rank-showcase-title {
+      font-size: 1.35rem;
+      margin-bottom: 8px;
+    }
+    .rank-showcase-copy {
+      color: var(--text-dim);
+      max-width: 720px;
+    }
+    .rank-showcase-bullets {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .rank-showcase-bullets div {
+      padding-left: 14px;
+      position: relative;
+      color: rgba(255,255,255,0.9);
+      font-size: 0.88rem;
+    }
+    .rank-showcase-bullets div::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 9px;
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #facc15, #fb7185);
+      box-shadow: 0 0 14px rgba(250,204,21,0.4);
+    }
+    .rank-showcase-current {
+      border-radius: 18px;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+    .rank-showcase-current h3 {
+      font-size: 1.15rem;
+      margin-bottom: 10px;
+    }
+    .rank-showcase-current .xp-track {
+      margin-top: 12px;
+    }
+    .rank-showcase-rewards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .rank-reward-chip {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 0.78rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: #eef2ff;
+    }
+    .rank-showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      padding: 16px 20px 20px;
+    }
+    .rank-showcase-tier {
+      position: relative;
+      min-height: 250px;
+      border-radius: 18px;
+      padding: 16px 14px;
+      border: 1px solid var(--tier-trim, rgba(255,255,255,0.12));
+      background: var(--tier-bg, rgba(255,255,255,0.03));
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 0 calc(30px * var(--tier-energy, 0.25)) var(--tier-glow, transparent);
+      transform: translateY(calc((1 - var(--tier-energy, 0.2)) * 6px));
+    }
+    .rank-showcase-tier::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top center, rgba(255,255,255,0.12), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,0.05), transparent 38%, rgba(0,0,0,0.22));
+      pointer-events: none;
+    }
+    .rank-showcase-tier.current {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow:
+        0 20px 34px rgba(0,0,0,0.26),
+        0 0 calc(36px * var(--tier-energy, 0.35)) var(--tier-glow, transparent);
+    }
+    .rank-showcase-tier.next {
+      border-color: rgba(251,191,36,0.56);
+      box-shadow:
+        0 16px 30px rgba(0,0,0,0.24),
+        0 0 26px rgba(251,191,36,0.18),
+        0 0 calc(32px * var(--tier-energy, 0.3)) var(--tier-glow, transparent);
+    }
+    .rank-showcase-tier.max {
+      border-color: rgba(255,229,180,0.75);
+    }
+    .rank-showcase-tier-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .rank-state-pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .rank-showcase-tier-name {
+      position: relative;
+      z-index: 1;
+      font-size: 1.2rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      margin-top: 10px;
+    }
+    .rank-showcase-tier-cost {
+      position: relative;
+      z-index: 1;
+      color: rgba(255,255,255,0.82);
+      font-size: 0.82rem;
+      margin-top: 6px;
+    }
+    .rank-showcase-emblem {
+      position: relative;
+      z-index: 1;
+      align-self: center;
+      width: 112px;
+      height: 112px;
+      margin: 12px 0;
+      display: grid;
+      place-items: center;
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255,255,255,0.24), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(0,0,0,0.22));
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 0 24px rgba(255,255,255,0.06),
+        0 0 calc(36px * var(--tier-energy, 0.3)) var(--tier-glow, transparent);
+      clip-path: polygon(50% 0%, 88% 18%, 100% 56%, 76% 100%, 24% 100%, 0% 56%, 12% 18%);
+    }
+    .rank-showcase-emblem span {
+      font-size: 2.4rem;
+      font-weight: 900;
+      text-shadow: 0 0 20px rgba(255,255,255,0.3);
+    }
+    .rank-showcase-tier ul {
+      position: relative;
+      z-index: 1;
+      list-style: none;
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      font-size: 0.76rem;
+      color: rgba(255,255,255,0.92);
+    }
+    .rank-showcase-tier li::before {
+      content: "•";
+      color: #fbbf24;
+      margin-right: 6px;
+    }
+    .rank-showcase-foot {
+      padding: 0 20px 18px;
+      color: var(--text-dim);
+      font-size: 0.86rem;
+    }
     .mission-track-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -885,7 +1259,10 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 640px) {
-      .home-grid { grid-template-columns: 1fr; }
+      .home-grid,
+      .home-grid-secondary,
+      .action-step-row,
+      .action-rail-meta-grid { grid-template-columns: 1fr; }
       .hud-grid { grid-template-columns: 1fr 1fr; }
       .mission-grid { grid-template-columns: 1fr; }
       .exam-layout { flex-direction: column; }
@@ -893,6 +1270,8 @@
       .pack-banner,
       .studio-grid,
       .rank-overview,
+      .rank-showcase-head,
+      .rank-showcase-grid,
       .mission-track-grid,
       .roadmap-grid,
       .hud-subgrid { grid-template-columns: 1fr; }
@@ -2165,6 +2544,65 @@ const QUESTIONS = [
         </div>`;
     }
 
+    function buildRankShowcase(level) {
+      const currentIndex = getTierIndex();
+      return `
+        <section class="rank-showcase">
+          <div class="rank-showcase-head">
+            <div>
+              <div class="card-label">Why rank up?</div>
+              <h3 class="rank-showcase-title">Every rank makes the study arena hit harder</h3>
+              <p class="rank-showcase-copy">The ladder is the visible reason to keep queuing. Higher tiers unlock stronger session perks, louder promos, and a more elite banner identity every time you level up your study habits.</p>
+              <div class="rank-showcase-bullets">
+                <div>Early tiers hand out rerolls and faster reward bursts so the grind hooks quickly.</div>
+                <div>Mid tiers add streak shields, bigger boss bounties, and deeper weak-topic rematch control.</div>
+                <div>Top tiers look louder and feel stronger so the climb feels worth chasing, not just abstract XP.</div>
+              </div>
+            </div>
+            <div class="rank-showcase-current">
+              <div class="card-label">Current ladder state</div>
+              <h3>${level.tier.name}</h3>
+              <p>${level.nextTier ? `${level.xpToNext} XP to ${level.nextTier.name}` : 'You are sitting at the top of the ladder.'}</p>
+              <div class="xp-track"><div class="xp-fill" style="width:${level.pct}%"></div></div>
+              <div class="rank-showcase-rewards">
+                ${(level.nextTier ? level.nextTier.perks : level.tier.perks).map((perk) => `<span class="rank-reward-chip">${perk}</span>`).join('')}
+              </div>
+            </div>
+          </div>
+          <div class="rank-showcase-grid">
+            ${RANK_TIERS.map((tier, index) => {
+              const stateLabel = index === currentIndex
+                ? 'Current'
+                : index === currentIndex + 1
+                  ? 'Next promo'
+                  : index < currentIndex
+                    ? 'Cleared'
+                    : index === RANK_TIERS.length - 1
+                      ? 'Endgame'
+                      : 'Locked';
+              const emblem = tier.name[0];
+              const extraClass = index === currentIndex ? 'current' : index === currentIndex + 1 ? 'next' : index === RANK_TIERS.length - 1 ? 'max' : '';
+              return `
+                <article class="rank-showcase-tier ${extraClass}" style="--tier-bg:${tier.bg};--tier-trim:${tier.trim};--tier-glow:${tier.glow};--tier-core:${tier.core};--tier-energy:${tier.energy}">
+                  <div>
+                    <div class="rank-showcase-tier-top">
+                      <div class="rank-state-pill">${stateLabel}</div>
+                      <div class="roadmap-tier-cost">${tier.minXp} XP</div>
+                    </div>
+                    <div class="rank-showcase-tier-name">${tier.name}</div>
+                    <div class="rank-showcase-tier-cost">${tier.upkeep}</div>
+                  </div>
+                  <div class="rank-showcase-emblem"><span>${emblem}</span></div>
+                  <ul>
+                    ${tier.perks.map((perk) => `<li>${perk}</li>`).join('')}
+                  </ul>
+                </article>`;
+            }).join('')}
+          </div>
+          <div class="rank-showcase-foot">Climb by stacking correct answers, fast clears, streaks, and boss round wins. The whole point is to make studying feel like an actual ladder instead of a static worksheet.</div>
+        </section>`;
+    }
+
     function applyAnswerOutcome({ isRight, mode, elapsedMs, bossRound }) {
       state.rewardBursts = [];
       state.profile.totalAnswered += 1;
@@ -2846,6 +3284,16 @@ const QUESTIONS = [
       const achievements = getVisibleAchievements();
       const missionTracks = getMissionTracks();
       const nextAction = getNextBestAction();
+      const usingDefaultPack = isDefaultPackActive();
+      const firstRunState = usingDefaultPack && !hasSavedPacks();
+      const starterTitle = firstRunState ? 'Queue up your climb' : 'Back into queue';
+      const starterBody = firstRunState
+        ? 'Load your class files, lock in a pack, then jump straight into reps. The rest of the ladder matters after the first clean practice loop.'
+        : `You are already queued into "${escapeHtml(pack.title)}". Jump back into the fastest high-value rep cycle, or rotate packs if you are switching classes.`;
+      const primaryActionLabel = firstRunState ? 'Create Study Pack' : nextAction.cta;
+      const primaryAction = firstRunState ? "goMode('scope')" : nextAction.action;
+      const secondaryActionLabel = firstRunState ? 'Use Built-in Pack' : 'Open Pack Library';
+      const secondaryAction = firstRunState ? "goMode('practice')" : "goMode('scope')";
       const strongestPrompt = weakTopics.length
         ? `Top weak spot: ${weakTopics[0][0]} (${weakTopics[0][1]} misses)`
         : 'No topics are flagged as weak yet.';
@@ -2855,7 +3303,6 @@ const QUESTIONS = [
           <div class="card-label">Your study plan</div>
           <h2>${pack.title}</h2>
           <p>${pack.subtitle || 'Build momentum, climb ranks, and stay in the loop. The app rewards clean streaks, fast solves, boss rounds, and exam-level execution.'}</p>
-          ${renderGameHud('Home Base')}
           <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px">
             <div class="topic-pill">${concepts.length} concept cards</div>
             <div class="topic-pill">${formulas.length} reference cards</div>
@@ -2864,118 +3311,190 @@ const QUESTIONS = [
             <div class="topic-pill">${level.tier.name}</div>
             <div class="topic-pill">${getPackLabel()}</div>
           </div>
-          <div class="rank-overview">
-            <div class="rank-card">
-              <div class="card-label">Rank ladder</div>
-              <div class="rank-current">
-                <div class="rank-badge" style="background:${level.tier.bg};--tier-trim:${level.tier.trim};--tier-glow:${level.tier.glow};--tier-core:${level.tier.core};--tier-energy:${level.tier.energy}">
-                  <div class="rank-badge-label">Current rank</div>
-                  <div class="rank-badge-name">${level.tier.name}</div>
-                  <div class="rank-badge-cost">${level.current}/${level.needed} XP inside this tier</div>
+          <div class="action-rail">
+            <div class="action-rail-top">
+              <div>
+                <div class="card-label">${starterTitle}</div>
+                <div class="queue-badge">${firstRunState ? 'Champion Select' : `${level.tier.name} Queue`}</div>
+                <h3>${firstRunState ? 'Draft your pack and hit lane fast' : nextAction.title}</h3>
+                <p>${firstRunState ? starterBody : nextAction.body}</p>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-primary" onclick="${primaryAction}">${primaryActionLabel}</button>
+                <button class="btn btn-secondary" onclick="${secondaryAction}">${secondaryActionLabel}</button>
+              </div>
+            </div>
+            <div class="action-step-row">
+              ${(firstRunState ? [
+                { title: '1. Lock your pool', body: 'Upload lecture slides, PDFs, or notes and name the pack.' },
+                { title: '2. Confirm the draft', body: 'Review the generated pack, then switch the whole site onto that material.' },
+                { title: '3. Queue practice', body: 'Use Practice first for fast reps, then run Mock Exam when you are warm.' }
+              ] : [
+                { title: 'Next lane', body: nextAction.title },
+                { title: 'Drop point', body: strongestPrompt },
+                { title: 'Promo line', body: level.nextTier ? `${level.xpToNext} XP to ${level.nextTier.name}` : 'All rank perks unlocked' }
+              ]).map((step) => `
+                <div class="action-step">
+                  <strong>${step.title}</strong>
+                  <p>${step.body}</p>
                 </div>
-                <div style="min-width:220px;flex:1">
-                  <div class="card-label">Next reward gate</div>
-                  <h3 style="font-size:1.05rem">${level.nextTier ? `${level.xpToNext} XP to ${level.nextTier.name}` : 'All rank perks unlocked'}</h3>
-                  <div class="rank-perk-list">
-                    ${(level.nextTier ? level.nextTier.perks : level.tier.perks).map((perk) => `<div class="rank-perk">${perk}</div>`).join('')}
-                  </div>
-                  <div class="xp-track" style="margin-top:14px"><div class="xp-fill" style="width:${level.pct}%"></div></div>
+              `).join('')}
+            </div>
+            <div class="action-rail-meta">
+              <div>
+                <div class="card-label">Now studying</div>
+                <h3>${getPackScopeText(pack)}</h3>
+                <p>${usingDefaultPack ? 'You are on the built-in starter pack. Swap in another class pack when you want the whole site to retune around a new matchup.' : `Everything below is training from "${escapeHtml(pack.title)}" right now.`}</p>
+                <div class="compact-pack-meta">
+                  <span class="topic-pill">${questions.length} question bank</span>
+                  <span class="topic-pill">${level.tier.name}</span>
+                  <span class="topic-pill">${weakTopics.length ? `${weakTopics.length} weak topic${weakTopics.length === 1 ? '' : 's'}` : 'No weak topics flagged'}</span>
                 </div>
               </div>
-              ${state.rewardBursts.length ? `<div class="reward-burst-row">${state.rewardBursts.slice(0, 5).map((burst) => `<span class="reward-burst">${burst}</span>`).join('')}</div>` : ''}
-            </div>
-            <div class="roadmap-card">
-              <div class="card-label">Why rank up?</div>
-              <h3 style="font-size:1rem">Every tier advertises what it unlocks</h3>
-              <p>The ladder should read like a competitive climb. Every tier shows its pressure profile, visual identity, and perk bundle up front.</p>
-            </div>
-          </div>
-        </div>
-        <div class="card" style="margin-top:16px">
-          <div class="card-label">Rank roadmap</div>
-          <h2 style="font-size:1.15rem">All visible progression tiers</h2>
-          <p>Quick early climbs, then steeper promo lines once the study habit is already locked in.</p>
-          ${buildRankRoadmap()}
-        </div>
-        <div class="pack-banner">
-          <div class="pack-status">
-            <div class="card-label">Active pack</div>
-            <h3>${getPackScopeText(pack)}</h3>
-            <p>${isDefaultPackActive() ? 'This is the built-in pack. Generate a new pack when you want the whole site to retune around another class or exam.' : `The site is currently training from "${escapeHtml(pack.title)}". Everything below is using that pack right now.`}</p>
-            <div class="btn-row" style="margin-top:14px">
-              <button class="btn btn-primary" onclick="goMode('scope')">${hasSavedPacks() ? 'Open Pack Library' : 'Create Study Pack'}</button>
-              ${!isDefaultPackActive() ? '<button class="btn btn-secondary" onclick="resetToDefaultPack()">Switch To Built-in Pack</button>' : ''}
+              <div class="action-rail-meta-grid">
+                <div class="action-meta-card">
+                  <strong>Pack control</strong>
+                  <span>${hasSavedPacks() ? `${getSavedPacks().length} saved packs ready to swap` : 'No custom packs saved yet'}</span>
+                </div>
+                <div class="action-meta-card">
+                  <strong>Current pressure</strong>
+                  <span>${weakTopics.length ? strongestPrompt : 'Clean board so far. Keep stacking reps.'}</span>
+                </div>
+                <div class="action-meta-card">
+                  <strong>Next unlock</strong>
+                  <span>${level.nextTier ? `${level.xpToNext} XP to ${level.nextTier.name}` : 'All rank perks unlocked'}</span>
+                </div>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-primary" onclick="goMode('practice')">Start Practice</button>
+                <button class="btn btn-secondary" onclick="goMode('scope')">${hasSavedPacks() ? 'Switch Packs' : 'Create Pack'}</button>
+                ${!usingDefaultPack ? '<button class="btn btn-secondary" onclick="resetToDefaultPack()">Starter Pack</button>' : ''}
+              </div>
             </div>
           </div>
-          <div class="pack-status">
-            <div class="card-label">Source map</div>
-            <h3>What the site is training from</h3>
-            <p>${pack.sourceSummary && pack.sourceSummary.length ? 'The current study pack shows the sources that shaped the active content.' : 'No source summary is available yet.'}</p>
-            ${buildSourceCards((pack.sourceSummary || []).slice(0, 3))}
-          </div>
-        </div>
-        ${state.recentPackAnnouncement ? `
-          <div class="status-callout" style="margin-top:16px">
-            Now studying: <strong>${escapeHtml(getActiveStudyPack().title)}</strong>. The site has switched to this pack.
-          </div>` : ''}
-        <div class="quick-path">
-          <div class="card-label">Best next queue</div>
-          <h3>${nextAction.title}</h3>
-          <p>${nextAction.body}</p>
-          <div class="btn-row">
-            <button class="btn btn-primary" onclick="${nextAction.action}">${nextAction.cta}</button>
-          </div>
-        </div>
-        <div class="card" style="margin-top:16px;background:var(--surface2)">
-          <div class="card-label">Progress snapshot</div>
-          <p>${strongestPrompt}</p>
-            <p>${weakTopics.length ? 'Weak topics keep getting queued back up after repeated misses, so the site keeps pressure on the lanes you are still dropping.' : 'Start with Learn if the topic is fresh, or jump straight into Practice if you want to contest tempo immediately.'}</p>
-          <div class="achievement-row">
-            ${achievements.map((item) => `<span class="achievement ${item.unlocked ? 'unlocked' : ''}">${item.label}</span>`).join('')}
-          </div>
-        </div>
-        <div class="mission-track-grid">
-          ${missionTracks.map((track) => `
-            <div class="mission-track">
-              <strong>${track.title}</strong>
-              <p>${track.body}</p>
-              <div class="mini-track"><div class="mini-track-fill" style="width:${Math.min(100, (track.current / track.target) * 100)}%"></div></div>
-              <p style="margin-top:8px;font-size:0.8rem">${track.progressLabel}</p>
-            </div>
-          `).join('')}
+          ${buildRankShowcase(level)}
+          ${renderGameHud('Home Base')}
         </div>
         <div class="home-grid">
-          <div class="home-card" onclick="goMode('learn')">
-            <div class="home-card-icon">📘</div>
-            <h3>1. Learn</h3>
-            <p>Get the lane matchup first. This is the fastest way to make the early promo lines feel free.</p>
-            <span class="badge">${concepts.length} cards</span>
-          </div>
-          <div class="home-card" onclick="goMode('formulas')">
-            <div class="home-card-icon">🧮</div>
-            <h3>2. Reference</h3>
-            <p>Use this for equations, syntax patterns, query structures, and other fast-recall material.</p>
-            <span class="badge">${formulas.length} cards</span>
-          </div>
           <div class="home-card" onclick="goMode('practice')">
             <div class="home-card-icon">🎯</div>
-            <h3>3. Practice</h3>
-            <p>The main climb loop. Fast XP, snowball stacks, objective rounds, and weak-topic rematches all live here.</p>
+            <h3>Practice</h3>
+            <p>The main queue. Farm fast reps, stack XP, and let weak-topic rematches catch the concepts you are still dropping.</p>
             <span class="badge">${questions.length} questions</span>
+          </div>
+          <div class="home-card" onclick="goMode('learn')">
+            <div class="home-card-icon">📘</div>
+            <h3>Learn</h3>
+            <p>Use this when the chapter matchup still feels fuzzy and you want the concepts to click before you start grinding reps.</p>
+            <span class="badge">${concepts.length} cards</span>
           </div>
           <div class="home-card" onclick="goMode('exam')">
             <div class="home-card-icon">📝</div>
-            <h3>4. Mock Exam</h3>
-            <p>Pressure test your current rank and chase the promo badge with a full timed run.</p>
+            <h3>Mock Exam</h3>
+            <p>Run this after a warm-up set when you want a real pressure check on whether the material is actually sticking.</p>
             <span class="badge">${Math.min(EXAM_QUESTION_COUNT, questions.length)}-question exam</span>
           </div>
-          <div class="home-card" onclick="goMode('scope')">
-            <div class="home-card-icon">🧠</div>
-            <h3>5. Study Packs</h3>
-            <p>Bring in lecture material from another class, generate a pack, and switch the whole site over in one move.</p>
-            <span class="badge">${hasSavedPacks() ? `${getSavedPacks().length} saved packs` : 'Build first pack'}</span>
+        </div>
+        <div class="home-grid-secondary">
+          <div class="home-card secondary" onclick="goMode('formulas')">
+            <div class="home-card-icon">🧮</div>
+            <h3>Reference</h3>
+            <p>Quick recall for formulas, syntax, and patterns you want open while you are contesting reps.</p>
+            <span class="badge">${formulas.length} cards</span>
           </div>
-        </div>`;
+          <div class="home-card secondary" onclick="${secondaryAction}">
+            <div class="home-card-icon">🧠</div>
+            <h3>${hasSavedPacks() ? 'Pack Library' : 'Build a Pack'}</h3>
+            <p>${hasSavedPacks() ? 'Swap to another class pack, review drafts, or retune the site around a different exam.' : 'Import another class and rebuild the whole site around that material when you are ready.'}</p>
+            <span class="badge">${hasSavedPacks() ? `${getSavedPacks().length} saved packs` : 'No saved packs yet'}</span>
+          </div>
+        </div>
+        <details class="compact-home-section">
+          <summary>
+            <div>
+              <div class="summary-kicker">Session details</div>
+              <div>Progress, missions, and weak-topic pressure</div>
+            </div>
+            <span class="topic-pill">${achievements.filter((item) => item.unlocked).length} achievements unlocked</span>
+          </summary>
+          <div class="details-body">
+            <div class="card" style="margin-top:0;background:var(--surface2)">
+              <div class="card-label">Progress snapshot</div>
+              <p>${strongestPrompt}</p>
+              <p>${weakTopics.length ? 'Weak topics keep getting queued back up after repeated misses, so the site keeps pressure on the material you are still dropping.' : 'Start with Learn if the pack is fresh, or jump straight into Practice if you already know the chapter shape.'}</p>
+              <div class="achievement-row">
+                ${achievements.map((item) => `<span class="achievement ${item.unlocked ? 'unlocked' : ''}">${item.label}</span>`).join('')}
+              </div>
+            </div>
+            <div class="mission-track-grid">
+              ${missionTracks.map((track) => `
+                <div class="mission-track">
+                  <strong>${track.title}</strong>
+                  <p>${track.body}</p>
+                  <div class="mini-track"><div class="mini-track-fill" style="width:${Math.min(100, (track.current / track.target) * 100)}%"></div></div>
+                  <p style="margin-top:8px;font-size:0.8rem">${track.progressLabel}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </details>
+        <details class="compact-home-section">
+          <summary>
+            <div>
+              <div class="summary-kicker">Ranked ladder</div>
+              <div>Current rank, perks, and the full climb</div>
+            </div>
+            <span class="topic-pill">${level.nextTier ? `${level.xpToNext} XP to ${level.nextTier.name}` : 'Max rank state'}</span>
+          </summary>
+          <div class="details-body">
+            <div class="rank-overview" style="margin-top:0">
+              <div class="rank-card">
+                <div class="card-label">Current rank</div>
+                <div class="rank-current">
+                  <div class="rank-badge" style="background:${level.tier.bg};--tier-trim:${level.tier.trim};--tier-glow:${level.tier.glow};--tier-core:${level.tier.core};--tier-energy:${level.tier.energy}">
+                    <div class="rank-badge-label">Current rank</div>
+                    <div class="rank-badge-name">${level.tier.name}</div>
+                    <div class="rank-badge-cost">${level.current}/${level.needed} XP inside this tier</div>
+                  </div>
+                  <div style="min-width:220px;flex:1">
+                    <div class="card-label">Next reward gate</div>
+                    <h3 style="font-size:1.05rem">${level.nextTier ? `${level.xpToNext} XP to ${level.nextTier.name}` : 'All rank perks unlocked'}</h3>
+                    <div class="rank-perk-list">
+                      ${(level.nextTier ? level.nextTier.perks : level.tier.perks).map((perk) => `<div class="rank-perk">${perk}</div>`).join('')}
+                    </div>
+                    <div class="xp-track" style="margin-top:14px"><div class="xp-fill" style="width:${level.pct}%"></div></div>
+                  </div>
+                </div>
+                ${state.rewardBursts.length ? `<div class="reward-burst-row">${state.rewardBursts.slice(0, 5).map((burst) => `<span class="reward-burst">${burst}</span>`).join('')}</div>` : ''}
+              </div>
+              <div class="roadmap-card">
+                <div class="card-label">Why rank up?</div>
+                <h3 style="font-size:1rem">Perks unlock as the habit gets real</h3>
+                <p>The ladder stays visible, but it no longer has to dominate the first screen before the study loop is clear.</p>
+              </div>
+            </div>
+            <div class="card" style="margin-top:16px">
+              <div class="card-label">Rank roadmap</div>
+              <h2 style="font-size:1.15rem">All visible progression tiers</h2>
+              <p>Quick early climbs, then steeper promo lines once the study habit is already locked in.</p>
+              ${buildRankRoadmap()}
+            </div>
+          </div>
+        </details>
+        <details class="compact-home-section">
+          <summary>
+            <div>
+              <div class="summary-kicker">Pack sources</div>
+              <div>What the active pack is training from</div>
+            </div>
+            <span class="topic-pill">${pack.sourceSummary && pack.sourceSummary.length ? `${pack.sourceSummary.length} sources` : 'No source summary yet'}</span>
+          </summary>
+          <div class="details-body">
+            ${pack.sourceSummary && pack.sourceSummary.length
+              ? buildSourceCards(pack.sourceSummary.slice(0, 4))
+              : '<p style="color:var(--text-dim)">No source summary is available yet for this pack.</p>'}
+          </div>
+        </details>`;
     }
 
     function renderLearn() {
