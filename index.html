@@ -1258,9 +1258,14 @@
     }
     .rank-badge {
       min-width: 180px;
-      padding: 14px 16px;
-      border-radius: 16px;
+      padding: 18px 14px 16px;
+      border-radius: 24px 24px 34px 34px;
+      clip-path: polygon(14% 0, 86% 0, 100% 8%, 100% 84%, 50% 100%, 0 84%, 0 8%);
       color: #fff;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.16),
         0 16px 32px rgba(0,0,0,0.28),
@@ -1553,15 +1558,17 @@
     }
     .rank-showcase-tier {
       position: relative;
-      min-height: 250px;
-      border-radius: 18px;
-      padding: 16px 14px;
+      min-height: 360px;
+      border-radius: 26px 26px 34px 34px;
+      clip-path: polygon(14% 0, 86% 0, 100% 8%, 100% 84%, 50% 100%, 0 84%, 0 8%);
+      padding: 18px 16px 20px;
       border: 1px solid var(--tier-trim, rgba(255,255,255,0.12));
       background: var(--tier-bg, rgba(255,255,255,0.03));
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
+      align-items: stretch;
       box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.08),
         0 0 calc(30px * var(--tier-energy, 0.25)) var(--tier-glow, transparent);
@@ -1573,7 +1580,8 @@
       inset: 0;
       background:
         radial-gradient(circle at top center, rgba(255,255,255,0.12), transparent 34%),
-        linear-gradient(180deg, rgba(255,255,255,0.05), transparent 38%, rgba(0,0,0,0.22));
+        linear-gradient(180deg, rgba(255,255,255,0.05), transparent 38%, rgba(0,0,0,0.22)),
+        linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
       pointer-events: none;
     }
     .rank-showcase-tier.current {
@@ -1615,10 +1623,10 @@
     .rank-showcase-tier-name {
       position: relative;
       z-index: 1;
-      font-size: 1.2rem;
+      font-size: 1.28rem;
       font-weight: 900;
       letter-spacing: 0.03em;
-      margin-top: 10px;
+      margin-top: 12px;
     }
     .rank-showcase-tier-cost {
       position: relative;
@@ -1630,12 +1638,12 @@
     .rank-showcase-tier-reward {
       position: relative;
       z-index: 1;
-      margin-top: 12px;
+      margin-top: 14px;
       padding: 8px 10px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      font-size: 0.78rem;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-size: 0.8rem;
       font-weight: 800;
       color: rgba(255,255,255,0.96);
     }
@@ -1643,16 +1651,17 @@
       position: relative;
       z-index: 1;
       align-self: center;
-      width: 112px;
-      height: 112px;
-      margin: 12px 0;
+      width: 104px;
+      height: 104px;
+      margin: 14px 0;
       display: grid;
       place-items: center;
-      border-radius: 28px;
-      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 30px 30px 22px 22px;
+      border: 1px solid rgba(255,255,255,0.18);
       background:
-        radial-gradient(circle at 50% 35%, rgba(255,255,255,0.24), transparent 34%),
-        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(0,0,0,0.22));
+        radial-gradient(circle at 50% 24%, rgba(255,255,255,0.28), transparent 34%),
+        radial-gradient(circle at 50% 50%, var(--tier-core, rgba(255,255,255,0.24)) 0%, transparent 72%),
+        linear-gradient(180deg, rgba(255,255,255,0.12), rgba(0,0,0,0.22));
       box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.1),
         0 0 24px rgba(255,255,255,0.06),
