@@ -125,6 +125,165 @@
     .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
     .btn-success { background: var(--green); color: #0f2a1e; }
     .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+    .queue-pop-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at center, rgba(15,23,42,0.62), rgba(2,6,23,0.92)),
+        linear-gradient(180deg, rgba(2,6,23,0.32), rgba(2,6,23,0.85));
+      backdrop-filter: blur(8px);
+    }
+    .queue-pop-shell {
+      width: min(560px, 100%);
+      aspect-ratio: 1 / 1;
+      position: relative;
+      display: grid;
+      place-items: center;
+    }
+    .queue-pop-ring,
+    .queue-pop-ring::before,
+    .queue-pop-ring::after {
+      border-radius: 999px;
+      position: absolute;
+      inset: 0;
+      content: "";
+    }
+    .queue-pop-ring {
+      border: 2px solid rgba(212,175,55,0.55);
+      box-shadow:
+        0 0 0 1px rgba(22,163,255,0.12),
+        0 0 40px rgba(34,211,238,0.22),
+        inset 0 0 70px rgba(8,47,73,0.45);
+      background: radial-gradient(circle at center, rgba(15,23,42,0.96), rgba(2,6,23,0.92));
+      overflow: hidden;
+    }
+    .queue-pop-ring::before {
+      inset: 18px;
+      border: 2px solid rgba(34,211,238,0.72);
+      mask: conic-gradient(from 160deg, transparent 0deg 48deg, #000 52deg 320deg, transparent 324deg 360deg);
+      -webkit-mask: conic-gradient(from 160deg, transparent 0deg 48deg, #000 52deg 320deg, transparent 324deg 360deg);
+      box-shadow: 0 0 24px rgba(34,211,238,0.8), inset 0 0 14px rgba(34,211,238,0.36);
+      animation: queueRingSpin 3.8s linear infinite;
+    }
+    .queue-pop-ring::after {
+      inset: 32px;
+      border: 1px solid rgba(212,175,55,0.28);
+      background:
+        radial-gradient(circle at center, rgba(56,189,248,0.08), transparent 50%),
+        linear-gradient(180deg, rgba(255,255,255,0.04), transparent 45%, rgba(0,0,0,0.28));
+    }
+    .queue-pop-core {
+      position: relative;
+      z-index: 1;
+      width: min(74%, 360px);
+      text-align: center;
+      display: grid;
+      gap: 12px;
+      justify-items: center;
+    }
+    .queue-pop-icon {
+      width: 76px;
+      height: 76px;
+      display: grid;
+      place-items: center;
+      border-radius: 22px;
+      border: 1px solid rgba(212,175,55,0.5);
+      background:
+        radial-gradient(circle at 50% 34%, rgba(255,255,255,0.18), transparent 38%),
+        linear-gradient(180deg, rgba(13,24,42,0.95), rgba(5,10,18,0.96));
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 0 28px rgba(34,211,238,0.18);
+      clip-path: polygon(22% 0%, 82% 0%, 100% 18%, 100% 78%, 78% 100%, 18% 100%, 0% 82%, 0% 22%);
+      font-size: 2rem;
+      font-weight: 900;
+      color: #f8fafc;
+    }
+    .queue-pop-label {
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(226,232,240,0.7);
+    }
+    .queue-pop-title {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #fef3c7;
+      text-shadow: 0 0 24px rgba(251,191,36,0.15);
+    }
+    .queue-pop-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      color: rgba(226,232,240,0.78);
+      font-size: 0.84rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .queue-pop-copy {
+      color: var(--text-dim);
+      font-size: 0.92rem;
+    }
+    .queue-pop-actions {
+      position: absolute;
+      left: 50%;
+      bottom: 34px;
+      transform: translateX(-50%);
+      z-index: 1;
+      display: grid;
+      justify-items: center;
+      gap: 12px;
+      width: min(72%, 300px);
+    }
+    .queue-accept-btn {
+      width: 100%;
+      padding: 15px 18px;
+      border: 2px solid rgba(212,175,55,0.72);
+      border-radius: 0 0 22px 22px;
+      background:
+        linear-gradient(180deg, rgba(11,33,49,0.96), rgba(7,21,34,0.98)),
+        linear-gradient(90deg, rgba(34,211,238,0.12), rgba(212,175,55,0.1));
+      color: #fef3c7;
+      font-size: 1.02rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow:
+        0 0 0 1px rgba(34,211,238,0.18),
+        0 0 26px rgba(34,211,238,0.12);
+      clip-path: polygon(8% 0%, 92% 0%, 100% 28%, 94% 100%, 6% 100%, 0% 28%);
+      transition: transform 0.16s ease, filter 0.16s ease, box-shadow 0.16s ease;
+    }
+    .queue-accept-btn:hover {
+      transform: translateY(-2px) scale(1.01);
+      filter: brightness(1.08);
+      box-shadow:
+        0 0 0 1px rgba(34,211,238,0.26),
+        0 0 34px rgba(34,211,238,0.22);
+    }
+    .queue-decline-btn {
+      border: 1px solid rgba(212,175,55,0.4);
+      background: rgba(17,24,39,0.88);
+      color: rgba(226,232,240,0.82);
+      padding: 9px 18px;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    @keyframes queueRingSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
     /* ── GAME LAYER ── */
     .hero-panel {
@@ -1292,6 +1451,7 @@
       </div>
     </header>
     <main id="main"></main>
+    <div id="queue-pop-layer"></div>
   </div>
   <script>
     const STORAGE_KEY = 'physicsBot_weakTopics';
@@ -1325,6 +1485,8 @@
 
     const state = {
       mode: 'home',
+      pendingMode: '',
+      pendingModeContext: null,
       learnIndex: 0,
       formulaIndex: 0,
       practiceQueue: [],
@@ -3243,12 +3405,116 @@ const QUESTIONS = [
 
     function goHome() {
       clearExamTimer();
+      state.pendingMode = '';
+      state.pendingModeContext = null;
+      renderQueuePop();
       state.mode = 'home';
       renderHome();
       setActiveTab(0);
     }
 
-    function goMode(mode) {
+    function requiresQueueAccept(mode) {
+      return ['learn', 'formulas', 'practice', 'exam'].includes(mode);
+    }
+
+    function getQueuePopMeta(mode) {
+      const table = {
+        learn: {
+          label: 'Study queue ready',
+          title: 'MATCH FOUND!',
+          details: ['Learn', 'Concept Pass', 'Solo'],
+          icon: 'L',
+          copy: 'Lock in a concept pass and warm up your read on the chapter before you start grinding reps.',
+        },
+        formulas: {
+          label: 'Reference queue ready',
+          title: 'MATCH FOUND!',
+          details: ['Reference', 'Recall Pass', 'Solo'],
+          icon: 'R',
+          copy: 'Load the reference board and sharpen the formulas, syntax, and patterns you want on quick recall.',
+        },
+        practice: {
+          label: 'Practice queue ready',
+          title: 'MATCH FOUND!',
+          details: ['Practice', 'Ranked Warm-up', 'Solo'],
+          icon: 'P',
+          copy: 'Queue into the main rep loop where streaks, boss rounds, and rank pressure all start stacking.',
+        },
+        exam: {
+          label: 'Exam sprint ready',
+          title: 'MATCH FOUND!',
+          details: ['Exam Sprint', 'Timed Run', 'Solo'],
+          icon: 'E',
+          copy: 'This is the pressure check. Accept when you are ready to lock into a full timed run.',
+        },
+      };
+      return table[mode] || {
+        label: 'Queue ready',
+        title: 'MATCH FOUND!',
+        details: ['Study', 'Solo'],
+        icon: 'S',
+        copy: 'Accept to enter the next study queue.',
+      };
+    }
+
+    function openQueuePop(mode, context = null) {
+      state.pendingMode = mode;
+      state.pendingModeContext = context;
+      renderQueuePop();
+    }
+
+    function renderQueuePop() {
+      const layer = document.getElementById('queue-pop-layer');
+      if (!layer) return;
+      if (!state.pendingMode) {
+        layer.innerHTML = '';
+        return;
+      }
+      const meta = getQueuePopMeta(state.pendingMode);
+      layer.innerHTML = `
+        <div class="queue-pop-overlay" onclick="declineQueuePop()">
+          <div class="queue-pop-shell" onclick="event.stopPropagation()">
+            <div class="queue-pop-ring"></div>
+            <div class="queue-pop-core">
+              <div class="queue-pop-icon">${meta.icon}</div>
+              <div class="queue-pop-label">${meta.label}</div>
+              <div class="queue-pop-title">${meta.title}</div>
+              <div class="queue-pop-meta">${meta.details.map((detail) => `<span>${detail}</span>`).join('<span>•</span>')}</div>
+              <p class="queue-pop-copy">${meta.copy}</p>
+            </div>
+            <div class="queue-pop-actions">
+              <button class="queue-accept-btn" onclick="acceptQueuePop()">ACCEPT</button>
+              <button class="queue-decline-btn" onclick="declineQueuePop()">Decline</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function declineQueuePop() {
+      state.pendingMode = '';
+      state.pendingModeContext = null;
+      renderQueuePop();
+    }
+
+    function acceptQueuePop() {
+      const mode = state.pendingMode;
+      const context = state.pendingModeContext;
+      state.pendingMode = '';
+      state.pendingModeContext = null;
+      renderQueuePop();
+      if (!mode) return;
+      if (mode === 'practice') {
+        startPractice(context?.topicFilter || null, true);
+        return;
+      }
+      if (mode === 'exam') {
+        startExam(true);
+        return;
+      }
+      executeMode(mode);
+    }
+
+    function executeMode(mode) {
       if (state.mode === 'exam' && mode !== 'exam') clearExamTimer();
       state.mode = mode;
       if (mode === 'scope') {
@@ -3260,11 +3526,19 @@ const QUESTIONS = [
         state.formulaIndex = 0;
         renderFormulas();
       } else if (mode === 'practice') {
-        startPractice();
+        startPractice(null, true);
       } else if (mode === 'exam') {
-        startExam();
+        startExam(true);
       }
       setActiveTab(['home', 'scope', 'learn', 'formulas', 'practice', 'exam'].indexOf(mode));
+    }
+
+    function goMode(mode) {
+      if (requiresQueueAccept(mode)) {
+        openQueuePop(mode);
+        return;
+      }
+      executeMode(mode);
     }
 
     function setActiveTab(index) {
@@ -3641,7 +3915,11 @@ const QUESTIONS = [
       }
     }
 
-    function startPractice(topicFilter = null) {
+    function startPractice(topicFilter = null, bypassQueue = false) {
+      if (!bypassQueue) {
+        openQueuePop('practice', { topicFilter });
+        return;
+      }
       const questions = getQuestions();
       const benefits = getRankBenefits();
       if (!questions.length) {
@@ -3851,7 +4129,11 @@ const QUESTIONS = [
         </div>`;
     }
 
-    function startExam() {
+    function startExam(bypassQueue = false) {
+      if (!bypassQueue) {
+        openQueuePop('exam');
+        return;
+      }
       const questions = getQuestions();
       if (!questions.length) {
         document.getElementById('main').innerHTML = `
@@ -4060,6 +4342,7 @@ const QUESTIONS = [
     initSoundHooks();
     syncHeaderTitle();
     renderHome();
+    renderQueuePop();
   </script>
 </body>
 </html>
