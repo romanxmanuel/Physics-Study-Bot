@@ -1551,28 +1551,46 @@
       color: #eef2ff;
     }
     .rank-showcase-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 16px;
       padding: 16px 20px 20px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x proximity;
+      scrollbar-width: thin;
+    }
+    .rank-showcase-grid::-webkit-scrollbar {
+      height: 10px;
+    }
+    .rank-showcase-grid::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.04);
+      border-radius: 999px;
+    }
+    .rank-showcase-grid::-webkit-scrollbar-thumb {
+      background: linear-gradient(90deg, rgba(251,191,36,0.42), rgba(96,165,250,0.55));
+      border-radius: 999px;
     }
     .rank-showcase-tier {
       position: relative;
-      min-height: 360px;
-      border-radius: 26px 26px 34px 34px;
-      clip-path: polygon(14% 0, 86% 0, 100% 8%, 100% 84%, 50% 100%, 0 84%, 0 8%);
-      padding: 18px 16px 20px;
+      flex: 0 0 214px;
+      min-width: 214px;
+      min-height: 488px;
+      border-radius: 28px 28px 36px 36px;
+      clip-path: polygon(16% 0, 84% 0, 92% 5%, 92% 18%, 100% 28%, 100% 84%, 50% 100%, 0 84%, 0 28%, 8% 18%, 8% 5%);
+      padding: 18px 14px 24px;
       border: 1px solid var(--tier-trim, rgba(255,255,255,0.12));
       background: var(--tier-bg, rgba(255,255,255,0.03));
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
+      justify-content: space-between;
       align-items: stretch;
       box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.08),
         0 0 calc(30px * var(--tier-energy, 0.25)) var(--tier-glow, transparent);
       transform: translateY(calc((1 - var(--tier-energy, 0.2)) * 6px));
+      scroll-snap-align: start;
     }
     .rank-showcase-tier::before {
       content: "";
@@ -1582,6 +1600,25 @@
         radial-gradient(circle at top center, rgba(255,255,255,0.12), transparent 34%),
         linear-gradient(180deg, rgba(255,255,255,0.05), transparent 38%, rgba(0,0,0,0.22)),
         linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+      pointer-events: none;
+    }
+    .rank-showcase-tier::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -16px;
+      width: 62px;
+      height: 56px;
+      transform: translateX(-50%);
+      background:
+        radial-gradient(circle at 50% 24%, rgba(255,255,255,0.24), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,0.2), rgba(0,0,0,0.28));
+      border: 1px solid rgba(255,255,255,0.1);
+      clip-path: polygon(50% 0%, 84% 18%, 100% 54%, 72% 100%, 28% 100%, 0 54%, 16% 18%);
+      box-shadow:
+        0 0 18px rgba(0,0,0,0.2),
+        0 0 calc(22px * var(--tier-energy, 0.25)) var(--tier-glow, transparent);
+      opacity: 0.9;
       pointer-events: none;
     }
     .rank-showcase-tier.current {
@@ -1623,10 +1660,11 @@
     .rank-showcase-tier-name {
       position: relative;
       z-index: 1;
-      font-size: 1.28rem;
+      font-size: 1.22rem;
       font-weight: 900;
       letter-spacing: 0.03em;
-      margin-top: 12px;
+      margin-top: 10px;
+      text-transform: uppercase;
     }
     .rank-showcase-tier-cost {
       position: relative;
@@ -1638,7 +1676,7 @@
     .rank-showcase-tier-reward {
       position: relative;
       z-index: 1;
-      margin-top: 14px;
+      margin-top: 12px;
       padding: 8px 10px;
       border-radius: 14px;
       background: rgba(255,255,255,0.08);
@@ -1647,16 +1685,55 @@
       font-weight: 800;
       color: rgba(255,255,255,0.96);
     }
+    .rank-showcase-banner {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: 128px;
+      margin: 10px 0 8px;
+      display: grid;
+      place-items: center;
+    }
+    .rank-showcase-banner::before {
+      content: "";
+      position: absolute;
+      inset: 12px 18px 18px;
+      background:
+        radial-gradient(circle at 50% 26%, rgba(255,255,255,0.28), transparent 24%),
+        radial-gradient(circle at 50% 54%, var(--tier-core, rgba(255,255,255,0.24)) 0%, transparent 66%),
+        linear-gradient(180deg, rgba(255,255,255,0.14), rgba(0,0,0,0.26));
+      border: 1px solid rgba(255,255,255,0.18);
+      clip-path: polygon(50% 0%, 74% 9%, 90% 20%, 100% 42%, 89% 66%, 74% 82%, 50% 100%, 26% 82%, 11% 66%, 0 42%, 10% 20%, 26% 9%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 0 26px rgba(255,255,255,0.05),
+        0 0 calc(34px * var(--tier-energy, 0.3)) var(--tier-glow, transparent);
+    }
+    .rank-showcase-banner::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 48%;
+      width: 48px;
+      height: 48px;
+      transform: translate(-50%, -50%);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.32), transparent 44%),
+        linear-gradient(180deg, rgba(255,255,255,0.28), rgba(0,0,0,0.3));
+      clip-path: polygon(50% 0%, 83% 17%, 100% 50%, 83% 83%, 50% 100%, 17% 83%, 0 50%, 17% 17%);
+      opacity: 0.8;
+      box-shadow: 0 0 24px var(--tier-glow, transparent);
+    }
     .rank-showcase-emblem {
       position: relative;
       z-index: 1;
       align-self: center;
-      width: 104px;
-      height: 104px;
-      margin: 14px 0;
+      width: 92px;
+      height: 92px;
+      margin: 6px 0 10px;
       display: grid;
       place-items: center;
-      border-radius: 30px 30px 22px 22px;
+      border-radius: 28px 28px 18px 18px;
       border: 1px solid rgba(255,255,255,0.18);
       background:
         radial-gradient(circle at 50% 24%, rgba(255,255,255,0.28), transparent 34%),
@@ -1669,7 +1746,7 @@
       clip-path: polygon(50% 0%, 88% 18%, 100% 56%, 76% 100%, 24% 100%, 0% 56%, 12% 18%);
     }
     .rank-showcase-emblem span {
-      font-size: 2.4rem;
+      font-size: 2rem;
       font-weight: 900;
       text-shadow: 0 0 20px rgba(255,255,255,0.3);
     }
@@ -1768,7 +1845,6 @@
       .studio-grid,
       .rank-overview,
       .rank-showcase-head,
-      .rank-showcase-grid,
       .mission-track-grid,
       .roadmap-grid,
       .hud-subgrid { grid-template-columns: 1fr; }
@@ -1810,14 +1886,14 @@
     const STREAK_FIVE_AUDIO_URL = './assets/sounds/streak-five.mp3';
 
     const RANK_TIERS = [
-      { key: 'iron', name: 'Iron', minXp: 0, upkeep: 'Starter frame', bg: 'linear-gradient(145deg, #202532, #10141d)', trim: 'rgba(150,160,184,0.35)', glow: 'rgba(120,130,160,0.18)', core: 'rgba(220,228,255,0.18)', energy: 0.18, perks: ['Lobby badge and rank frame', 'Focus HUD always on'] },
-      { key: 'bronze', name: 'Bronze', minXp: 110, upkeep: 'First climb package', bg: 'linear-gradient(145deg, #4b2207, #b45309 58%, #f97316)', trim: 'rgba(255,196,126,0.42)', glow: 'rgba(249,115,22,0.26)', core: 'rgba(255,215,170,0.28)', energy: 0.28, perks: ['1 practice reroll per queue', 'Faster reward flare on clean clears'] },
-      { key: 'silver', name: 'Silver', minXp: 260, upkeep: 'Cleaner mechanics', bg: 'linear-gradient(145deg, #2a303b, #636b79 58%, #cfd5df)', trim: 'rgba(214,222,236,0.45)', glow: 'rgba(203,213,225,0.24)', core: 'rgba(255,255,255,0.25)', energy: 0.34, perks: ['Weak-topic intel panel', '1 delayed rematch bank'] },
-      { key: 'gold', name: 'Gold', minXp: 500, upkeep: 'Streak protection online', bg: 'linear-gradient(145deg, #594008, #c48900 55%, #facc15)', trim: 'rgba(255,236,157,0.48)', glow: 'rgba(250,204,21,0.3)', core: 'rgba(255,247,188,0.34)', energy: 0.42, perks: ['1 streak shield', 'Boss bounty +15%', 'Promo flash gets brighter'] },
-      { key: 'emerald', name: 'Emerald', minXp: 820, upkeep: 'Tempo control', bg: 'linear-gradient(145deg, #063b39, #0f766e 45%, #22d3ee)', trim: 'rgba(137,255,245,0.52)', glow: 'rgba(34,211,238,0.34)', core: 'rgba(173,255,250,0.34)', energy: 0.56, perks: ['2 practice rerolls', 'Bigger weak-topic rematch bank', 'Sharper lobby banner'] },
-      { key: 'diamond', name: 'Diamond', minXp: 1220, upkeep: 'High execution', bg: 'linear-gradient(145deg, #0a1f56, #1d4ed8 48%, #7dd3fc)', trim: 'rgba(165,221,255,0.6)', glow: 'rgba(96,165,250,0.38)', core: 'rgba(210,244,255,0.38)', energy: 0.68, perks: ['Boss bounty +30%', '2 streak shields', 'Premium promo sweep'] },
-      { key: 'master', name: 'Master', minXp: 1710, upkeep: 'Lobby respect', bg: 'linear-gradient(145deg, #33105f, #7c3aed 45%, #ec4899)', trim: 'rgba(244,179,255,0.66)', glow: 'rgba(217,70,239,0.46)', core: 'rgba(255,208,244,0.42)', energy: 0.82, perks: ['3 practice rerolls', 'Boss bounty +45%', 'Elite rank banner'] },
-      { key: 'challenger', name: 'Challenger', minXp: 2380, upkeep: 'Crown tier', bg: 'linear-gradient(145deg, #4a060d, #b91c1c 42%, #fb923c 72%, #fff2cf)', trim: 'rgba(255,235,180,0.84)', glow: 'rgba(251,146,60,0.6)', core: 'rgba(255,245,214,0.56)', energy: 1, perks: ['4 practice rerolls', 'Boss bounty +60%', '2 rematch banks', 'Crown-frame lobby treatment'] },
+      { key: 'iron', name: 'Iron', minXp: 0, upkeep: 'Starter frame', banner: 'Iron standard', bg: 'linear-gradient(145deg, #202532, #10141d)', trim: 'rgba(150,160,184,0.35)', glow: 'rgba(120,130,160,0.18)', core: 'rgba(220,228,255,0.18)', energy: 0.18, perks: ['Lobby badge and rank frame', 'Focus HUD always on'] },
+      { key: 'bronze', name: 'Bronze', minXp: 110, upkeep: 'First climb package', banner: 'Bronze standard', bg: 'linear-gradient(145deg, #4b2207, #b45309 58%, #f97316)', trim: 'rgba(255,196,126,0.42)', glow: 'rgba(249,115,22,0.26)', core: 'rgba(255,215,170,0.28)', energy: 0.28, perks: ['1 practice reroll per queue', 'Faster reward flare on clean clears'] },
+      { key: 'silver', name: 'Silver', minXp: 260, upkeep: 'Cleaner mechanics', banner: 'Silver standard', bg: 'linear-gradient(145deg, #2a303b, #636b79 58%, #cfd5df)', trim: 'rgba(214,222,236,0.45)', glow: 'rgba(203,213,225,0.24)', core: 'rgba(255,255,255,0.25)', energy: 0.34, perks: ['Weak-topic intel panel', '1 delayed rematch bank'] },
+      { key: 'gold', name: 'Gold', minXp: 500, upkeep: 'Streak protection online', banner: 'Gold standard', bg: 'linear-gradient(145deg, #594008, #c48900 55%, #facc15)', trim: 'rgba(255,236,157,0.48)', glow: 'rgba(250,204,21,0.3)', core: 'rgba(255,247,188,0.34)', energy: 0.42, perks: ['1 streak shield', 'Boss bounty +15%', 'Promo flash gets brighter'] },
+      { key: 'emerald', name: 'Emerald', minXp: 820, upkeep: 'Tempo control', banner: 'Emerald standard', bg: 'linear-gradient(145deg, #063b39, #0f766e 45%, #22d3ee)', trim: 'rgba(137,255,245,0.52)', glow: 'rgba(34,211,238,0.34)', core: 'rgba(173,255,250,0.34)', energy: 0.56, perks: ['2 practice rerolls', 'Bigger weak-topic rematch bank', 'Sharper lobby banner'] },
+      { key: 'diamond', name: 'Diamond', minXp: 1220, upkeep: 'High execution', banner: 'Diamond standard', bg: 'linear-gradient(145deg, #0a1f56, #1d4ed8 48%, #7dd3fc)', trim: 'rgba(165,221,255,0.6)', glow: 'rgba(96,165,250,0.38)', core: 'rgba(210,244,255,0.38)', energy: 0.68, perks: ['Boss bounty +30%', '2 streak shields', 'Premium promo sweep'] },
+      { key: 'master', name: 'Master', minXp: 1710, upkeep: 'Lobby respect', banner: 'Master standard', bg: 'linear-gradient(145deg, #33105f, #7c3aed 45%, #ec4899)', trim: 'rgba(244,179,255,0.66)', glow: 'rgba(217,70,239,0.46)', core: 'rgba(255,208,244,0.42)', energy: 0.82, perks: ['3 practice rerolls', 'Boss bounty +45%', 'Elite rank banner'] },
+      { key: 'challenger', name: 'Challenger', minXp: 2380, upkeep: 'Crown tier', banner: 'Challenger standard', bg: 'linear-gradient(145deg, #4a060d, #b91c1c 42%, #fb923c 72%, #fff2cf)', trim: 'rgba(255,235,180,0.84)', glow: 'rgba(251,146,60,0.6)', core: 'rgba(255,245,214,0.56)', energy: 1, perks: ['4 practice rerolls', 'Boss bounty +60%', '2 rematch banks', 'Crown-frame lobby treatment'] },
     ];
 
     const EARLY_REWARD_TABLE = [
@@ -3312,12 +3388,12 @@ function initSoundHooks() {
           <div class="rank-showcase-head">
             <div>
               <div class="card-label">Why rank up?</div>
-              <h3 class="rank-showcase-title">Every rank is a stronger study kit</h3>
-              <p class="rank-showcase-copy">The ladder should feel like a reward track, not a spreadsheet. Each tier gives you a cleaner queue, better recovery tools, louder promotion moments, and a banner that looks more expensive the further you climb.</p>
+              <h3 class="rank-showcase-title">Every rank looks and feels more elite</h3>
+              <p class="rank-showcase-copy">The ladder should feel like a reward track, not a spreadsheet. Each tier gives you a cleaner queue, better recovery tools, louder promotion moments, and a vertical standard that looks more expensive the further you climb.</p>
               <div class="rank-showcase-bullets">
                 <div>Bronze and Silver are about fast recovery: rerolls, weak-topic intel, and rematch control.</div>
-                <div>Gold and Emerald start protecting streaks and stretching every clean answer into more value.</div>
-                <div>Diamond through Challenger are prestige tiers: stronger boss payouts, premium banners, and more tools per run.</div>
+                <div>Gold and Emerald start protecting streaks and layering in visible banner flex.</div>
+                <div>Diamond through Challenger are prestige tiers: stronger boss payouts, ornate standards, and more tools per run.</div>
               </div>
             </div>
             <div class="rank-showcase-current">
@@ -3326,6 +3402,7 @@ function initSoundHooks() {
               <p>${level.nextTier ? `${level.xpToNext} XP to ${level.nextTier.name}` : 'You are sitting at the top of the ladder.'}</p>
               <div class="rank-showcase-reward-line">${currentTier.upkeep}</div>
               <div class="rank-showcase-reward-line">Current headliner: ${currentRewardLabel}</div>
+              <div class="rank-showcase-reward-line">Banner skin: ${currentTier.banner}</div>
               <div class="xp-track"><div class="xp-fill" style="width:${level.pct}%"></div></div>
               <div class="rank-showcase-rewards">
                 ${currentTier.perks.map((perk) => `<span class="rank-reward-chip">${perk}</span>`).join('')}
@@ -3334,6 +3411,7 @@ function initSoundHooks() {
                 <div class="card-label">Next reward gate</div>
                 <div class="rank-showcase-next-title">${nextTier ? `${level.xpToNext} XP to ${nextTier.name}` : 'No higher gate left'}</div>
                 <div class="rank-showcase-reward-line">${nextRewardLabel}</div>
+                <div class="rank-showcase-reward-line">Next banner skin: ${nextTier ? nextTier.banner : currentTier.banner}</div>
                 <div class="rank-showcase-rewards">
                   ${(nextTier ? nextTier.perks : currentTier.perks).map((perk) => `<span class="rank-reward-chip">${perk}</span>`).join('')}
                 </div>
@@ -3363,7 +3441,9 @@ function initSoundHooks() {
                     <div class="rank-showcase-tier-name">${tier.name}</div>
                     <div class="rank-showcase-tier-cost">${tier.upkeep}</div>
                   </div>
-                  <div class="rank-showcase-emblem"><span>${emblem}</span></div>
+                  <div class="rank-showcase-banner">
+                    <div class="rank-showcase-emblem"><span>${emblem}</span></div>
+                  </div>
                   <div class="rank-showcase-tier-reward">${tier.perks[0]}</div>
                   <ul>
                     ${tier.perks.map((perk) => `<li>${perk}</li>`).join('')}
