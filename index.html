@@ -2515,7 +2515,7 @@ const QUESTIONS = [
           <div class="pack-status">
             <div class="card-label">What the pack will use</div>
             <h3>Source summary</h3>
-            <p>The generator reads your uploaded files first, then pulls in only the extra outside material needed to complete the pack. The generated pack becomes the live content layer for the whole site.</p>
+            <p>The generator reads your uploaded files and builds the pack from that course material. The generated pack becomes the live content layer for the whole site.</p>
             ${buildSourceCards(state.scopeStudio.sourceSummary.length ? state.scopeStudio.sourceSummary : pack.sourceSummary || [])}
           </div>
           <div class="pack-status">
@@ -2524,6 +2524,7 @@ const QUESTIONS = [
             <div class="coach-note-list">
               <div class="coach-note">You only need to upload files and optionally name the pack. Topic detection happens automatically.</div>
               <div class="coach-note">Larger batches are preprocessed one file at a time before generation, so the app is no longer relying on a single oversized request.</div>
+              <div class="coach-note">Generated content is now constrained to the uploaded class material by default, so the pack should stay inside what your course has actually covered.</div>
               <div class="coach-note">After generation, you get a draft preview first. The site only switches when you click Activate This Pack.</div>
             </div>
           </div>
