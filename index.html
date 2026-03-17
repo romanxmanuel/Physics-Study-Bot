@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Interactive physics study app for circuits, current, Kirchhoff's rules, and RC circuits with practice mode, mock exam, and gamified progression.">
+  <meta name="description" content="Interactive study app that turns your class files into a custom Learn, Reference, Practice, and Exam Sprint experience with gamified progression.">
   <meta name="theme-color" content="#0f1117">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Physics Study Bot">
-  <meta property="og:description" content="A single-file study app for mastering current, resistance, circuits, Kirchhoff's rules, and RC circuits through guided learning, practice, and a mock exam.">
+  <meta property="og:title" content="Study Pack Arena">
+  <meta property="og:description" content="Turn lecture slides, notes, and class files into a custom study pack with learn cards, reference sheets, drills, and timed exam prep.">
   <meta property="og:url" content="https://physics-study-bot.vercel.app">
   <meta property="og:image" content="https://physics-study-bot.vercel.app/assets/social-preview.png">
-  <meta property="og:image:alt" content="Physics Study Bot home screen showing the study dashboard and progression system.">
+  <meta property="og:image:alt" content="Study Pack Arena dashboard showing the study planner and progression system.">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Physics Study Bot">
-  <meta name="twitter:description" content="Gamified physics exam prep for circuits, current, Kirchhoff's rules, and RC circuits.">
+  <meta name="twitter:title" content="Study Pack Arena">
+  <meta name="twitter:description" content="Gamified study prep that rebuilds itself from your own class materials.">
   <meta name="twitter:image" content="https://physics-study-bot.vercel.app/assets/social-preview.png">
   <link rel="canonical" href="https://physics-study-bot.vercel.app">
   <link rel="icon" href="data:,">
-  <title>Physics 2 Study Bot — Exam 2</title>
+  <title>Study Pack Arena</title>
   <style>
     /* ── RESET & BASE ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -844,8 +844,8 @@
     const PACK_MODE_KEY = 'physicsBot_packMode';
     const SAVED_PACKS_KEY = 'physicsBot_savedPacks';
     const ACTIVE_PACK_ID_KEY = 'physicsBot_activePackId';
-    const MAX_SCOPE_FILES = 8;
-    const MAX_SCOPE_TOTAL_BYTES = 4 * 1024 * 1024;
+    const MAX_SCOPE_FILES = 18;
+    const MAX_SCOPE_TOTAL_BYTES = 24 * 1024 * 1024;
     const EXAM_DURATION_SECONDS = 25 * 60;
     const EXAM_QUESTION_COUNT = 16;
 
@@ -894,10 +894,14 @@
       recentPackAnnouncement: '',
       scopeStudio: {
         files: [],
+        preparedMaterials: [],
+        preparedFingerprint: '',
         packName: '',
         examContext: '',
         detectedScopes: [],
         sourceSummary: [],
+        previewPack: null,
+        prepProgress: '',
         busy: '',
         error: '',
         success: '',
@@ -1766,6 +1770,7 @@ const QUESTIONS = [
       state.recentPackAnnouncement = normalizedPack.title;
       state.learnIndex = 0;
       state.formulaIndex = 0;
+      state.scopeStudio.previewPack = null;
       saveCustomPackState();
       syncHeaderTitle();
     }
@@ -1788,6 +1793,46 @@ const QUESTIONS = [
 
     function getSavedPacks() {
       return state.savedPacks;
+    }
+
+    function renameSavedPack(packId) {
+      const pack = state.savedPacks.find((item) => item.id === packId);
+      if (!pack) return;
+      const nextTitle = window.prompt('Rename this study pack:', pack.title || '');
+      if (!nextTitle) return;
+      pack.title = nextTitle.trim().slice(0, 120) || pack.title;
+      if (state.activePackId === packId) state.recentPackAnnouncement = pack.title;
+      saveCustomPackState();
+      renderScopeStudio();
+    }
+
+    function deleteSavedPack(packId) {
+      const pack = state.savedPacks.find((item) => item.id === packId);
+      if (!pack) return;
+      const confirmed = window.confirm(`Delete "${pack.title}" from this browser?`);
+      if (!confirmed) return;
+      state.savedPacks = state.savedPacks.filter((item) => item.id !== packId);
+      if (state.activePackId === packId) {
+        state.activePackId = 'default';
+        state.recentPackAnnouncement = DEFAULT_STUDY_PACK.title;
+      }
+      saveCustomPackState();
+      syncHeaderTitle();
+      renderScopeStudio();
+    }
+
+    function acceptPreviewPack() {
+      if (!state.scopeStudio.previewPack) return;
+      const preview = state.scopeStudio.previewPack;
+      activateCustomPack(preview);
+      state.scopeStudio.success = `${preview.title} is now active.`;
+      goHome();
+    }
+
+    function discardPreviewPack() {
+      state.scopeStudio.previewPack = null;
+      state.scopeStudio.success = 'Draft pack discarded. Your active pack did not change.';
+      renderScopeStudio();
     }
 
     function getTierIndex(xp = state.profile.xp) {
@@ -2109,6 +2154,9 @@ const QUESTIONS = [
 
     function updateScopeStudioField(key, value) {
       state.scopeStudio[key] = value;
+      if (key === 'examContext') {
+        state.scopeStudio.preparedFingerprint = '';
+      }
     }
 
     function suggestPackName(files) {
@@ -2133,6 +2181,12 @@ const QUESTIONS = [
       const totalBytes = files.reduce((sum, file) => sum + (file.size || 0), 0);
       state.scopeStudio.error = '';
       state.scopeStudio.success = '';
+      state.scopeStudio.previewPack = null;
+      state.scopeStudio.preparedMaterials = [];
+      state.scopeStudio.preparedFingerprint = '';
+      state.scopeStudio.detectedScopes = [];
+      state.scopeStudio.sourceSummary = [];
+      state.scopeStudio.prepProgress = '';
 
       if (files.length > MAX_SCOPE_FILES) {
         state.scopeStudio.files = [];
@@ -2141,16 +2195,12 @@ const QUESTIONS = [
         return;
       }
 
-      if (totalBytes > MAX_SCOPE_TOTAL_BYTES) {
-        state.scopeStudio.files = [];
-        state.scopeStudio.error = `That upload is too large for one request. You selected ${formatBytes(totalBytes)}, but this flow should stay under about ${formatBytes(MAX_SCOPE_TOTAL_BYTES)}. Try the 3 to 6 most relevant files first.`;
-        renderScopeStudio();
-        return;
-      }
-
       state.scopeStudio.files = files;
       if (!state.scopeStudio.packName.trim()) {
         state.scopeStudio.packName = suggestPackName(files);
+      }
+      if (totalBytes > MAX_SCOPE_TOTAL_BYTES) {
+        state.scopeStudio.success = `Large batch detected: ${formatBytes(totalBytes)} across ${files.length} files. Bulk prep mode will process the files in smaller steps before generation.`;
       }
       renderScopeStudio();
     }
@@ -2160,30 +2210,14 @@ const QUESTIONS = [
       state.scopeStudio.success = '';
     }
 
-    async function sendScopeRequest(action = 'generate') {
-      if (!state.scopeStudio.files.length) {
-        throw new Error('Add at least one file before running the study-pack generator.');
-      }
+    function getPreparationFingerprint() {
+      return [
+        state.scopeStudio.examContext.trim(),
+        ...state.scopeStudio.files.map((file) => `${file.name}:${file.size || 0}:${file.lastModified || 0}`),
+      ].join('|');
+    }
 
-      if (state.scopeStudio.files.length > MAX_SCOPE_FILES) {
-        throw new Error(`Use up to ${MAX_SCOPE_FILES} files at once.`);
-      }
-
-      const totalBytes = state.scopeStudio.files.reduce((sum, file) => sum + (file.size || 0), 0);
-      if (totalBytes > MAX_SCOPE_TOTAL_BYTES) {
-        throw new Error(`This upload is ${formatBytes(totalBytes)}. Keep it under about ${formatBytes(MAX_SCOPE_TOTAL_BYTES)} for one request.`);
-      }
-
-      const formData = new FormData();
-      formData.append('action', action);
-      formData.append('examContext', state.scopeStudio.examContext || '');
-      formData.append('packName', state.scopeStudio.packName.trim() || suggestPackName(state.scopeStudio.files));
-      state.scopeStudio.files.forEach((file) => formData.append('files', file, file.name));
-
-      const response = await fetch('/api/generate-study-pack', {
-        method: 'POST',
-        body: formData,
-      });
+    async function parseJsonResponse(response, oversizedMessage) {
       const raw = await response.text();
       let payload = null;
 
@@ -2191,34 +2225,122 @@ const QUESTIONS = [
         payload = raw ? JSON.parse(raw) : null;
       } catch (error) {
         if (raw.includes('Request Entity Too Large') || raw.includes('FUNCTION_PAYLOAD_TOO_LARGE')) {
-          throw new Error(`This upload is too large for the server to accept in one shot. Cut it down to the most relevant files and keep the total closer to ${formatBytes(MAX_SCOPE_TOTAL_BYTES)}.`);
+          throw new Error(oversizedMessage);
         }
-        throw new Error('The server returned a non-JSON error response. This usually means the upload was rejected before the app route could process it.');
+        throw new Error('The server returned a non-JSON error response.');
       }
 
-      if (!response.ok || !payload.ok) {
-        throw new Error(payload.error || 'The study-pack request failed.');
+      if (!response.ok || !payload?.ok) {
+        throw new Error(payload?.error || 'The request failed.');
       }
+
       return payload;
+    }
+
+    function getAttachmentCandidates() {
+      return state.scopeStudio.files
+        .filter((file) => /\.(pdf|png|jpg|jpeg|webp)$/i.test(file.name))
+        .filter((file) => (file.size || 0) <= 1024 * 1024)
+        .slice(0, 2);
+    }
+
+    async function sendScopeRequest(action = 'generate', preparedMaterials = state.scopeStudio.preparedMaterials) {
+      if (!preparedMaterials.length && !state.scopeStudio.files.length) {
+        throw new Error('Add at least one file before running the study-pack generator.');
+      }
+
+      const formData = new FormData();
+      formData.append('action', action);
+      formData.append('examContext', state.scopeStudio.examContext || '');
+      formData.append('packName', state.scopeStudio.packName.trim() || suggestPackName(state.scopeStudio.files));
+      if (preparedMaterials.length) {
+        formData.append('materialsJson', JSON.stringify(preparedMaterials));
+      }
+      getAttachmentCandidates().forEach((file) => formData.append('files', file, file.name));
+      if (!preparedMaterials.length && !getAttachmentCandidates().length) {
+        state.scopeStudio.files.forEach((file) => formData.append('files', file, file.name));
+      }
+
+      const response = await fetch('/api/generate-study-pack', {
+        method: 'POST',
+        body: formData,
+      });
+      return parseJsonResponse(
+        response,
+        `This upload is too large for the server to accept in one shot. Cut it down to the most relevant files and keep the total closer to ${formatBytes(MAX_SCOPE_TOTAL_BYTES)}.`,
+      );
+    }
+
+    async function prepareMaterialsForGeneration() {
+      if (!state.scopeStudio.files.length) {
+        throw new Error('Add at least one file before generating a study pack.');
+      }
+
+      const fingerprint = getPreparationFingerprint();
+      if (
+        state.scopeStudio.preparedMaterials.length === state.scopeStudio.files.length &&
+        state.scopeStudio.preparedFingerprint === fingerprint
+      ) {
+        return state.scopeStudio.preparedMaterials;
+      }
+
+      const prepared = [];
+      const detectedScopes = [];
+      const sourceSummary = [];
+      state.scopeStudio.busy = 'prepare';
+
+      for (let index = 0; index < state.scopeStudio.files.length; index += 1) {
+        const file = state.scopeStudio.files[index];
+        state.scopeStudio.prepProgress = `Preparing ${index + 1}/${state.scopeStudio.files.length}: ${file.name}`;
+        renderScopeStudio();
+
+        const formData = new FormData();
+        formData.append('file', file, file.name);
+        formData.append('examContext', state.scopeStudio.examContext || '');
+
+        const response = await fetch('/api/prepare-study-material', {
+          method: 'POST',
+          body: formData,
+        });
+        const payload = await parseJsonResponse(
+          response,
+          `"${file.name}" is too large to prepare in one request. Keep each file under 8 MB.`,
+        );
+
+        prepared.push(payload.material);
+        (payload.detectedScopes || []).forEach((scope) => {
+          if (!detectedScopes.includes(scope)) detectedScopes.push(scope);
+        });
+        (payload.sourceSummary || []).forEach((item) => sourceSummary.push(item));
+      }
+
+      state.scopeStudio.preparedMaterials = prepared;
+      state.scopeStudio.preparedFingerprint = fingerprint;
+      state.scopeStudio.detectedScopes = detectedScopes;
+      state.scopeStudio.sourceSummary = sourceSummary;
+      state.scopeStudio.prepProgress = `Prepared ${prepared.length} files for generation.`;
+      return prepared;
     }
 
     async function generateCustomPack() {
       clearScopeStudioMessages();
-      state.scopeStudio.busy = 'generate';
-      renderScopeStudio();
 
       try {
-        const payload = await sendScopeRequest('generate');
-        activateCustomPack(payload.studyPack);
+        const preparedMaterials = await prepareMaterialsForGeneration();
+        state.scopeStudio.busy = 'generate';
+        renderScopeStudio();
+        const payload = await sendScopeRequest('generate', preparedMaterials);
+        state.scopeStudio.previewPack = payload.studyPack;
         state.scopeStudio.detectedScopes = payload.detectedScopes || [];
         state.scopeStudio.sourceSummary = payload.sourceSummary || payload.studyPack.sourceSummary || [];
-        state.scopeStudio.success = `${payload.studyPack.title || 'Your new pack'} is now active. Learn, Reference, Practice, and Exam Sprint are all using this material.`;
-        goHome();
+        state.scopeStudio.success = `Draft ready: ${payload.studyPack.title || 'New pack'}. Review it below, then activate when you want the whole site to switch.`;
+        renderScopeStudio();
       } catch (error) {
         state.scopeStudio.error = error.message || 'Could not generate the study pack.';
         renderScopeStudio();
       } finally {
         state.scopeStudio.busy = '';
+        state.scopeStudio.prepProgress = '';
       }
     }
 
@@ -2249,7 +2371,9 @@ const QUESTIONS = [
                   <span class="pill-soft">${(pack.questions || []).length} questions</span>
                 </div>
                 <div class="btn-row" style="margin-top:14px">
-                  <button class="btn ${isActive ? 'btn-secondary' : 'btn-primary'}" onclick="${pack.id === 'default' ? 'resetToDefaultPack()' : `activatePack(${JSON.stringify(pack.id)})`}" ${isActive ? 'disabled' : ''}>${isActive ? 'Currently Active' : 'Switch To This Pack'}</button>
+                  ${isActive ? '<button class="btn btn-secondary" disabled>Currently Active</button>' : `<button class="btn btn-primary" onclick="${pack.id === 'default' ? 'resetToDefaultPack()' : `activatePack(${JSON.stringify(pack.id)})`}">Switch To This Pack</button>`}
+                  ${pack.id !== 'default' ? `<button class="btn btn-secondary" onclick="renameSavedPack(${JSON.stringify(pack.id)})">Rename</button>` : ''}
+                  ${pack.id !== 'default' ? `<button class="btn btn-secondary" onclick="deleteSavedPack(${JSON.stringify(pack.id)})">Delete</button>` : ''}
                 </div>
               </div>`;
           }).join('')}
@@ -2274,20 +2398,58 @@ const QUESTIONS = [
         </div>`;
     }
 
+    function buildPreviewPanel() {
+      const pack = state.scopeStudio.previewPack;
+      if (!pack) return '';
+
+      return `
+        <div class="card" style="margin-top:16px;border-color:rgba(96,165,250,0.35);box-shadow:0 24px 60px rgba(2,6,23,0.26)">
+          <div class="card-label">Draft preview</div>
+          <h2 style="font-size:1.2rem">${escapeHtml(pack.title)}</h2>
+          <p>${escapeHtml(pack.subtitle || 'Generated study pack')}</p>
+          <div class="scope-chip-row" style="margin-top:12px">
+            <span class="topic-pill">${(pack.scope || []).length ? escapeHtml(pack.scope.join(' • ')) : 'Focused scope'}</span>
+            <span class="topic-pill">${(pack.concepts || []).length} learn</span>
+            <span class="topic-pill">${(pack.formulas || []).length} reference</span>
+            <span class="topic-pill">${(pack.questions || []).length} practice</span>
+          </div>
+          <div class="btn-row" style="margin-top:16px">
+            <button class="btn btn-primary" onclick="acceptPreviewPack()">Activate This Pack</button>
+            <button class="btn btn-secondary" onclick="discardPreviewPack()">Discard Draft</button>
+          </div>
+          <div class="pack-banner" style="margin-top:16px">
+            <div class="pack-status">
+              <div class="card-label">Coach notes</div>
+              <h3>What this pack is targeting</h3>
+              <div class="coach-note-list">
+                ${(pack.coachNotes && pack.coachNotes.length ? pack.coachNotes : ['No coach notes were returned.']).slice(0, 4).map((note) => `<div class="coach-note">${escapeHtml(note)}</div>`).join('')}
+              </div>
+            </div>
+            <div class="pack-status">
+              <div class="card-label">Source summary</div>
+              <h3>What shaped the draft</h3>
+              ${buildSourceCards(pack.sourceSummary || state.scopeStudio.sourceSummary || [])}
+            </div>
+          </div>
+        </div>`;
+    }
+
     function renderScopeStudio() {
       syncHeaderTitle();
       const pack = getActiveStudyPack();
       const isGenerating = state.scopeStudio.busy === 'generate';
       const canRun = state.scopeStudio.files.length > 0;
+      const totalBytes = state.scopeStudio.files.reduce((sum, file) => sum + (file.size || 0), 0);
 
       document.getElementById('main').innerHTML = `
         <div class="card hero-panel">
           <div class="card-label">Create study pack</div>
-          <h2>Swap the site onto a new class in one pass</h2>
-          <p>Upload the most relevant slides, PDFs, notes, or screenshots for the exam you care about. Give the pack a name if you want. The app will infer the topic, build a new pack, and switch the whole site over automatically.</p>
+          <h2>Swap the site onto a new class without micromanaging scope</h2>
+          <p>Upload the lecture files for the exam you care about, optionally name the pack, and generate. The app now preprocesses larger batches in smaller steps, infers the likely topics, and lets you review the generated pack before activating it.</p>
           <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px">
             <div class="topic-pill">${state.scopeStudio.files.length} files ready</div>
             <div class="topic-pill">${state.scopeStudio.packName.trim() || 'Untitled Pack'}</div>
+            <div class="topic-pill">${formatBytes(totalBytes)} selected</div>
             <div class="topic-pill">${getPackLabel()}</div>
           </div>
         </div>
@@ -2303,7 +2465,7 @@ const QUESTIONS = [
               <div class="file-chip-row">
                 ${state.scopeStudio.files.map((file) => `<span class="file-chip">${escapeHtml(file.name)}</span>`).join('')}
               </div>` : ''}
-            <p style="margin-top:12px;color:var(--text-dim);font-size:0.85rem">Practical limit: up to ${MAX_SCOPE_FILES} files and about ${formatBytes(MAX_SCOPE_TOTAL_BYTES)} total per run. If your course dump is larger, split it into a few focused batches.</p>
+            <p style="margin-top:12px;color:var(--text-dim);font-size:0.85rem">You can load up to ${MAX_SCOPE_FILES} files. Larger batches are prepared in smaller requests now, so the total selection can go well past the old single-request limit as long as each individual file is reasonable.</p>
             <div style="margin-top:18px">
               <label class="field-label" for="pack-name-input">Pack name</label>
               <input id="pack-name-input" class="text-input" type="text" placeholder="Example: SQL Midterm Pack" value="${escapeHtml(state.scopeStudio.packName)}" oninput="updateScopeStudioField('packName', this.value)">
@@ -2316,6 +2478,7 @@ const QUESTIONS = [
               <button class="btn btn-primary" onclick="generateCustomPack()" ${canRun && !state.scopeStudio.busy ? '' : 'disabled'}>${isGenerating ? 'Generating…' : 'Generate Pack'}</button>
               ${!isDefaultPackActive() ? '<button class="btn btn-secondary" onclick="resetToDefaultPack()">Switch Back To Built-in Pack</button>' : ''}
             </div>
+            ${state.scopeStudio.prepProgress ? `<div class="status-callout">${escapeHtml(state.scopeStudio.prepProgress)}</div>` : ''}
             ${state.scopeStudio.error ? `<div class="status-callout error">${state.scopeStudio.error}</div>` : ''}
             ${state.scopeStudio.success ? `<div class="status-callout">${state.scopeStudio.success}</div>` : ''}
           </div>
@@ -2359,11 +2522,12 @@ const QUESTIONS = [
             <h3>How the rebuild works</h3>
             <div class="coach-note-list">
               <div class="coach-note">You only need to upload files and optionally name the pack. Topic detection happens automatically.</div>
-              <div class="coach-note">Generate Pack sends the material to the generator endpoint, which builds a full learn, reference, practice, and exam pack around that class.</div>
-              <div class="coach-note">Once a pack is generated, the entire site switches to it instantly and the pack stays saved in your browser for later reuse.</div>
+              <div class="coach-note">Larger batches are preprocessed one file at a time before generation, so the app is no longer relying on a single oversized request.</div>
+              <div class="coach-note">After generation, you get a draft preview first. The site only switches when you click Activate This Pack.</div>
             </div>
           </div>
-        </div>`;
+        </div>
+        ${buildPreviewPanel()}`;
 
       setActiveTab(1);
     }

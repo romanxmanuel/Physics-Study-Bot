@@ -1,23 +1,7 @@
-import { Buffer } from 'node:buffer';
-
-import { extractPptxTextFromBuffer } from '../lib/extractors/pptx.mjs';
-import { extractTextFileFromBuffer } from '../lib/extractors/text.mjs';
 import { detectScopes, generateStudyPack } from '../lib/openai-study-pack.mjs';
+import { buildSourceSummary, normalizePreparedMaterial, normalizeUpload } from '../lib/study-file-utils.mjs';
 
-const MAX_FILES = 8;
-const MAX_FILE_BYTES = 8 * 1024 * 1024;
-
-const TYPE_BY_EXTENSION = {
-  pptx: 'pptx',
-  pdf: 'pdf',
-  txt: 'text',
-  md: 'text',
-  markdown: 'text',
-  png: 'image',
-  jpg: 'image',
-  jpeg: 'image',
-  webp: 'image',
-};
+const MAX_FILES = 18;
 
 function jsonResponse(body, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -27,11 +11,6 @@ function jsonResponse(body, status = 200) {
       'cache-control': 'no-store',
     },
   });
-}
-
-function getExtension(filename) {
-  const parts = String(filename || '').toLowerCase().split('.');
-  return parts.length > 1 ? parts.pop() : '';
 }
 
 function parseSelectedScopes(value) {
@@ -44,52 +23,14 @@ function parseSelectedScopes(value) {
   }
 }
 
-async function normalizeUpload(file) {
-  const extension = getExtension(file.name);
-  const kind = TYPE_BY_EXTENSION[extension];
-  if (!kind) {
-    throw new Error(`Unsupported file type for "${file.name}". Use .pptx, .pdf, .txt, .md, .png, .jpg, or .webp.`);
+function parsePreparedMaterials(value) {
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(String(value));
+    return Array.isArray(parsed) ? parsed.map(normalizePreparedMaterial).filter(Boolean) : [];
+  } catch (error) {
+    return [];
   }
-
-  const buffer = Buffer.from(await file.arrayBuffer());
-  if (buffer.byteLength > MAX_FILE_BYTES) {
-    throw new Error(`"${file.name}" is too large. Keep each file under 8 MB.`);
-  }
-
-  let extractedText = '';
-  let detail = '';
-
-  if (kind === 'pptx') {
-    const extracted = await extractPptxTextFromBuffer(buffer);
-    extractedText = extracted.text;
-    detail = extracted.slideCount ? `${extracted.slideCount} slides extracted` : 'No slide text found';
-  } else if (kind === 'text') {
-    extractedText = extractTextFileFromBuffer(buffer);
-    detail = extractedText ? `${extractedText.length} characters extracted` : 'Text file was empty';
-  } else if (kind === 'pdf') {
-    detail = 'PDF attached for model inspection';
-  } else if (kind === 'image') {
-    detail = 'Image attached for model inspection';
-  }
-
-  return {
-    name: file.name,
-    mimeType: file.type || 'application/octet-stream',
-    kind,
-    size: buffer.byteLength,
-    buffer,
-    extractedText,
-    detail,
-  };
-}
-
-function buildSourceSummary(files) {
-  return files.map((file) => ({
-    label: file.name,
-    type: file.kind,
-    detail: file.detail,
-    url: '',
-  }));
 }
 
 export function GET() {
@@ -108,19 +49,20 @@ export async function POST(request) {
     const examContext = String(formData.get('examContext') || '').trim().slice(0, 4000);
     const packName = String(formData.get('packName') || '').trim().slice(0, 120);
     const selectedScopes = parseSelectedScopes(formData.get('selectedScopes'));
+    const preparedMaterials = parsePreparedMaterials(formData.get('materialsJson'));
     const uploads = formData
       .getAll('files')
       .filter((entry) => entry && typeof entry === 'object' && typeof entry.arrayBuffer === 'function');
 
-    if (!uploads.length) {
-      return jsonResponse({ ok: false, error: 'Upload at least one class file before analyzing the scope.' }, 400);
+    if (!uploads.length && !preparedMaterials.length) {
+      return jsonResponse({ ok: false, error: 'Upload at least one class file before generating a study pack.' }, 400);
     }
 
-    if (uploads.length > MAX_FILES) {
+    if (uploads.length > MAX_FILES || preparedMaterials.length > MAX_FILES) {
       return jsonResponse({ ok: false, error: `Upload up to ${MAX_FILES} files at a time.` }, 400);
     }
 
-    const files = [];
+    const files = [...preparedMaterials];
     for (const upload of uploads) {
       files.push(await normalizeUpload(upload));
     }
