@@ -712,6 +712,45 @@
       color: #d9fff0;
       animation: burstPop 520ms ease;
     }
+    .promo-flash {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.18), transparent 42%),
+        linear-gradient(120deg, rgba(255,255,255,0.05), transparent 38%, rgba(255,255,255,0.2), transparent 70%);
+      mix-blend-mode: screen;
+    }
+    .promo-flash.show {
+      animation: promoFlash 820ms ease-out forwards;
+    }
+    .quality-meter {
+      margin-top: 16px;
+    }
+    .quality-label-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+    .quality-bar {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+      border: 1px solid rgba(148,163,184,0.15);
+    }
+    .quality-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #f97316, #facc15 40%, #22c55e 100%);
+      box-shadow: 0 0 18px rgba(34,197,94,0.24);
+    }
     .roadmap-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -756,6 +795,11 @@
     @keyframes promoSweep {
       0% { background-position: 0% 50%; }
       100% { background-position: 100% 50%; }
+    }
+    @keyframes promoFlash {
+      0% { opacity: 0; transform: scale(0.98); }
+      20% { opacity: 0.95; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.02); }
     }
     .roadmap-tier-label {
       font-size: 0.7rem;
@@ -925,6 +969,7 @@
       sessionXp: 0,
       rewardBursts: [],
       rankPromoToast: null,
+      promoFlashKey: '',
       questionStartedAt: 0,
       savedPacks: [],
       activePackId: 'default',
@@ -1935,6 +1980,22 @@ const QUESTIONS = [
       return table[tierKey] || table.iron;
     }
 
+    function emitSoundHook(type, detail = {}) {
+      document.dispatchEvent(new CustomEvent('studybot:sound-hook', {
+        detail: {
+          type,
+          ...detail,
+        },
+      }));
+    }
+
+    function getQuestionBankQuality(questionCount) {
+      if (questionCount >= 32) return { label: 'Ranked-ready', pct: 100 };
+      if (questionCount >= 24) return { label: 'Strong', pct: 76 };
+      if (questionCount >= 16) return { label: 'Playable', pct: 52 };
+      return { label: 'Thin', pct: 28 };
+    }
+
     function unlockAchievement(key) {
       if (!state.profile.achievements[key]) {
         state.profile.achievements[key] = true;
@@ -2087,6 +2148,8 @@ const QUESTIONS = [
         if (tierAfter > tierBefore) {
           rankPromo = RANK_TIERS[tierAfter];
           state.rankPromoToast = rankPromo;
+          state.promoFlashKey = rankPromo.key;
+          emitSoundHook('rank-promo', { tier: rankPromo.key, soundCue: `promo-${rankPromo.key}` });
           state.rewardBursts.unshift(`${rankPromo.name} reached`);
         }
       } else {
@@ -2116,6 +2179,7 @@ const QUESTIONS = [
         ? `${level.xpToNext} XP to ${level.nextTier.name}`
         : 'Top rank reached';
       return `
+        ${state.promoFlashKey ? `<div class="promo-flash show" style="background:${level.tier.bg}"></div>` : ''}
         ${state.rankPromoToast ? `
           <div class="active-pack-banner" style="margin-bottom:16px;border-color:var(--accent2);box-shadow:0 0 0 1px rgba(106,227,255,0.28), 0 24px 60px rgba(16,24,40,0.34)">
             <strong>Promotion: ${state.rankPromoToast.name}</strong>
@@ -2471,6 +2535,7 @@ const QUESTIONS = [
     function buildPreviewPanel() {
       const pack = state.scopeStudio.previewPack;
       if (!pack) return '';
+      const questionQuality = getQuestionBankQuality((pack.questions || []).length);
 
       return `
         <div class="card" style="margin-top:16px;border-color:rgba(96,165,250,0.35);box-shadow:0 24px 60px rgba(2,6,23,0.26)">
@@ -2482,6 +2547,14 @@ const QUESTIONS = [
             <span class="topic-pill">${(pack.concepts || []).length} learn</span>
             <span class="topic-pill">${(pack.formulas || []).length} reference</span>
             <span class="topic-pill">${(pack.questions || []).length} practice</span>
+          </div>
+          <div class="quality-meter">
+            <div class="quality-label-row">
+              <span>Question bank quality</span>
+              <strong style="color:var(--text)">${questionQuality.label}</strong>
+            </div>
+            <div class="quality-bar"><div class="quality-fill" style="width:${questionQuality.pct}%"></div></div>
+            <p style="margin-top:8px;color:var(--text-dim)">${(pack.questions || []).length} questions generated. The app now auto-expands weak packs until they cross the minimum threshold when possible.</p>
           </div>
           <div class="btn-row" style="margin-top:16px">
             <button class="btn btn-primary" onclick="acceptPreviewPack()">Activate This Pack</button>
@@ -3024,6 +3097,7 @@ const QUESTIONS = [
       state.currentStreak = 0;
       state.rewardBursts = [];
       state.rankPromoToast = null;
+      state.promoFlashKey = '';
       state.questionStartedAt = Date.now();
       state.profile.sessions += 1;
       saveProfile();
@@ -3105,6 +3179,7 @@ const QUESTIONS = [
       state.selectedChoice = choiceIndex;
       const { gainedXp, rankPromo } = applyAnswerOutcome({ isRight, mode: 'practice', elapsedMs, bossRound });
       state.practiceResults.push({ q: question, chosen: choiceIndex, isRight, gainedXp, elapsedMs, bossRound, rankPromo });
+      if (bossRound && isRight) emitSoundHook('boss-clear', { soundCue: 'boss-clear', mode: 'practice' });
 
       if (!isRight) {
         state.weakTopics[question.topic] = (state.weakTopics[question.topic] || 0) + 1;
@@ -3129,6 +3204,7 @@ const QUESTIONS = [
       state.selectedChoice = null;
       state.rewardBursts = [];
       state.rankPromoToast = null;
+      state.promoFlashKey = '';
       state.questionStartedAt = Date.now();
       renderPractice();
       scrollTop();
@@ -3141,6 +3217,7 @@ const QUESTIONS = [
       state.practiceDeferred.push(question);
       state.rewardBursts = ['Question rerolled'];
       state.rankPromoToast = null;
+      state.promoFlashKey = '';
       state.practiceIndex += 1;
       state.questionStartedAt = Date.now();
       renderPractice();
@@ -3207,6 +3284,7 @@ const QUESTIONS = [
       state.currentStreak = 0;
       state.rewardBursts = [];
       state.rankPromoToast = null;
+      state.promoFlashKey = '';
       state.questionStartedAt = Date.now();
       state.profile.sessions += 1;
       saveProfile();
@@ -3291,6 +3369,7 @@ const QUESTIONS = [
         gainedXp,
         rankPromo,
       };
+      if (bossRound && isRight) emitSoundHook('boss-clear', { soundCue: 'boss-clear', mode: 'exam' });
 
       if (!isRight) {
         state.weakTopics[question.topic] = (state.weakTopics[question.topic] || 0) + 1;
@@ -3306,6 +3385,7 @@ const QUESTIONS = [
       state.examAnswered = false;
       state.rewardBursts = [];
       state.rankPromoToast = null;
+      state.promoFlashKey = '';
       state.questionStartedAt = Date.now();
       renderExam();
       scrollTop();
