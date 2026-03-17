@@ -552,6 +552,182 @@
       padding-left: 12px;
       color: var(--text-dim);
     }
+    .rank-overview {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .rank-card,
+    .roadmap-card,
+    .boost-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .rank-current {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .rank-badge {
+      min-width: 180px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      color: #fff;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .rank-badge-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.82;
+      margin-bottom: 4px;
+    }
+    .rank-badge-name {
+      font-size: 1.2rem;
+      font-weight: 800;
+      line-height: 1.15;
+    }
+    .rank-badge-cost {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+    .rank-perk-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .rank-perk {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+    }
+    .reward-burst-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .reward-burst {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1px solid rgba(52,211,153,0.25);
+      background: linear-gradient(135deg, rgba(52,211,153,0.14), rgba(108,122,255,0.14));
+      color: #d9fff0;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .roadmap-tier {
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      min-height: 150px;
+      position: relative;
+      overflow: hidden;
+    }
+    .roadmap-tier.current {
+      border-color: rgba(255,255,255,0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+    }
+    .roadmap-tier.next {
+      border-color: rgba(251,191,36,0.45);
+    }
+    .roadmap-tier-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.78;
+    }
+    .roadmap-tier-name {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-top: 6px;
+    }
+    .roadmap-tier-cost {
+      font-size: 0.86rem;
+      margin-top: 8px;
+      font-weight: 700;
+    }
+    .roadmap-tier ul {
+      margin-top: 10px;
+      padding-left: 16px;
+      color: rgba(255,255,255,0.88);
+      font-size: 0.76rem;
+      line-height: 1.5;
+    }
+    .roadmap-tier li { margin-bottom: 4px; }
+    .mission-track-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .mission-track {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .mission-track strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+    .mini-track {
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.08);
+      margin-top: 10px;
+    }
+    .mini-track-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #fbbf24, #6c7aff);
+    }
+    .quick-path {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(251,191,36,0.28);
+      background: linear-gradient(135deg, rgba(251,191,36,0.1), rgba(108,122,255,0.08));
+    }
+    .quick-path h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    .hud-subgrid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .surge-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #fff7d6;
+      background: rgba(251,191,36,0.14);
+      border: 1px solid rgba(251,191,36,0.28);
+    }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 640px) {
@@ -561,7 +737,11 @@
       .exam-layout { flex-direction: column; }
       .formula-sheet { width: 100%; position: static; }
       .pack-banner,
-      .studio-grid { grid-template-columns: 1fr; }
+      .studio-grid,
+      .rank-overview,
+      .mission-track-grid,
+      .roadmap-grid,
+      .hud-subgrid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -587,7 +767,24 @@
     const PACK_MODE_KEY = 'physicsBot_packMode';
     const EXAM_DURATION_SECONDS = 25 * 60;
     const EXAM_QUESTION_COUNT = 16;
-    const XP_PER_LEVEL = 140;
+
+    const RANK_TIERS = [
+      { key: 'rookie', name: 'Rookie Circuit', minXp: 0, upkeep: '0 RP risk', color: 'linear-gradient(135deg, #4b5563, #1f2937)', perks: ['Starter badge', 'Warm-up streak glow'] },
+      { key: 'bronze', name: 'Charge Bronze', minXp: 40, upkeep: '-4 RP tilt shield', color: 'linear-gradient(135deg, #92400e, #f97316)', perks: ['Bronze badge', 'Fast answer pulse'] },
+      { key: 'silver', name: 'Current Silver', minXp: 100, upkeep: '-8 RP pressure cost', color: 'linear-gradient(135deg, #6b7280, #d1d5db)', perks: ['Silver badge', 'Boss round marker'] },
+      { key: 'gold', name: 'Voltage Gold', minXp: 180, upkeep: '-12 RP tension cost', color: 'linear-gradient(135deg, #ca8a04, #fde047)', perks: ['Gold badge', 'Combo surge unlock'] },
+      { key: 'plasma', name: 'Plasma Platinum', minXp: 300, upkeep: '-18 RP focus cost', color: 'linear-gradient(135deg, #0f766e, #22d3ee)', perks: ['Platinum badge', 'Higher boss bonuses'] },
+      { key: 'diamond', name: 'Field Diamond', minXp: 460, upkeep: '-25 RP pressure cost', color: 'linear-gradient(135deg, #2563eb, #93c5fd)', perks: ['Diamond badge', 'Exam finish aura'] },
+      { key: 'master', name: 'Kirchhoff Master', minXp: 680, upkeep: '-35 RP stress cost', color: 'linear-gradient(135deg, #6d28d9, #d8b4fe)', perks: ['Master badge', 'Elite streak prestige'] },
+      { key: 'apex', name: 'Apex Scholar', minXp: 980, upkeep: '-50 RP focus tax', color: 'linear-gradient(135deg, #7f1d1d, #fb7185)', perks: ['Apex crest', 'Full rank prestige frame'] },
+    ];
+
+    const EARLY_REWARD_TABLE = [
+      { key: 'first_hit', label: 'First hit', xp: 18, test: () => state.profile.totalAnswered === 1 },
+      { key: 'streak_3_bonus', label: '3-hit streak', xp: 12, test: () => state.currentStreak === 3 },
+      { key: 'streak_5_bonus', label: '5-hit streak', xp: 18, test: () => state.currentStreak === 5 },
+      { key: 'streak_8_bonus', label: '8-hit streak', xp: 24, test: () => state.currentStreak === 8 },
+    ];
 
     const state = {
       mode: 'home',
@@ -609,6 +806,7 @@
       examTimerId: null,
       currentStreak: 0,
       sessionXp: 0,
+      rewardBursts: [],
       questionStartedAt: 0,
       customPack: null,
       activePackMode: 'default',
@@ -1477,14 +1675,31 @@ const QUESTIONS = [
       goHome();
     }
 
+    function getTierIndex(xp = state.profile.xp) {
+      let index = 0;
+      for (let i = 0; i < RANK_TIERS.length; i += 1) {
+        if (xp >= RANK_TIERS[i].minXp) index = i;
+      }
+      return index;
+    }
+
     function getLevelInfo() {
-      const level = Math.floor(state.profile.xp / XP_PER_LEVEL) + 1;
-      const current = state.profile.xp % XP_PER_LEVEL;
+      const index = getTierIndex();
+      const tier = RANK_TIERS[index];
+      const nextTier = RANK_TIERS[index + 1] || null;
+      const current = state.profile.xp - tier.minXp;
+      const needed = nextTier ? nextTier.minXp - tier.minXp : 220;
+      const pct = nextTier ? ((state.profile.xp - tier.minXp) / (nextTier.minXp - tier.minXp)) * 100 : 100;
       return {
-        level,
+        level: index + 1,
+        tier,
+        tierIndex: index,
+        nextTier,
         current,
-        needed: XP_PER_LEVEL,
-        pct: (current / XP_PER_LEVEL) * 100,
+        needed,
+        pct,
+        xpIntoTier: current,
+        xpToNext: nextTier ? nextTier.minXp - state.profile.xp : 0,
       };
     }
 
@@ -1501,7 +1716,7 @@ const QUESTIONS = [
     }
 
     function getComboMultiplier() {
-      return 1 + Math.min(0.75, state.currentStreak * 0.05);
+      return 1 + Math.min(1.1, state.currentStreak * 0.08);
     }
 
     function isBossRound(index) {
@@ -1526,20 +1741,111 @@ const QUESTIONS = [
       return defs.map(([key, label]) => ({ key, label, unlocked: !!state.profile.achievements[key] }));
     }
 
+    function getMissionTracks() {
+      const bestStreak = Math.min(state.profile.bestStreak, 5);
+      const fastAnswers = Math.min(state.profile.fastAnswers || 0, 3);
+      const examReady = state.profile.achievements.exam_80 ? 1 : 0;
+      return [
+        {
+          title: 'Ignite',
+          body: 'Build a 5-answer streak to lock in the first serious combo loop.',
+          current: bestStreak,
+          target: 5,
+          progressLabel: `${bestStreak}/5 best streak`,
+        },
+        {
+          title: 'Quickdraw',
+          body: 'Land 3 fast solves under 12 seconds for the speed badge.',
+          current: fastAnswers,
+          target: 3,
+          progressLabel: `${fastAnswers}/3 fast clears`,
+        },
+        {
+          title: 'Exam Ready',
+          body: 'Hit 80% on a mock exam to prove the system is working.',
+          current: examReady,
+          target: 1,
+          progressLabel: examReady ? 'Unlocked' : 'Locked',
+        },
+      ];
+    }
+
+    function getNextBestAction() {
+      if (!state.customPack) {
+        return {
+          title: 'Build a custom exam pack',
+          body: 'Upload your latest lecture files so the whole site retunes around your actual test scope.',
+          action: 'goMode(\'scope\')',
+          cta: 'Open Upload & Scope',
+        };
+      }
+
+      if (state.profile.bestStreak < 5) {
+        return {
+          title: 'Push to a 5-hit streak',
+          body: 'The first real reward spike comes fast. One clean run in Practice will start the momentum loop.',
+          action: 'startPractice()',
+          cta: 'Start Practice Run',
+        };
+      }
+
+      if (!state.profile.achievements.exam_80) {
+        return {
+          title: 'Convert momentum into a mock exam pass',
+          body: 'Your next meaningful unlock is the exam badge. Use the active pack and push for 80% or better.',
+          action: 'startExam()',
+          cta: 'Take Mock Exam',
+        };
+      }
+
+      return {
+        title: 'Farm weak spots for rank gains',
+        body: 'You are past the onboarding loop. Drill the weakest topics and keep ranking up the active pack.',
+        action: 'startPractice()',
+        cta: 'Drill Weak Topics',
+      };
+    }
+
+    function buildRankRoadmap() {
+      const currentIndex = getTierIndex();
+      return `
+        <div class="roadmap-grid">
+          ${RANK_TIERS.map((tier, index) => `
+            <div class="roadmap-tier ${index === currentIndex ? 'current' : ''} ${index === currentIndex + 1 ? 'next' : ''}" style="background:${tier.color}">
+              <div class="roadmap-tier-label">Tier ${index + 1}</div>
+              <div class="roadmap-tier-name">${tier.name}</div>
+              <div class="roadmap-tier-cost">${tier.minXp} XP · ${tier.upkeep}</div>
+              <ul>${tier.perks.map((perk) => `<li>${perk}</li>`).join('')}</ul>
+            </div>
+          `).join('')}
+        </div>`;
+    }
+
     function applyAnswerOutcome({ isRight, mode, elapsedMs, bossRound }) {
+      state.rewardBursts = [];
       state.profile.totalAnswered += 1;
       let gainedXp = 0;
+      let rankPromo = null;
 
       if (isRight) {
+        const tierBefore = getTierIndex();
         state.currentStreak += 1;
         state.profile.totalCorrect += 1;
         state.profile.bestStreak = Math.max(state.profile.bestStreak, state.currentStreak);
 
-        const base = mode === 'exam' ? 34 : 22;
-        const speedBonus = elapsedMs <= 12000 ? 10 : elapsedMs <= 20000 ? 5 : 0;
+        const base = mode === 'exam' ? 44 : 32;
+        const speedBonus = elapsedMs <= 8000 ? 18 : elapsedMs <= 12000 ? 12 : elapsedMs <= 20000 ? 6 : 0;
         const comboBonus = Math.round(base * (getComboMultiplier() - 1));
-        const bossBonus = bossRound ? 12 : 0;
-        gainedXp = base + speedBonus + comboBonus + bossBonus;
+        const bossBonus = bossRound ? 20 : 0;
+        const surgeRoll = Math.random();
+        const surgeBonus = surgeRoll > 0.92 ? 18 : surgeRoll > 0.72 ? 9 : surgeRoll > 0.42 ? 4 : 0;
+        gainedXp = base + speedBonus + comboBonus + bossBonus + surgeBonus;
+
+        state.rewardBursts.push(`+${base} XP clear`);
+        if (speedBonus) state.rewardBursts.push(`+${speedBonus} quickdraw`);
+        if (comboBonus) state.rewardBursts.push(`+${comboBonus} combo`);
+        if (bossBonus) state.rewardBursts.push(`+${bossBonus} boss`);
+        if (surgeBonus) state.rewardBursts.push(`+${surgeBonus} surge`);
 
         if (state.currentStreak >= 5) unlockAchievement('streak_5');
         if (state.currentStreak >= 10) unlockAchievement('streak_10');
@@ -1547,19 +1853,40 @@ const QUESTIONS = [
           state.profile.fastAnswers = (state.profile.fastAnswers || 0) + 1;
           if (state.profile.fastAnswers >= 3) unlockAchievement('speed_3');
         }
+
+        EARLY_REWARD_TABLE.forEach((reward) => {
+          if (reward.test()) {
+            gainedXp += reward.xp;
+            state.rewardBursts.push(`+${reward.xp} ${reward.label}`);
+          }
+        });
+
+        state.profile.xp += gainedXp;
+        const tierAfter = getTierIndex();
+        if (tierAfter > tierBefore) {
+          rankPromo = RANK_TIERS[tierAfter];
+          state.rewardBursts.unshift(`${rankPromo.name} reached`);
+        }
       } else {
         state.currentStreak = 0;
+        state.rewardBursts.push('Streak reset');
       }
 
-      state.profile.xp += gainedXp;
+      if (!isRight) {
+        state.profile.xp += gainedXp;
+      }
       state.sessionXp += gainedXp;
       saveProfile();
-      return gainedXp;
+      return { gainedXp, rankPromo };
     }
 
     function renderGameHud(modeLabel) {
       const level = getLevelInfo();
       const accuracy = getAccuracyPct();
+      const missionTracks = getMissionTracks();
+      const nextPerk = level.nextTier
+        ? `${level.xpToNext} XP to ${level.nextTier.name}`
+        : 'Top rank reached';
       return `
         <div class="focus-banner">
           <div>
@@ -1573,10 +1900,11 @@ const QUESTIONS = [
             <span class="metric-pill">Accuracy ${accuracy}%</span>
           </div>
         </div>
+        ${state.rewardBursts.length ? `<div class="reward-burst-row">${state.rewardBursts.slice(0, 5).map((burst) => `<span class="reward-burst">${burst}</span>`).join('')}</div>` : ''}
         <div class="hud-grid">
           <div class="hud-card">
             <div class="hud-value">Lv ${level.level}</div>
-            <div class="hud-meta">Physics Rank</div>
+            <div class="hud-meta">${level.tier.name}</div>
             <div class="xp-track"><div class="xp-fill" style="width:${level.pct}%"></div></div>
           </div>
           <div class="hud-card">
@@ -1590,6 +1918,26 @@ const QUESTIONS = [
           <div class="hud-card">
             <div class="hud-value">${accuracy}%</div>
             <div class="hud-meta">Lifetime Accuracy</div>
+          </div>
+        </div>
+        <div class="hud-subgrid">
+          <div class="boost-card">
+            <div class="card-label">Next rank trigger</div>
+            <h3 style="font-size:1rem">${level.nextTier ? level.nextTier.name : 'Apex Scholar'}</h3>
+            <p>${nextPerk}</p>
+            <div class="rank-perk-list">
+              ${(level.nextTier ? level.nextTier.perks : level.tier.perks).map((perk) => `<div class="rank-perk">${perk}</div>`).join('')}
+            </div>
+          </div>
+          <div class="boost-card">
+            <div class="card-label">Live mission focus</div>
+            ${missionTracks.slice(0, 2).map((track) => `
+              <div style="margin-bottom:10px">
+                <strong style="display:block">${track.title}</strong>
+                <div class="mini-track"><div class="mini-track-fill" style="width:${Math.min(100, (track.current / track.target) * 100)}%"></div></div>
+                <div style="font-size:0.8rem;color:var(--text-dim);margin-top:6px">${track.progressLabel}</div>
+              </div>
+            `).join('')}
           </div>
         </div>`;
     }
@@ -1958,6 +2306,8 @@ const QUESTIONS = [
       const weakTopics = getWeakTopics();
       const level = getLevelInfo();
       const achievements = getVisibleAchievements();
+      const missionTracks = getMissionTracks();
+      const nextAction = getNextBestAction();
       const strongestPrompt = weakTopics.length
         ? `Top weak spot: ${weakTopics[0][0]} (${weakTopics[0][1]} misses)`
         : 'No topics are flagged as weak yet.';
@@ -1973,9 +2323,41 @@ const QUESTIONS = [
             <div class="topic-pill">${formulas.length} formulas</div>
             <div class="topic-pill">${questions.length} practice questions</div>
             <div class="topic-pill">${Math.min(EXAM_QUESTION_COUNT, questions.length)} question mock exam</div>
-            <div class="topic-pill">Rank ${level.level}</div>
+            <div class="topic-pill">${level.tier.name}</div>
             <div class="topic-pill">${getPackLabel()}</div>
           </div>
+          <div class="rank-overview">
+            <div class="rank-card">
+              <div class="card-label">Rank ladder</div>
+              <div class="rank-current">
+                <div class="rank-badge" style="background:${level.tier.color}">
+                  <div class="rank-badge-label">Current rank</div>
+                  <div class="rank-badge-name">${level.tier.name}</div>
+                  <div class="rank-badge-cost">${level.current}/${level.needed} XP inside this tier</div>
+                </div>
+                <div style="min-width:220px;flex:1">
+                  <div class="card-label">Next reward gate</div>
+                  <h3 style="font-size:1.05rem">${level.nextTier ? `${level.xpToNext} XP to ${level.nextTier.name}` : 'All rank perks unlocked'}</h3>
+                  <div class="rank-perk-list">
+                    ${(level.nextTier ? level.nextTier.perks : level.tier.perks).map((perk) => `<div class="rank-perk">${perk}</div>`).join('')}
+                  </div>
+                  <div class="xp-track" style="margin-top:14px"><div class="xp-fill" style="width:${level.pct}%"></div></div>
+                </div>
+              </div>
+              ${state.rewardBursts.length ? `<div class="reward-burst-row">${state.rewardBursts.slice(0, 5).map((burst) => `<span class="reward-burst">${burst}</span>`).join('')}</div>` : ''}
+            </div>
+            <div class="roadmap-card">
+              <div class="card-label">Why rank up?</div>
+              <h3 style="font-size:1rem">Every tier advertises what it unlocks</h3>
+              <p>Users should never wonder what XP does. Each tier below shows the vibe, pressure cost, and perk bundle tied to that level.</p>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <div class="card-label">Rank roadmap</div>
+          <h2 style="font-size:1.15rem">All visible progression tiers</h2>
+          <p>Fast early promotions, then longer grinds once the habit loop is already established.</p>
+          ${buildRankRoadmap()}
         </div>
         <div class="pack-banner">
           <div class="pack-status">
@@ -1994,6 +2376,14 @@ const QUESTIONS = [
             ${buildSourceCards((pack.sourceSummary || []).slice(0, 3))}
           </div>
         </div>
+        <div class="quick-path">
+          <div class="card-label">Best next move</div>
+          <h3>${nextAction.title}</h3>
+          <p>${nextAction.body}</p>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="${nextAction.action}">${nextAction.cta}</button>
+          </div>
+        </div>
         <div class="card" style="margin-top:16px;background:var(--surface2)">
           <div class="card-label">Progress snapshot</div>
           <p>${strongestPrompt}</p>
@@ -2002,43 +2392,39 @@ const QUESTIONS = [
             ${achievements.map((item) => `<span class="achievement ${item.unlocked ? 'unlocked' : ''}">${item.label}</span>`).join('')}
           </div>
         </div>
-        <div class="mission-grid">
-          <div class="mission-card">
-            <strong>Mission 1: Ignite</strong>
-            <p>Reach a 5-answer streak in Practice to enter Momentum and unlock your first combo milestone.</p>
-          </div>
-          <div class="mission-card">
-            <strong>Mission 2: Precision</strong>
-            <p>Hit 80%+ on the Mock Exam. That unlocks the exam achievement and validates your pacing.</p>
-          </div>
-          <div class="mission-card">
-            <strong>Mission 3: Boss Control</strong>
-            <p>Every fifth practice question acts like a boss round. Clear them cleanly for bonus XP.</p>
-          </div>
+        <div class="mission-track-grid">
+          ${missionTracks.map((track) => `
+            <div class="mission-track">
+              <strong>${track.title}</strong>
+              <p>${track.body}</p>
+              <div class="mini-track"><div class="mini-track-fill" style="width:${Math.min(100, (track.current / track.target) * 100)}%"></div></div>
+              <p style="margin-top:8px;font-size:0.8rem">${track.progressLabel}</p>
+            </div>
+          `).join('')}
         </div>
         <div class="home-grid">
           <div class="home-card" onclick="goMode('learn')">
             <div class="home-card-icon">📘</div>
             <h3>1. Learn</h3>
-            <p>Plain-English teaching cards with analogies and core equations from the active study pack.</p>
+            <p>Learn the active scope fast. This is the quickest way to make the first rank jumps feel easy.</p>
             <span class="badge">${concepts.length} cards</span>
           </div>
           <div class="home-card" onclick="goMode('formulas')">
             <div class="home-card-icon">🧮</div>
             <h3>2. Formulas</h3>
-            <p>Equation-by-equation review with variable definitions, units, and what each formula means.</p>
+            <p>Use this when you want clean equation recall and more consistent speed-bonus clears.</p>
             <span class="badge">${formulas.length} cards</span>
           </div>
           <div class="home-card" onclick="goMode('practice')">
             <div class="home-card-icon">🎯</div>
             <h3>3. Practice</h3>
-            <p>Immediate feedback, explanations, and weak-topic requeueing once a topic is missed multiple times.</p>
+            <p>The main progression loop. Fast XP, streak surges, boss rounds, and weak-topic retakes all live here.</p>
             <span class="badge">${questions.length} questions</span>
           </div>
           <div class="home-card" onclick="goMode('exam')">
             <div class="home-card-icon">📝</div>
             <h3>4. Mock Exam</h3>
-            <p>Random questions, a timed sprint, formula sheet sidebar, and a full review at the end.</p>
+            <p>Pressure test your current rank and chase the exam badge with a full timed run.</p>
             <span class="badge">${Math.min(EXAM_QUESTION_COUNT, questions.length)}-question exam</span>
           </div>
           <div class="home-card" onclick="goMode('scope')">
@@ -2237,6 +2623,7 @@ const QUESTIONS = [
       state.selectedChoice = null;
       state.sessionXp = 0;
       state.currentStreak = 0;
+      state.rewardBursts = [];
       state.questionStartedAt = Date.now();
       state.profile.sessions += 1;
       saveProfile();
@@ -2306,8 +2693,8 @@ const QUESTIONS = [
       const bossRound = isBossRound(state.practiceIndex);
       state.practiceAnswered = true;
       state.selectedChoice = choiceIndex;
-      const gainedXp = applyAnswerOutcome({ isRight, mode: 'practice', elapsedMs, bossRound });
-      state.practiceResults.push({ q: question, chosen: choiceIndex, isRight, gainedXp, elapsedMs, bossRound });
+      const { gainedXp, rankPromo } = applyAnswerOutcome({ isRight, mode: 'practice', elapsedMs, bossRound });
+      state.practiceResults.push({ q: question, chosen: choiceIndex, isRight, gainedXp, elapsedMs, bossRound, rankPromo });
 
       if (!isRight) {
         state.weakTopics[question.topic] = (state.weakTopics[question.topic] || 0) + 1;
@@ -2327,6 +2714,7 @@ const QUESTIONS = [
       state.practiceIndex += 1;
       state.practiceAnswered = false;
       state.selectedChoice = null;
+      state.rewardBursts = [];
       state.questionStartedAt = Date.now();
       renderPractice();
       scrollTop();
@@ -2349,7 +2737,8 @@ const QUESTIONS = [
             <div class="score-num">${correct}/${total}</div>
             <div class="score-label">${percent}% correct</div>
           </div>
-          <p>Session XP gained: <strong style="color:var(--accent2)">+${state.sessionXp}</strong> · Current level: <strong>Lv ${level.level}</strong></p>
+          <p>Session XP gained: <strong style="color:var(--accent2)">+${state.sessionXp}</strong> · Current rank: <strong>${level.tier.name}</strong></p>
+          <p>${level.nextTier ? `${level.xpToNext} XP to ${level.nextTier.name}` : 'All visible rank rewards unlocked.'}</p>
           <p>${weakTopics.length ? 'Repeated misses were flagged. Review those topics before the mock exam.' : 'No topic has hit the weak-topic threshold. You can move straight into the mock exam.'}</p>
           ${weakTopics.length ? `
             <div class="analogy" style="margin-top:18px;text-align:left">
@@ -2389,6 +2778,7 @@ const QUESTIONS = [
       state.examTimeRemaining = EXAM_DURATION_SECONDS;
       state.sessionXp = 0;
       state.currentStreak = 0;
+      state.rewardBursts = [];
       state.questionStartedAt = Date.now();
       state.profile.sessions += 1;
       saveProfile();
@@ -2464,13 +2854,14 @@ const QUESTIONS = [
       const isRight = choiceIndex === question.answer;
       const elapsedMs = Date.now() - state.questionStartedAt;
       const bossRound = isBossRound(state.examIndex);
-      const gainedXp = applyAnswerOutcome({ isRight, mode: 'exam', elapsedMs, bossRound });
+      const { gainedXp, rankPromo } = applyAnswerOutcome({ isRight, mode: 'exam', elapsedMs, bossRound });
       state.examAnswers[state.examIndex] = {
         q: question,
         chosen: choiceIndex,
         correct: question.answer,
         isRight,
         gainedXp,
+        rankPromo,
       };
 
       if (!isRight) {
@@ -2485,6 +2876,7 @@ const QUESTIONS = [
     function nextExamQuestion() {
       state.examIndex += 1;
       state.examAnswered = false;
+      state.rewardBursts = [];
       state.questionStartedAt = Date.now();
       renderExam();
       scrollTop();
@@ -2510,6 +2902,7 @@ const QUESTIONS = [
       const grade = percent >= 90 ? 'A' : percent >= 80 ? 'B' : percent >= 70 ? 'C' : percent >= 60 ? 'D' : 'F';
       const topicStats = getTopicStats(answers);
       const earnedXp = answers.reduce((sum, answer) => sum + (answer.gainedXp || 0), 0);
+      const level = getLevelInfo();
       const message = percent >= 80
         ? 'Strong exam-level performance. Review any misses and you are in good shape.'
         : percent >= 60
@@ -2528,6 +2921,7 @@ const QUESTIONS = [
             <div class="score-label">${percent}% · Grade ${grade}</div>
           </div>
           <p>Exam XP earned: <strong style="color:var(--accent2)">+${earnedXp}</strong></p>
+          <p>Current rank: <strong>${level.tier.name}</strong>${level.nextTier ? ` · ${level.xpToNext} XP to ${level.nextTier.name}` : ' · Apex rank secured'}</p>
           <p>${message}</p>
           <p>${unanswered ? `${unanswered} question${unanswered === 1 ? '' : 's'} were left unanswered when the exam ended.` : `You completed all ${total} questions within ${formatTime(EXAM_DURATION_SECONDS - state.examTimeRemaining)}.`}</p>
           ${topicStats.length ? `
