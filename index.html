@@ -2629,7 +2629,7 @@ function initSoundHooks() {
       };
 
       const unlockOnGesture = () => {
-        ensureAudioCtx().then(() => {
+        ensureAudioCtx().then((ctx) => {
           [
             getHostedAudio('__studyBotQueueAudio', QUEUE_POP_AUDIO_URL),
             getHostedAudio('__studyBotCorrectAudio', CORRECT_ANSWER_AUDIO_URL),
@@ -2641,6 +2641,17 @@ function initSoundHooks() {
               audio.load();
             } catch (error) {}
           });
+          if (ctx) {
+            [
+              ['queue-pop', QUEUE_POP_AUDIO_URL],
+              ['answer-correct', CORRECT_ANSWER_AUDIO_URL],
+              ['answer-wrong', WRONG_ANSWER_AUDIO_URL],
+              ['streak-five', STREAK_FIVE_AUDIO_URL],
+              ['rank-up', RANK_UP_AUDIO_URL],
+            ].forEach(([key, url]) => {
+              primeAudioBuffer(key, url);
+            });
+          }
         }).finally(() => {
           window.removeEventListener('pointerdown', unlockOnGesture, true);
           window.removeEventListener('keydown', unlockOnGesture, true);
@@ -2660,6 +2671,65 @@ function initSoundHooks() {
           window[cacheKey] = audio;
         }
         return window[cacheKey];
+      };
+
+      const primeAudioBuffer = async (key, url) => {
+        if (!key || !url) return null;
+        const ctx = window.__studyBotAudioCtx;
+        if (!ctx || window.__studyBotAudioBuffers?.[key] || window.__studyBotAudioBufferPromises?.[key]) return window.__studyBotAudioBuffers?.[key] || null;
+        window.__studyBotAudioBuffers ||= {};
+        window.__studyBotAudioBufferPromises ||= {};
+        window.__studyBotAudioBufferPromises[key] = fetch(url)
+          .then((response) => response.arrayBuffer())
+          .then((buffer) => ctx.decodeAudioData(buffer.slice(0)))
+          .then((decoded) => {
+            window.__studyBotAudioBuffers[key] = decoded;
+            delete window.__studyBotAudioBufferPromises[key];
+            return decoded;
+          })
+          .catch(() => {
+            delete window.__studyBotAudioBufferPromises[key];
+            return null;
+          });
+        return window.__studyBotAudioBufferPromises[key];
+      };
+
+      const stopBufferedAudio = (key) => {
+        const active = window.__studyBotActiveSources?.[key];
+        if (!active) return;
+        try {
+          active.source.stop(0);
+        } catch (error) {}
+        try {
+          active.source.disconnect();
+          active.gain.disconnect();
+        } catch (error) {}
+        delete window.__studyBotActiveSources[key];
+      };
+
+      const playBufferedAudio = (key, url, volume = 0.65) => {
+        const ctx = window.__studyBotAudioCtx;
+        const buffer = window.__studyBotAudioBuffers?.[key];
+        if (!ctx || ctx.state !== 'running' || !buffer) {
+          if (url) primeAudioBuffer(key, url);
+          return false;
+        }
+        window.__studyBotActiveSources ||= {};
+        stopBufferedAudio(key);
+        const source = ctx.createBufferSource();
+        const gainNode = ctx.createGain();
+        gainNode.gain.setValueAtTime(volume, ctx.currentTime);
+        source.buffer = buffer;
+        source.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        source.start(0);
+        window.__studyBotActiveSources[key] = { source, gain: gainNode };
+        source.onended = () => {
+          if (window.__studyBotActiveSources?.[key]?.source === source) {
+            delete window.__studyBotActiveSources[key];
+          }
+        };
+        return true;
       };
 
       const playHostedAudio = (audio, volume = 0.65) => {
@@ -2686,8 +2756,23 @@ function initSoundHooks() {
         } catch (error) {}
       };
 
+      window.__studyBotStopSound = (key) => {
+        stopBufferedAudio(key);
+        const hostedAudioMap = {
+          'queue-pop': window.__studyBotQueueAudio,
+          'answer-correct': window.__studyBotCorrectAudio,
+          'answer-wrong': window.__studyBotWrongAudio,
+          'streak-five': window.__studyBotStreakFiveAudio,
+          'rank-up': window.__studyBotRankUpAudio,
+        };
+        window.__studyBotStopHostedAudio(hostedAudioMap[key]);
+      };
+
       const playCue = (detail = {}) => {
         if (detail.type === 'queue-pop') {
+          if (playBufferedAudio('queue-pop', QUEUE_POP_AUDIO_URL, 0.72)) {
+            return;
+          }
           const queueAudio = getHostedAudio('__studyBotQueueAudio', QUEUE_POP_AUDIO_URL);
           if (playHostedAudio(queueAudio, 0.65)) {
             return;
@@ -2695,6 +2780,11 @@ function initSoundHooks() {
         }
 
         if (detail.type === 'answer-submit') {
+          const audioKey = detail.result === 'correct' ? 'answer-correct' : 'answer-wrong';
+          const audioUrl = detail.result === 'correct' ? CORRECT_ANSWER_AUDIO_URL : WRONG_ANSWER_AUDIO_URL;
+          if (playBufferedAudio(audioKey, audioUrl, detail.result === 'correct' ? 0.58 : 0.62)) {
+            return;
+          }
           const answerAudio = detail.result === 'correct'
             ? getHostedAudio('__studyBotCorrectAudio', CORRECT_ANSWER_AUDIO_URL)
             : getHostedAudio('__studyBotWrongAudio', WRONG_ANSWER_AUDIO_URL);
@@ -2704,6 +2794,9 @@ function initSoundHooks() {
         }
 
         if (detail.type === 'streak-5') {
+          if (playBufferedAudio('streak-five', STREAK_FIVE_AUDIO_URL, 0.66)) {
+            return;
+          }
           const streakAudio = getHostedAudio('__studyBotStreakFiveAudio', STREAK_FIVE_AUDIO_URL);
           if (playHostedAudio(streakAudio, 0.62)) {
             return;
@@ -2711,6 +2804,9 @@ function initSoundHooks() {
         }
 
         if (detail.type === 'rank-promo') {
+          if (playBufferedAudio('rank-up', RANK_UP_AUDIO_URL, 0.7)) {
+            return;
+          }
           const rankUpAudio = getHostedAudio('__studyBotRankUpAudio', RANK_UP_AUDIO_URL);
           if (playHostedAudio(rankUpAudio, 0.68)) {
             return;
@@ -3618,6 +3714,11 @@ function initSoundHooks() {
     }
 
     function openQueuePop(mode, context = null) {
+      if (window.__studyBotStopSound) {
+        window.__studyBotStopSound('queue-pop');
+      } else if (window.__studyBotStopHostedAudio && window.__studyBotQueueAudio) {
+        window.__studyBotStopHostedAudio(window.__studyBotQueueAudio);
+      }
       state.pendingMode = mode;
       state.pendingModeContext = context;
       renderQueuePop();
@@ -3652,7 +3753,9 @@ function initSoundHooks() {
     }
 
     function declineQueuePop() {
-      if (window.__studyBotStopHostedAudio && window.__studyBotQueueAudio) {
+      if (window.__studyBotStopSound) {
+        window.__studyBotStopSound('queue-pop');
+      } else if (window.__studyBotStopHostedAudio && window.__studyBotQueueAudio) {
         window.__studyBotStopHostedAudio(window.__studyBotQueueAudio);
       }
       state.pendingMode = '';
@@ -3661,7 +3764,9 @@ function initSoundHooks() {
     }
 
     function acceptQueuePop() {
-      if (window.__studyBotStopHostedAudio && window.__studyBotQueueAudio) {
+      if (window.__studyBotStopSound) {
+        window.__studyBotStopSound('queue-pop');
+      } else if (window.__studyBotStopHostedAudio && window.__studyBotQueueAudio) {
         window.__studyBotStopHostedAudio(window.__studyBotQueueAudio);
       }
       const mode = state.pendingMode;
