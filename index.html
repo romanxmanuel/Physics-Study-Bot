@@ -829,6 +829,42 @@
       color: var(--text-dim);
       max-width: 760px;
     }
+    .pack-switcher-panel {
+      min-width: min(100%, 390px);
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(212,175,55,0.18);
+      background: rgba(255,255,255,0.03);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+      position: relative;
+      z-index: 1;
+    }
+    .pack-switcher-panel .card-label {
+      margin-bottom: 8px;
+    }
+    .pack-switcher-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+      flex-wrap: wrap;
+    }
+    .pack-switcher-select {
+      flex: 1 1 240px;
+      min-height: 48px;
+      padding: 0 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(8,12,20,0.92);
+      color: var(--text);
+      font: inherit;
+      outline: none;
+    }
+    .pack-switcher-note {
+      margin-top: 8px;
+      color: var(--text-dim);
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
     .lobby-launch-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2688,6 +2724,21 @@ const QUESTIONS = [
       return state.savedPacks;
     }
 
+    function getPackSwitcherOptions() {
+      return [
+        { id: 'default', title: DEFAULT_STUDY_PACK.title, subtitle: DEFAULT_STUDY_PACK.subtitle },
+        ...getSavedPacks(),
+      ];
+    }
+
+    function selectPack(packId) {
+      if (packId === 'default') {
+        resetToDefaultPack();
+        return;
+      }
+      activatePack(packId);
+    }
+
     function renameSavedPack(packId) {
       const pack = state.savedPacks.find((item) => item.id === packId);
       if (!pack) return;
@@ -2712,6 +2763,29 @@ const QUESTIONS = [
       saveCustomPackState();
       syncHeaderTitle();
       renderScopeStudio();
+    }
+
+    function buildPackSwitcherPanel(contextLabel = 'Choose active pack') {
+      const packs = getPackSwitcherOptions();
+      return `
+        <div class="pack-switcher-panel">
+          <div class="card-label">${escapeHtml(contextLabel)}</div>
+          <div class="pack-switcher-row">
+            <select class="pack-switcher-select" onchange="selectPack(this.value)">
+              ${packs.map((pack) => `
+                <option value="${escapeHtml(pack.id)}" ${pack.id === state.activePackId ? 'selected' : ''}>
+                  ${escapeHtml(pack.id === 'default' ? 'Built-in Starter Pack' : pack.title)}
+                </option>
+              `).join('')}
+            </select>
+            <button class="btn btn-primary" onclick="goMode('scope')">Create New Pack</button>
+          </div>
+          <div class="pack-switcher-note">
+            ${state.activePackId === 'default'
+              ? 'You are on the built-in starter pack. Choose a saved pack or create a new one for another class.'
+              : `You are currently studying "${escapeHtml(getActiveStudyPack().title)}". Switch here anytime or create a fresh pack.`}
+          </div>
+        </div>`;
     }
 
     function acceptPreviewPack() {
@@ -3754,6 +3828,7 @@ function initSoundHooks() {
             <div class="topic-pill">${getPackLabel()}</div>
           </div>
         </div>
+        ${buildPackSwitcherPanel('Choose an existing pack')}
         <div class="studio-grid" style="margin-top:16px">
           <div class="upload-panel">
             <div class="card-label">1. Load your material</div>
@@ -4093,7 +4168,6 @@ function initSoundHooks() {
         : `You are already queued into "${escapeHtml(pack.title)}". Jump back into the fastest high-value rep cycle, or rotate packs if you are switching classes.`;
       const primaryActionLabel = firstRunState ? 'Create Study Pack' : nextAction.cta;
       const primaryAction = firstRunState ? "goMode('scope')" : nextAction.action;
-      const secondaryActionLabel = firstRunState ? 'Use Built-in Pack' : 'Open Pack Library';
       const secondaryAction = firstRunState ? "goMode('practice')" : "goMode('scope')";
       const strongestPrompt = weakTopics.length
         ? `Top weak spot: ${weakTopics[0][0]} (${weakTopics[0][1]} misses)`
@@ -4123,11 +4197,7 @@ function initSoundHooks() {
                 <h3>${firstRunState ? 'Lock a study pack before you enter queue' : 'Pick the content set before you pick the mode'}</h3>
                 <p>${firstRunState ? 'Upload class files and build a pack first, or stay on the starter pack if you just want to feel the loop immediately.' : packBoxBody}</p>
               </div>
-              <div class="btn-row">
-                <button class="btn btn-primary" onclick="goMode('scope')">${hasSavedPacks() ? 'Choose Pack' : 'Create Pack'}</button>
-                <button class="btn btn-secondary" onclick="${secondaryAction}">${secondaryActionLabel}</button>
-                ${!usingDefaultPack ? '<button class="btn btn-secondary" onclick="resetToDefaultPack()">Starter Pack</button>' : ''}
-              </div>
+              ${buildPackSwitcherPanel(firstRunState ? 'Choose a pack or create a new one' : 'Active pack selector')}
             </div>
             <div class="action-rail-meta">
               <div>
