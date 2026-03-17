@@ -1514,6 +1514,7 @@
     const MAX_SCOPE_TOTAL_BYTES = 24 * 1024 * 1024;
     const EXAM_DURATION_SECONDS = 25 * 60;
     const EXAM_QUESTION_COUNT = 16;
+    const QUEUE_POP_AUDIO_URL = 'https://tuna.voicemod.net/sound/b069fc0f-7f94-4908-bfd5-9d8ebce66390';
 
     const RANK_TIERS = [
       { key: 'iron', name: 'Iron', minXp: 0, upkeep: 'Starter border', bg: 'linear-gradient(145deg, #202532, #10141d)', trim: 'rgba(150,160,184,0.35)', glow: 'rgba(120,130,160,0.18)', core: 'rgba(220,228,255,0.18)', energy: 0.18, perks: ['Rank border', 'Focus HUD'] },
@@ -2633,7 +2634,33 @@ function initSoundHooks() {
       window.addEventListener('pointerdown', unlockOnGesture, true);
       window.addEventListener('keydown', unlockOnGesture, true);
 
+      const getQueuePopAudio = () => {
+        if (!QUEUE_POP_AUDIO_URL) return null;
+        if (!window.__studyBotQueueAudio) {
+          const audio = new Audio(QUEUE_POP_AUDIO_URL);
+          audio.preload = 'auto';
+          audio.crossOrigin = 'anonymous';
+          window.__studyBotQueueAudio = audio;
+        }
+        return window.__studyBotQueueAudio;
+      };
+
       const playCue = (detail = {}) => {
+        if (detail.type === 'queue-pop') {
+          const queueAudio = getQueuePopAudio();
+          if (queueAudio) {
+            try {
+              queueAudio.pause();
+              queueAudio.currentTime = 0;
+              queueAudio.volume = 0.65;
+              const playPromise = queueAudio.play();
+              if (playPromise && typeof playPromise.catch === 'function') {
+                playPromise.catch(() => {});
+              }
+            } catch (error) {}
+          }
+        }
+
         const ctx = window.__studyBotAudioCtx;
         if (!ctx || ctx.state !== 'running') return;
 
