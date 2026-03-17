@@ -399,6 +399,160 @@
       padding: 3px 10px; margin-left: 8px;
     }
 
+    .pack-banner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.8fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .pack-status {
+      background: linear-gradient(135deg, rgba(108,122,255,0.13), rgba(52,211,153,0.08));
+      border: 1px solid rgba(108,122,255,0.2);
+      border-radius: 14px;
+      padding: 18px;
+    }
+    .pack-status h3 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+    }
+    .pack-source-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .pack-source {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(255,255,255,0.03);
+    }
+    .pack-source a {
+      color: var(--accent2);
+      text-decoration: none;
+    }
+    .pack-source a:hover { text-decoration: underline; }
+    .studio-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .upload-panel,
+    .scope-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+    .upload-dropzone {
+      display: block;
+      border: 1px dashed rgba(108,122,255,0.45);
+      border-radius: 14px;
+      padding: 18px;
+      background: linear-gradient(135deg, rgba(108,122,255,0.08), rgba(167,139,250,0.05));
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .upload-dropzone:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .upload-dropzone input { display: none; }
+    .upload-dropzone strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+    .field-label {
+      display: block;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .text-input,
+    .textarea-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font: inherit;
+    }
+    .textarea-input {
+      min-height: 132px;
+      resize: vertical;
+    }
+    .file-chip-row,
+    .scope-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .file-chip,
+    .scope-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      font-size: 0.8rem;
+      color: var(--text);
+    }
+    .scope-chip button {
+      border: none;
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .scope-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .scope-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+    }
+    .scope-option input {
+      margin-top: 2px;
+      accent-color: var(--accent);
+    }
+    .status-callout {
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 14px;
+      border: 1px solid rgba(108,122,255,0.25);
+      background: rgba(108,122,255,0.08);
+      color: var(--text);
+    }
+    .status-callout.error {
+      border-color: rgba(248,113,113,0.3);
+      background: rgba(248,113,113,0.08);
+    }
+    .coach-note-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .coach-note {
+      border-left: 3px solid var(--accent2);
+      padding-left: 12px;
+      color: var(--text-dim);
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 640px) {
       .home-grid { grid-template-columns: 1fr; }
@@ -406,15 +560,18 @@
       .mission-grid { grid-template-columns: 1fr; }
       .exam-layout { flex-direction: column; }
       .formula-sheet { width: 100%; position: static; }
+      .pack-banner,
+      .studio-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <div id="app">
     <header>
-      <h1>⚡ Physics 2 Study Bot <span>— Exam 2: Ch 20 + 21</span></h1>
+      <h1 id="app-title">⚡ Physics 2 Study Bot <span>— Exam 2: Ch 20 + 21</span></h1>
       <div class="nav-tabs" id="nav">
         <button class="nav-tab active" onclick="goHome()">Home</button>
+        <button class="nav-tab" onclick="goMode('scope')">Scope</button>
         <button class="nav-tab" onclick="goMode('learn')">Learn</button>
         <button class="nav-tab" onclick="goMode('formulas')">Formulas</button>
         <button class="nav-tab" onclick="goMode('practice')">Practice</button>
@@ -426,6 +583,8 @@
   <script>
     const STORAGE_KEY = 'physicsBot_weakTopics';
     const PROFILE_KEY = 'physicsBot_profile';
+    const CUSTOM_PACK_KEY = 'physicsBot_customStudyPack';
+    const PACK_MODE_KEY = 'physicsBot_packMode';
     const EXAM_DURATION_SECONDS = 25 * 60;
     const EXAM_QUESTION_COUNT = 16;
     const XP_PER_LEVEL = 140;
@@ -451,6 +610,19 @@
       currentStreak: 0,
       sessionXp: 0,
       questionStartedAt: 0,
+      customPack: null,
+      activePackMode: 'default',
+      scopeStudio: {
+        files: [],
+        examContext: '',
+        extraFocus: '',
+        detectedScopes: [],
+        selectedScopes: [],
+        sourceSummary: [],
+        busy: '',
+        error: '',
+        success: '',
+      },
       profile: {
         xp: 0,
         sessions: 0,
@@ -1194,6 +1366,42 @@ const QUESTIONS = [
   },
 ];
 
+    const DEFAULT_STUDY_PACK = {
+      title: 'Physics 2 Exam 2 Mastery Pack',
+      subtitle: 'Current, resistance, circuits, Kirchhoff, and RC circuits from the built-in course pack.',
+      scope: ['Chapter 20', 'Chapter 21'],
+      concepts: CONCEPTS,
+      formulas: FORMULAS,
+      questions: QUESTIONS,
+      sourceSummary: [
+        {
+          label: 'Built-in study pack',
+          type: 'default',
+          detail: 'Generated from the original training material bundled into the app.',
+          url: '',
+        },
+      ],
+      coachNotes: [
+        'Use Learn first if the chapter feels rusty, then shift into Practice once the formula names feel familiar.',
+        'Your weak-topic tracker still applies on custom packs, so repeated misses will keep surfacing.',
+      ],
+    };
+
+    try {
+      const savedPack = localStorage.getItem(CUSTOM_PACK_KEY);
+      if (savedPack) state.customPack = JSON.parse(savedPack);
+    } catch (error) {
+      state.customPack = null;
+    }
+    try {
+      const savedMode = localStorage.getItem(PACK_MODE_KEY);
+      if (savedMode === 'custom' && state.customPack) {
+        state.activePackMode = 'custom';
+      }
+    } catch (error) {
+      state.activePackMode = 'default';
+    }
+
     function saveWeakTopics() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state.weakTopics));
@@ -1207,6 +1415,66 @@ const QUESTIONS = [
       } catch (error) {
         // Ignore storage failures.
       }
+    }
+
+    function saveCustomPackState() {
+      try {
+        if (state.customPack) localStorage.setItem(CUSTOM_PACK_KEY, JSON.stringify(state.customPack));
+        else localStorage.removeItem(CUSTOM_PACK_KEY);
+        localStorage.setItem(PACK_MODE_KEY, state.activePackMode);
+      } catch (error) {
+        // Ignore storage failures.
+      }
+    }
+
+    function getActiveStudyPack() {
+      return state.activePackMode === 'custom' && state.customPack ? state.customPack : DEFAULT_STUDY_PACK;
+    }
+
+    function getConcepts() {
+      return getActiveStudyPack().concepts || [];
+    }
+
+    function getFormulas() {
+      return getActiveStudyPack().formulas || [];
+    }
+
+    function getQuestions() {
+      return getActiveStudyPack().questions || [];
+    }
+
+    function getPackLabel() {
+      return state.activePackMode === 'custom' && state.customPack ? 'Custom Pack Active' : 'Built-in Pack Active';
+    }
+
+    function getPackScopeText(pack = getActiveStudyPack()) {
+      return (pack.scope && pack.scope.length ? pack.scope : ['Focused study scope']).join(' • ');
+    }
+
+    function syncHeaderTitle() {
+      const pack = getActiveStudyPack();
+      const title = document.getElementById('app-title');
+      if (!title) return;
+      const scopeLabel = pack.scope && pack.scope.length
+        ? pack.scope.slice(0, 2).join(' + ')
+        : 'Focused Scope';
+      title.innerHTML = `⚡ Physics Study Bot <span>— ${pack.title || scopeLabel}</span>`;
+    }
+
+    function activateCustomPack(studyPack) {
+      state.customPack = studyPack;
+      state.activePackMode = 'custom';
+      state.learnIndex = 0;
+      state.formulaIndex = 0;
+      saveCustomPackState();
+      syncHeaderTitle();
+    }
+
+    function resetToDefaultPack() {
+      state.activePackMode = 'default';
+      saveCustomPackState();
+      syncHeaderTitle();
+      goHome();
     }
 
     function getLevelInfo() {
@@ -1346,6 +1614,15 @@ const QUESTIONS = [
         .join('');
     }
 
+    function escapeHtml(text) {
+      return String(text ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     function formatTime(totalSeconds) {
       const safe = Math.max(0, totalSeconds);
       const minutes = Math.floor(safe / 60);
@@ -1359,8 +1636,237 @@ const QUESTIONS = [
         .sort((a, b) => b[1] - a[1]);
     }
 
+    function getSelectedScopeList() {
+      const manual = state.scopeStudio.extraFocus
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean);
+      return [...new Set([...state.scopeStudio.selectedScopes, ...manual])];
+    }
+
+    function updateScopeStudioField(key, value) {
+      state.scopeStudio[key] = value;
+    }
+
+    function handleStudyFiles(input) {
+      state.scopeStudio.files = Array.from(input.files || []);
+      state.scopeStudio.error = '';
+      state.scopeStudio.success = '';
+      renderScopeStudio();
+    }
+
+    function toggleDetectedScope(scope, checked) {
+      if (checked) {
+        state.scopeStudio.selectedScopes = [...new Set([...state.scopeStudio.selectedScopes, scope])];
+      } else {
+        state.scopeStudio.selectedScopes = state.scopeStudio.selectedScopes.filter((item) => item !== scope);
+      }
+      renderScopeStudio();
+    }
+
+    function removeSelectedScope(scope) {
+      state.scopeStudio.selectedScopes = state.scopeStudio.selectedScopes.filter((item) => item !== scope);
+      state.scopeStudio.extraFocus = state.scopeStudio.extraFocus
+        .split(',')
+        .map((item) => item.trim())
+        .filter((item) => item && item !== scope)
+        .join(', ');
+      renderScopeStudio();
+    }
+
+    function clearScopeStudioMessages() {
+      state.scopeStudio.error = '';
+      state.scopeStudio.success = '';
+    }
+
+    async function sendScopeRequest(action) {
+      if (!state.scopeStudio.files.length) {
+        throw new Error('Add at least one file before running the study-pack generator.');
+      }
+
+      const formData = new FormData();
+      formData.append('action', action);
+      formData.append('examContext', state.scopeStudio.examContext || '');
+      formData.append('selectedScopes', JSON.stringify(getSelectedScopeList()));
+      state.scopeStudio.files.forEach((file) => formData.append('files', file, file.name));
+
+      const response = await fetch('/api/generate-study-pack', {
+        method: 'POST',
+        body: formData,
+      });
+      const payload = await response.json();
+
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.error || 'The study-pack request failed.');
+      }
+      return payload;
+    }
+
+    async function analyzeUploads() {
+      clearScopeStudioMessages();
+      state.scopeStudio.busy = 'analyze';
+      renderScopeStudio();
+
+      try {
+        const payload = await sendScopeRequest('analyze');
+        state.scopeStudio.detectedScopes = payload.detectedScopes || [];
+        state.scopeStudio.sourceSummary = payload.sourceSummary || [];
+        if (!state.scopeStudio.selectedScopes.length) {
+          state.scopeStudio.selectedScopes = [...state.scopeStudio.detectedScopes];
+        }
+        state.scopeStudio.success = state.scopeStudio.detectedScopes.length
+          ? 'Scope analysis complete. Review the suggested chapters or topics, then build the pack.'
+          : 'The files were accepted, but no obvious chapter labels were detected. Add scope hints manually and build the pack.';
+      } catch (error) {
+        state.scopeStudio.error = error.message || 'Could not analyze the uploaded material.';
+      } finally {
+        state.scopeStudio.busy = '';
+        renderScopeStudio();
+      }
+    }
+
+    async function generateCustomPack() {
+      clearScopeStudioMessages();
+      state.scopeStudio.busy = 'generate';
+      renderScopeStudio();
+
+      try {
+        const payload = await sendScopeRequest('generate');
+        activateCustomPack(payload.studyPack);
+        state.scopeStudio.detectedScopes = payload.detectedScopes || [];
+        state.scopeStudio.sourceSummary = payload.sourceSummary || payload.studyPack.sourceSummary || [];
+        state.scopeStudio.success = 'Custom study pack generated and activated. Learn, Formulas, Practice, and Mock Exam now use your uploaded material.';
+        goHome();
+      } catch (error) {
+        state.scopeStudio.error = error.message || 'Could not generate the custom study pack.';
+        renderScopeStudio();
+      } finally {
+        state.scopeStudio.busy = '';
+      }
+    }
+
+    function buildSourceCards(items) {
+      if (!items.length) {
+        return '<p style="color:var(--text-dim)">No source summary yet. Analyze files or generate a pack to see what the system used.</p>';
+      }
+
+      return `
+        <div class="pack-source-list">
+          ${items.map((item) => `
+            <div class="pack-source">
+              <strong>${escapeHtml(item.label || 'Source')}</strong>
+              <p>${escapeHtml(item.detail || '')}</p>
+              <p style="font-size:0.8rem;color:var(--accent2);text-transform:uppercase;letter-spacing:0.08em">${escapeHtml(item.type || 'reference')}</p>
+              ${item.url ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noreferrer">Open source</a>` : ''}
+            </div>
+          `).join('')}
+        </div>`;
+    }
+
+    function renderScopeStudio() {
+      syncHeaderTitle();
+      const pack = getActiveStudyPack();
+      const selectedScopes = getSelectedScopeList();
+      const isAnalyzing = state.scopeStudio.busy === 'analyze';
+      const isGenerating = state.scopeStudio.busy === 'generate';
+      const canRun = state.scopeStudio.files.length > 0;
+
+      document.getElementById('main').innerHTML = `
+        <div class="card hero-panel">
+          <div class="card-label">Upload & scope studio</div>
+          <h2>Generate the site from new class material</h2>
+          <p>Upload slides, PDFs, notes, or screenshots. The app will detect likely chapters, let you tighten the exam scope, and then generate a fresh study pack for Learn, Formulas, Practice, and the Mock Exam.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px">
+            <div class="topic-pill">${state.scopeStudio.files.length} files ready</div>
+            <div class="topic-pill">${selectedScopes.length} scope tags selected</div>
+            <div class="topic-pill">${getPackLabel()}</div>
+          </div>
+        </div>
+        <div class="studio-grid" style="margin-top:16px">
+          <div class="upload-panel">
+            <div class="card-label">1. Load your material</div>
+            <label class="upload-dropzone">
+              <input type="file" multiple accept=".pptx,.pdf,.txt,.md,.png,.jpg,.jpeg,.webp" onchange="handleStudyFiles(this)">
+              <strong>Drop in class files or click to browse</strong>
+              <p>Best results come from lecture slides, review PDFs, study guides, and clean screenshots. Supported: PPTX, PDF, TXT, MD, PNG, JPG, WEBP.</p>
+            </label>
+            ${state.scopeStudio.files.length ? `
+              <div class="file-chip-row">
+                ${state.scopeStudio.files.map((file) => `<span class="file-chip">${escapeHtml(file.name)}</span>`).join('')}
+              </div>` : ''}
+            <div style="margin-top:18px">
+              <label class="field-label" for="exam-context-input">Exam context</label>
+              <textarea id="exam-context-input" class="textarea-input" placeholder="Example: Exam 3 covers Chapters 24-26, mostly Gauss's law and electric flux, plus one conceptual problem on conductors." oninput="updateScopeStudioField('examContext', this.value)">${escapeHtml(state.scopeStudio.examContext)}</textarea>
+            </div>
+            <div style="margin-top:16px">
+              <label class="field-label" for="extra-focus-input">Manual scope tags</label>
+              <input id="extra-focus-input" class="text-input" type="text" placeholder="Example: Chapter 24, Gauss's Law, electric flux" value="${escapeHtml(state.scopeStudio.extraFocus)}" oninput="updateScopeStudioField('extraFocus', this.value)">
+            </div>
+            ${selectedScopes.length ? `
+              <div class="scope-chip-row">
+                ${selectedScopes.map((scope) => `<span class="scope-chip">${escapeHtml(scope)}<button type="button" onclick="removeSelectedScope(${JSON.stringify(scope)})">×</button></span>`).join('')}
+              </div>` : ''}
+            <div class="btn-row">
+              <button class="btn btn-secondary" onclick="analyzeUploads()" ${canRun && !state.scopeStudio.busy ? '' : 'disabled'}>${isAnalyzing ? 'Analyzing…' : 'Analyze Materials'}</button>
+              <button class="btn btn-primary" onclick="generateCustomPack()" ${canRun && !state.scopeStudio.busy ? '' : 'disabled'}>${isGenerating ? 'Generating…' : 'Build Custom Pack'}</button>
+              ${state.customPack ? '<button class="btn btn-secondary" onclick="resetToDefaultPack()">Use Default Pack</button>' : ''}
+            </div>
+            ${state.scopeStudio.error ? `<div class="status-callout error">${state.scopeStudio.error}</div>` : ''}
+            ${state.scopeStudio.success ? `<div class="status-callout">${state.scopeStudio.success}</div>` : ''}
+          </div>
+          <div class="scope-panel">
+            <div class="card-label">2. Confirm scope</div>
+            <h3 style="margin-bottom:8px">Suggested chapters and topics</h3>
+            <p style="color:var(--text-dim)">Analyze first to auto-detect the scope. You can keep all suggestions, remove some, or add your own scope tags manually.</p>
+            ${state.scopeStudio.detectedScopes.length ? `
+              <div class="scope-list">
+                ${state.scopeStudio.detectedScopes.map((scope) => `
+                  <label class="scope-option">
+                    <input type="checkbox" ${selectedScopes.includes(scope) ? 'checked' : ''} onchange="toggleDetectedScope(${JSON.stringify(scope)}, this.checked)">
+                    <div>
+                      <strong>${escapeHtml(scope)}</strong>
+                      <p style="color:var(--text-dim)">Include this topic in the generated site.</p>
+                    </div>
+                  </label>
+                `).join('')}
+              </div>` : '<div class="status-callout">No detected scope yet. Upload files and run Analyze Materials to pull out likely chapter targets.</div>'}
+            <div class="card" style="margin-top:16px;background:var(--surface2)">
+              <div class="card-label">Current active pack</div>
+              <h3 style="font-size:1rem;margin-bottom:6px">${pack.title}</h3>
+              <p>${pack.subtitle || 'Focused study pack'}</p>
+              <div class="scope-chip-row" style="margin-top:12px">
+                <span class="topic-pill">${getPackLabel()}</span>
+                <span class="topic-pill">${getConcepts().length} concepts</span>
+                <span class="topic-pill">${getFormulas().length} formulas</span>
+                <span class="topic-pill">${getQuestions().length} questions</span>
+              </div>
+              <p style="margin-top:10px">${getPackScopeText(pack)}</p>
+            </div>
+          </div>
+        </div>
+        <div class="pack-banner">
+          <div class="pack-status">
+            <div class="card-label">What the pack will use</div>
+            <h3>Source summary</h3>
+            <p>The generator combines your uploaded files with focused web enrichment for only the selected scope. The generated pack becomes the live content layer for the whole site.</p>
+            ${buildSourceCards(state.scopeStudio.sourceSummary.length ? state.scopeStudio.sourceSummary : pack.sourceSummary || [])}
+          </div>
+          <div class="pack-status">
+            <div class="card-label">Execution notes</div>
+            <h3>How the rebuild works</h3>
+            <div class="coach-note-list">
+              <div class="coach-note">Analyze Materials detects likely chapter labels directly from file names, slide text, and your exam context.</div>
+              <div class="coach-note">Build Custom Pack sends the uploaded material plus your chosen scope to the generator endpoint, which creates a new study pack for the app.</div>
+              <div class="coach-note">Once a pack is generated, Learn, Formulas, Practice, and Mock Exam switch over instantly and stay saved in your browser.</div>
+            </div>
+          </div>
+        </div>`;
+
+      setActiveTab(1);
+    }
+
     function buildFormulaSheet() {
-      const groups = FORMULAS.reduce((acc, formula) => {
+      const groups = getFormulas().reduce((acc, formula) => {
         (acc[formula.chapter] ||= []).push(formula);
         return acc;
       }, {});
@@ -1421,7 +1927,9 @@ const QUESTIONS = [
     function goMode(mode) {
       if (state.mode === 'exam' && mode !== 'exam') clearExamTimer();
       state.mode = mode;
-      if (mode === 'learn') {
+      if (mode === 'scope') {
+        renderScopeStudio();
+      } else if (mode === 'learn') {
         state.learnIndex = 0;
         renderLearn();
       } else if (mode === 'formulas') {
@@ -1432,7 +1940,7 @@ const QUESTIONS = [
       } else if (mode === 'exam') {
         startExam();
       }
-      setActiveTab(['home', 'learn', 'formulas', 'practice', 'exam'].indexOf(mode));
+      setActiveTab(['home', 'scope', 'learn', 'formulas', 'practice', 'exam'].indexOf(mode));
     }
 
     function setActiveTab(index) {
@@ -1442,6 +1950,11 @@ const QUESTIONS = [
     }
 
     function renderHome() {
+      syncHeaderTitle();
+      const pack = getActiveStudyPack();
+      const concepts = getConcepts();
+      const formulas = getFormulas();
+      const questions = getQuestions();
       const weakTopics = getWeakTopics();
       const level = getLevelInfo();
       const achievements = getVisibleAchievements();
@@ -1452,15 +1965,33 @@ const QUESTIONS = [
       document.getElementById('main').innerHTML = `
         <div class="card hero-panel">
           <div class="card-label">Your study plan</div>
-          <h2>Exam 2 study flow</h2>
-          <p>Build momentum, climb ranks, and stay in the loop. The app now rewards clean streaks, fast solves, boss rounds, and exam-level execution.</p>
+          <h2>${pack.title}</h2>
+          <p>${pack.subtitle || 'Build momentum, climb ranks, and stay in the loop. The app rewards clean streaks, fast solves, boss rounds, and exam-level execution.'}</p>
           ${renderGameHud('Home Base')}
           <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px">
-            <div class="topic-pill">${CONCEPTS.length} concept cards</div>
-            <div class="topic-pill">${FORMULAS.length} formulas</div>
-            <div class="topic-pill">${QUESTIONS.length} practice questions</div>
-            <div class="topic-pill">25 minute mock exam</div>
+            <div class="topic-pill">${concepts.length} concept cards</div>
+            <div class="topic-pill">${formulas.length} formulas</div>
+            <div class="topic-pill">${questions.length} practice questions</div>
+            <div class="topic-pill">${Math.min(EXAM_QUESTION_COUNT, questions.length)} question mock exam</div>
             <div class="topic-pill">Rank ${level.level}</div>
+            <div class="topic-pill">${getPackLabel()}</div>
+          </div>
+        </div>
+        <div class="pack-banner">
+          <div class="pack-status">
+            <div class="card-label">Active scope</div>
+            <h3>${getPackScopeText(pack)}</h3>
+            <p>${state.activePackMode === 'custom' ? 'This site is currently running on your uploaded study material.' : 'This is the built-in exam pack. Upload new material when you want the whole site to retune around a different exam scope.'}</p>
+            <div class="btn-row" style="margin-top:14px">
+              <button class="btn btn-primary" onclick="goMode('scope')">${state.customPack ? 'Update Custom Pack' : 'Upload New Material'}</button>
+              ${state.customPack ? '<button class="btn btn-secondary" onclick="resetToDefaultPack()">Switch to Default Pack</button>' : ''}
+            </div>
+          </div>
+          <div class="pack-status">
+            <div class="card-label">Source map</div>
+            <h3>What the site is training from</h3>
+            <p>${pack.sourceSummary && pack.sourceSummary.length ? 'The current study pack shows the sources that shaped the active content.' : 'No source summary is available yet.'}</p>
+            ${buildSourceCards((pack.sourceSummary || []).slice(0, 3))}
           </div>
         </div>
         <div class="card" style="margin-top:16px;background:var(--surface2)">
@@ -1489,33 +2020,55 @@ const QUESTIONS = [
           <div class="home-card" onclick="goMode('learn')">
             <div class="home-card-icon">📘</div>
             <h3>1. Learn</h3>
-            <p>Plain-English teaching cards with analogies and core equations from the lecture material.</p>
-            <span class="badge">${CONCEPTS.length} cards</span>
+            <p>Plain-English teaching cards with analogies and core equations from the active study pack.</p>
+            <span class="badge">${concepts.length} cards</span>
           </div>
           <div class="home-card" onclick="goMode('formulas')">
             <div class="home-card-icon">🧮</div>
             <h3>2. Formulas</h3>
             <p>Equation-by-equation review with variable definitions, units, and what each formula means.</p>
-            <span class="badge">${FORMULAS.length} cards</span>
+            <span class="badge">${formulas.length} cards</span>
           </div>
           <div class="home-card" onclick="goMode('practice')">
             <div class="home-card-icon">🎯</div>
             <h3>3. Practice</h3>
             <p>Immediate feedback, explanations, and weak-topic requeueing once a topic is missed multiple times.</p>
-            <span class="badge">${QUESTIONS.length} questions</span>
+            <span class="badge">${questions.length} questions</span>
           </div>
           <div class="home-card" onclick="goMode('exam')">
             <div class="home-card-icon">📝</div>
             <h3>4. Mock Exam</h3>
-            <p>16 random questions, 25-minute timer, formula sheet sidebar, and a full review at the end.</p>
-            <span class="badge">16-question exam</span>
+            <p>Random questions, a timed sprint, formula sheet sidebar, and a full review at the end.</p>
+            <span class="badge">${Math.min(EXAM_QUESTION_COUNT, questions.length)}-question exam</span>
+          </div>
+          <div class="home-card" onclick="goMode('scope')">
+            <div class="home-card-icon">🧠</div>
+            <h3>5. Upload & Scope</h3>
+            <p>Bring in new lecture material, pick the exact exam chapters, and regenerate the whole study site around that scope.</p>
+            <span class="badge">${state.customPack ? 'Custom pack ready' : 'Build new pack'}</span>
           </div>
         </div>`;
     }
 
     function renderLearn() {
-      const concept = CONCEPTS[state.learnIndex];
-      const total = CONCEPTS.length;
+      syncHeaderTitle();
+      const concepts = getConcepts();
+      if (!concepts.length) {
+        document.getElementById('main').innerHTML = `
+          <div class="card">
+            <div class="card-label">Learn</div>
+            <h2>No concept cards in this pack yet</h2>
+            <p>Generate a custom pack with clearer material, or switch back to the default pack.</p>
+            <div class="btn-row">
+              <button class="btn btn-secondary" onclick="goMode('scope')">Open Upload & Scope</button>
+              <button class="btn btn-primary" onclick="goHome()">Back Home</button>
+            </div>
+          </div>`;
+        return;
+      }
+
+      const concept = concepts[state.learnIndex];
+      const total = concepts.length;
       const progress = ((state.learnIndex + 1) / total) * 100;
 
       document.getElementById('main').innerHTML = `
@@ -1559,7 +2112,7 @@ const QUESTIONS = [
     }
 
     function nextConcept() {
-      if (state.learnIndex < CONCEPTS.length - 1) {
+      if (state.learnIndex < getConcepts().length - 1) {
         state.learnIndex += 1;
         renderLearn();
         scrollTop();
@@ -1569,8 +2122,24 @@ const QUESTIONS = [
     }
 
     function renderFormulas() {
-      const formula = FORMULAS[state.formulaIndex];
-      const total = FORMULAS.length;
+      syncHeaderTitle();
+      const formulas = getFormulas();
+      if (!formulas.length) {
+        document.getElementById('main').innerHTML = `
+          <div class="card">
+            <div class="card-label">Formulas</div>
+            <h2>No formula cards in this pack yet</h2>
+            <p>Generate a custom pack with formula-heavy material, or switch back to the default pack.</p>
+            <div class="btn-row">
+              <button class="btn btn-secondary" onclick="goMode('scope')">Open Upload & Scope</button>
+              <button class="btn btn-primary" onclick="goHome()">Back Home</button>
+            </div>
+          </div>`;
+        return;
+      }
+
+      const formula = formulas[state.formulaIndex];
+      const total = formulas.length;
       const progress = ((state.formulaIndex + 1) / total) * 100;
 
       document.getElementById('main').innerHTML = `
@@ -1616,7 +2185,7 @@ const QUESTIONS = [
     }
 
     function nextFormula() {
-      if (state.formulaIndex < FORMULAS.length - 1) {
+      if (state.formulaIndex < getFormulas().length - 1) {
         state.formulaIndex += 1;
         renderFormulas();
         scrollTop();
@@ -1626,8 +2195,37 @@ const QUESTIONS = [
     }
 
     function startPractice(topicFilter = null) {
-      const shuffled = shuffle(QUESTIONS.filter((question) => !topicFilter || question.topic === topicFilter));
+      const questions = getQuestions();
+      if (!questions.length) {
+        document.getElementById('main').innerHTML = `
+          <div class="card">
+            <div class="card-label">Practice</div>
+            <h2>No practice questions are available</h2>
+            <p>The active pack does not have question data yet. Generate a new pack or switch to the default course pack.</p>
+            <div class="btn-row">
+              <button class="btn btn-secondary" onclick="goMode('scope')">Open Upload & Scope</button>
+              <button class="btn btn-primary" onclick="goHome()">Back Home</button>
+            </div>
+          </div>`;
+        return;
+      }
+
+      const shuffled = shuffle(questions.filter((question) => !topicFilter || question.topic === topicFilter));
       const pool = shuffled.sort((a, b) => (state.weakTopics[b.topic] || 0) - (state.weakTopics[a.topic] || 0));
+
+      if (!pool.length) {
+        document.getElementById('main').innerHTML = `
+          <div class="card">
+            <div class="card-label">Practice</div>
+            <h2>No questions matched that drill</h2>
+            <p>That topic is not present in the active pack. Try the full pack or generate a tighter custom pack.</p>
+            <div class="btn-row">
+              <button class="btn btn-secondary" onclick="startPractice()">Practice Active Pack</button>
+              <button class="btn btn-primary" onclick="goMode('scope')">Adjust Scope</button>
+            </div>
+          </div>`;
+        return;
+      }
 
       state.mode = 'practice';
       state.practiceTopicFilter = topicFilter;
@@ -1642,12 +2240,13 @@ const QUESTIONS = [
       state.questionStartedAt = Date.now();
       state.profile.sessions += 1;
       saveProfile();
-      setActiveTab(3);
+      setActiveTab(4);
       renderPractice();
       scrollTop();
     }
 
     function renderPractice() {
+      syncHeaderTitle();
       if (state.practiceIndex >= state.practiceQueue.length) {
         renderPracticeResults();
         return;
@@ -1766,9 +2365,24 @@ const QUESTIONS = [
     }
 
     function startExam() {
+      const questions = getQuestions();
+      if (!questions.length) {
+        document.getElementById('main').innerHTML = `
+          <div class="card">
+            <div class="card-label">Mock exam</div>
+            <h2>No exam questions are available</h2>
+            <p>The active pack needs question content before an exam can run.</p>
+            <div class="btn-row">
+              <button class="btn btn-secondary" onclick="goMode('scope')">Open Upload & Scope</button>
+              <button class="btn btn-primary" onclick="goHome()">Back Home</button>
+            </div>
+          </div>`;
+        return;
+      }
+
       clearExamTimer();
       state.mode = 'exam';
-      state.examQuestions = shuffle(QUESTIONS).slice(0, Math.min(EXAM_QUESTION_COUNT, QUESTIONS.length));
+      state.examQuestions = shuffle(questions).slice(0, Math.min(EXAM_QUESTION_COUNT, questions.length));
       state.examIndex = 0;
       state.examAnswers = [];
       state.examAnswered = false;
@@ -1778,13 +2392,14 @@ const QUESTIONS = [
       state.questionStartedAt = Date.now();
       state.profile.sessions += 1;
       saveProfile();
-      setActiveTab(4);
+      setActiveTab(5);
       startExamTimer();
       renderExam();
       scrollTop();
     }
 
     function renderExam() {
+      syncHeaderTitle();
       if (state.examIndex >= state.examQuestions.length) {
         renderExamResults(false);
         return;
@@ -1944,6 +2559,7 @@ const QUESTIONS = [
         </div>`;
     }
 
+    syncHeaderTitle();
     renderHome();
   </script>
 </body>

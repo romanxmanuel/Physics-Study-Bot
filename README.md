@@ -29,6 +29,8 @@ It teaches the material, drills weak spots, and keeps the user moving through a 
 
 The app runs entirely from a single `index.html` file with no framework, no build step, and no backend.
 
+For the built-in pack, that is still true. Custom pack generation now adds an optional Vercel function so users can upload new course material and regenerate the site around a new exam scope.
+
 ## Live Project
 
 - Production: [physics-study-bot.vercel.app](https://physics-study-bot.vercel.app)
@@ -54,6 +56,8 @@ This turned into a hybrid of a study guide, practice engine, and lightweight gam
 - `Mock Exam` mode with timer, formula sheet, and review screen
 - persistent progression using XP, levels, streaks, and achievements
 - responsive dark UI built for long study sessions
+- `Upload & Scope` mode that accepts new class files and rebuilds the active study pack from those materials
+- custom pack persistence so uploaded-material packs survive refreshes in the same browser
 
 ## Screenshots
 
@@ -69,9 +73,10 @@ This turned into a hybrid of a study guide, practice engine, and lightweight gam
 
 - pure `HTML`, `CSS`, and vanilla `JavaScript`
 - single-file application architecture in `index.html`
-- static deployment with no build command required
+- static frontend with an optional Vercel serverless generation route
 - state-driven rendering without any library abstraction
 - local persistence through `localStorage`
+- server-side study-pack generation through the OpenAI Responses API with scoped web enrichment
 - social preview metadata for clean link sharing on Vercel/GitHub
 
 ## Product Decisions
@@ -114,11 +119,27 @@ Then visit `http://localhost:4173`.
 
 ## Deployment
 
-This project is deployed as a static site on Vercel.
+This project is deployed on Vercel.
 
 - framework preset: `Other`
 - build command: none
 - output directory: none
+
+### Environment Variables
+
+To enable custom uploaded-material pack generation, add:
+
+```bash
+OPENAI_API_KEY=your_key_here
+```
+
+Optional:
+
+```bash
+OPENAI_STUDY_MODEL=gpt-4o-mini
+```
+
+Without `OPENAI_API_KEY`, the site still works with the built-in study pack and the upload analyzer can still detect likely scopes from filenames and extracted slide/text content.
 
 ## Source Material
 
@@ -142,6 +163,8 @@ The raw training files are intentionally excluded from the public repository.
 - a broader question bank
 - more deliberate motion and sound design
 - expanded physics coverage beyond the current exam unit
+- stronger chapter extraction for mixed PDF-heavy uploads
+- teacher-mode controls for question count, difficulty mix, and formula density
 
 ## License
 
