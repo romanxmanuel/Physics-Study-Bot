@@ -2830,24 +2830,301 @@ const QUESTIONS = [
   },
 ];
 
+const EXAM3_CONCEPTS = [
+  {
+    chapter: 'Ch 22',
+    topic: 'Magnets and field lines',
+    title: 'Magnetic poles always come in pairs',
+    body: `Every magnet has both a north pole and a south pole. Breaking a magnet makes smaller dipoles, not isolated poles. In this course there are no magnetic monopoles.\n\nMagnetic field lines point in the direction a tiny compass would aim. Outside a bar magnet they leave the north pole and enter the south pole. Denser lines mean a stronger field.`,
+    analogy: 'Field lines are like traffic arrows. Direction tells you where a compass points, and density tells you how strong the magnetic field is there.',
+    formula: null,
+    formulaNote: null,
+    workedExample: 'If one picture shows tighter field-line spacing than another, the tighter region has the larger magnetic field magnitude.',
+    selfCheck: 'State three properties of magnetic field lines from memory.',
+    commonTrap: 'Field lines cannot cross, because that would give two field directions at the same point.',
+  },
+  {
+    chapter: 'Ch 22',
+    topic: 'Earth, ferromagnets, electromagnets',
+    title: 'Why compasses work and why iron cores help',
+    body: `Earth behaves like a giant magnet, so a compass aligns with Earth’s field. The geographic North Pole lies near Earth’s magnetic south pole, which is why a compass north end points there.\n\nFerromagnetic materials like iron can be strongly magnetized. An iron core inside a current-carrying coil makes the electromagnet much stronger.`,
+    analogy: 'A compass is a tiny free-turning magnet. An iron core is like giving the coil a better path for the field to build through.',
+    formula: null,
+    formulaNote: null,
+    workedExample: 'If the current stays fixed but an iron core is inserted into a coil, the magnetic effect increases without changing the circuit current.',
+    selfCheck: 'Why does the north end of a compass point toward geographic north?',
+    commonTrap: 'Do not confuse geographic north with a north magnetic pole in the bar-magnet labeling sense.',
+  },
+  {
+    chapter: 'Ch 22',
+    topic: 'Force on a moving charge',
+    title: 'Magnetic force only uses the velocity perpendicular to B',
+    body: `A magnetic force acts on a charge only when the charge is moving. The force depends on the component of velocity perpendicular to the magnetic field.\n\nIf the charge moves parallel to the field, the magnetic force is zero. If it moves perpendicular to the field, the force is maximum.`,
+    analogy: 'The field only reacts to motion that tries to cut across it. Motion along the field lines does not trigger a magnetic shove.',
+    formula: 'F = |q|vB sin &theta;',
+    formulaNote: 'Use the angle between the velocity vector and the magnetic field vector.',
+    workedExample: 'If a particle moves exactly parallel to B, then sin 0 = 0 and the magnetic force is zero even though the particle is moving.',
+    selfCheck: 'Give two different ways the magnetic force can be zero.',
+    commonTrap: 'Students often plug in the full speed when only the perpendicular component matters.',
+  },
+  {
+    chapter: 'Ch 22',
+    topic: 'Circular motion in a magnetic field',
+    title: 'Magnetic force bends the path without changing speed',
+    body: `A magnetic force is perpendicular to the velocity, so it changes direction rather than speed. In a uniform field, a charge entering perpendicular to the field follows a circular path.\n\nThat means you can set the magnetic force equal to the centripetal force.`,
+    analogy: 'It is like steering a car around a turn at constant speed. The direction changes continuously even though the speed can stay the same.',
+    formula: 'r = mv / (|q|B)',
+    formulaNote: 'This comes from setting magnetic force equal to centripetal force for circular motion.',
+    workedExample: 'If B doubles while m, v, and q stay fixed, the circular radius is cut in half.',
+    selfCheck: 'What happens to the radius if the particle speed doubles?',
+    commonTrap: 'Magnetic force does no work here, so do not say the speed increases just because the path curves.',
+  },
+  {
+    chapter: 'Ch 22',
+    topic: 'Current-carrying conductor and torque',
+    title: 'Wires get pushed and loops get twisted',
+    body: `A current-carrying wire in a magnetic field feels a force. A current loop can feel a torque, which is the basic idea behind motors and meters.\n\nOpposite sides of a loop can feel forces in opposite directions, producing rotation instead of simple translation.`,
+    analogy: 'On a loop, one side gets pushed one way and the other side gets pushed the opposite way, creating a twist.',
+    formula: 'F = ILB sin &theta;   and   &tau; = NIAB sin &theta;',
+    formulaNote: 'For torque, N is the number of turns and A is the loop area.',
+    workedExample: 'If sin θ = 0, the loop torque is zero even though some individual wire segments may still feel forces.',
+    selfCheck: 'Name two ways to increase motor torque without changing the angle.',
+    commonTrap: 'Do not mix the force-on-a-wire formula with the torque-on-a-loop formula.',
+  },
+  {
+    chapter: 'Ch 22',
+    topic: 'Fields produced by currents',
+    title: 'Long wires, loops, and solenoids each have a standard field pattern',
+    body: `A long straight wire creates circular field lines around the wire. A circular loop produces a bar-magnet-like pattern. A long solenoid produces an almost uniform field inside.\n\nA major Exam 3 skill is identifying which geometry the diagram matches before choosing a formula.`,
+    analogy: 'Treat them as three field templates: circular around a wire, magnet-like around a loop, and nearly uniform inside a solenoid.',
+    formula: 'B = &mu;<sub>0</sub>I / (2&pi;r),   B = N&mu;<sub>0</sub>I / (2R),   B = &mu;<sub>0</sub>nI',
+    formulaNote: 'Use the long-wire formula for radial distance r, the loop-center formula for radius R, and the solenoid formula with turn density n.',
+    workedExample: 'If the question says “inside a long tightly wound coil,” that is a solenoid cue, not a single-loop cue.',
+    selfCheck: 'Which source makes a circular magnetic field around itself?',
+    commonTrap: 'Students often use the loop formula in a solenoid problem.',
+  },
+  {
+    chapter: 'Ch 23',
+    topic: 'Magnetic flux, Faraday law, and Lenz law',
+    title: 'Changing flux is what induces emf',
+    body: `Magnetic flux measures how much field passes through a surface. Any change in flux can induce emf. Lenz’s law gives the direction: the induced current opposes the change in flux.\n\nDirection questions become easier if you ask what is changing, then ask what induced field would resist that change.`,
+    analogy: 'The loop “hates change.” If external flux increases one way, the loop responds by trying to push back.',
+    formula: '&Phi; = BA cos &theta;   and   emf = -N&Delta;&Phi;/&Delta;t',
+    formulaNote: 'Use the angle between the magnetic field and the area normal.',
+    workedExample: 'If a north pole approaches a loop and increases flux into the page, the induced current must create a field out of the page.',
+    selfCheck: 'What exactly does Lenz’s law say is opposed?',
+    commonTrap: 'The induced field opposes the change in flux, not automatically the original field itself.',
+  },
+  {
+    chapter: 'Ch 23',
+    topic: 'Motional emf, transformers, and RL circuits',
+    title: 'Chapter 23 is really three ideas: induction by motion, induction by coils, and inductor timing',
+    body: `A moving conductor in a magnetic field can generate emf. Transformers use changing flux to trade voltage for current. Inductors resist changes in current, which makes RL circuits rise and decay exponentially with time constant &tau; = L/R.\n\nThese are different setups, but they all come from the same induction logic.`,
+    analogy: 'Think of Chapter 23 as one induction family with three branches: motion setups, two-coil setups, and inductor-timing setups.',
+    formula: '&epsilon; = Blv,   V<sub>S</sub>/V<sub>P</sub> = N<sub>S</sub>/N<sub>P</sub>,   &tau; = L/R',
+    formulaNote: 'Match the formula to the physical setup before doing any algebra.',
+    workedExample: 'If a transformer steps voltage up, the current must step down in the ideal model. If an RL circuit is switched on, the current cannot jump instantly to its final value.',
+    selfCheck: 'How can you tell whether a problem is a motional-emf problem, a transformer problem, or an RL problem?',
+    commonTrap: 'Students mix these formulas because they all involve induction, but each one belongs to a specific physical setup.',
+  },
+];
+
+const EXAM3_FORMULAS = [
+  {
+    chapter: 'Ch 22',
+    name: 'Force on a moving charge',
+    formula: 'F = |q|vB sin &theta;',
+    vars: [
+      { sym: 'q', unit: 'coulombs (C)', meaning: 'charge magnitude' },
+      { sym: 'v', unit: 'm/s', meaning: 'particle speed' },
+      { sym: 'B', unit: 'tesla (T)', meaning: 'magnetic field strength' },
+      { sym: '&theta;', unit: '-', meaning: 'angle between v and B' },
+    ],
+    plain: 'Only the perpendicular part of motion contributes to the magnetic force.',
+    whenToUse: 'Use for a moving charged particle inside a magnetic field.',
+    commonTrap: 'Direction still depends on the sign of the charge even though the magnitude uses |q|.',
+  },
+  {
+    chapter: 'Ch 22',
+    name: 'Circular path radius',
+    formula: 'r = mv / (|q|B)',
+    vars: [
+      { sym: 'm', unit: 'kg', meaning: 'particle mass' },
+      { sym: 'v', unit: 'm/s', meaning: 'speed' },
+      { sym: 'q', unit: 'C', meaning: 'charge magnitude' },
+      { sym: 'B', unit: 'T', meaning: 'field strength' },
+    ],
+    plain: 'Heavier or faster particles curve less. Stronger fields and larger charges bend the path more tightly.',
+    whenToUse: 'Use when a charged particle follows a circular arc in a magnetic field.',
+    commonTrap: 'This assumes the motion is perpendicular to B.',
+  },
+  {
+    chapter: 'Ch 22',
+    name: 'Force on a current-carrying wire',
+    formula: 'F = ILB sin &theta;',
+    vars: [
+      { sym: 'I', unit: 'A', meaning: 'current in the wire' },
+      { sym: 'L', unit: 'm', meaning: 'wire length inside the field' },
+      { sym: 'B', unit: 'T', meaning: 'magnetic field strength' },
+      { sym: '&theta;', unit: '-', meaning: 'angle between current direction and B' },
+    ],
+    plain: 'A wire segment in a field feels a force when it is not parallel to the field.',
+    whenToUse: 'Use for current-carrying conductor problems.',
+    commonTrap: 'This is for wires, not individual particles.',
+  },
+  {
+    chapter: 'Ch 22',
+    name: 'Torque on a current loop',
+    formula: '&tau; = NIAB sin &theta;',
+    vars: [
+      { sym: 'N', unit: '-', meaning: 'number of turns' },
+      { sym: 'I', unit: 'A', meaning: 'current' },
+      { sym: 'A', unit: 'm&sup2;', meaning: 'loop area' },
+      { sym: 'B', unit: 'T', meaning: 'field strength' },
+      { sym: '&theta;', unit: '-', meaning: 'orientation angle' },
+    ],
+    plain: 'This is the basic motor formula.',
+    whenToUse: 'Use when a loop or coil experiences rotation in a magnetic field.',
+    commonTrap: 'Torque is zero whenever sin θ = 0.',
+  },
+  {
+    chapter: 'Ch 22',
+    name: 'Field from currents',
+    formula: 'B = &mu;<sub>0</sub>I / (2&pi;r),   B = N&mu;<sub>0</sub>I / (2R),   B = &mu;<sub>0</sub>nI',
+    vars: [
+      { sym: 'r', unit: 'm', meaning: 'distance from a long wire' },
+      { sym: 'R', unit: 'm', meaning: 'loop radius' },
+      { sym: 'n', unit: 'turns/m', meaning: 'solenoid turn density' },
+    ],
+    plain: 'Straight wire, circular loop, and solenoid each have their own standard magnetic-field formula.',
+    whenToUse: 'Use only after identifying the geometry correctly.',
+    commonTrap: 'Students often swap the loop and solenoid formulas.',
+  },
+  {
+    chapter: 'Ch 22',
+    name: 'Parallel-wire force per length',
+    formula: 'F/L = &mu;<sub>0</sub>I<sub>1</sub>I<sub>2</sub> / (2&pi;r)',
+    vars: [
+      { sym: 'I<sub>1</sub>, I<sub>2</sub>', unit: 'A', meaning: 'wire currents' },
+      { sym: 'r', unit: 'm', meaning: 'wire separation' },
+    ],
+    plain: 'Same-direction currents attract; opposite-direction currents repel.',
+    whenToUse: 'Use for long parallel conductors.',
+    commonTrap: 'This gives force per unit length unless you multiply by a length.',
+  },
+  {
+    chapter: 'Ch 23',
+    name: 'Magnetic flux and Faraday law',
+    formula: '&Phi; = BA cos &theta;   and   emf = -N&Delta;&Phi;/&Delta;t',
+    vars: [
+      { sym: '&Phi;', unit: 'weber (Wb)', meaning: 'magnetic flux' },
+      { sym: '&theta;', unit: '-', meaning: 'angle between B and the area normal' },
+      { sym: 'N', unit: '-', meaning: 'number of turns' },
+    ],
+    plain: 'Flux counts field through an area. Any change in that flux can induce emf.',
+    whenToUse: 'Use for general induction problems caused by changing B, area, or angle.',
+    commonTrap: 'Use the angle to the normal, not automatically the angle to the surface.',
+  },
+  {
+    chapter: 'Ch 23',
+    name: 'Motional and generator emf',
+    formula: '&epsilon; = Blv   and   emf = NAB&omega; sin(&omega;t)',
+    vars: [
+      { sym: 'l', unit: 'm', meaning: 'conductor length in the field' },
+      { sym: 'v', unit: 'm/s', meaning: 'speed of motion' },
+      { sym: '&omega;', unit: 'rad/s', meaning: 'angular speed of the coil' },
+    ],
+    plain: 'A moving conductor and a rotating coil are two standard induction setups.',
+    whenToUse: 'Use Blv for the sliding-rod setup and NABω sin(ωt) for generator problems.',
+    commonTrap: 'Do not use Blv when the changing flux comes from rotation instead of rod translation.',
+  },
+  {
+    chapter: 'Ch 23',
+    name: 'Transformer ratios',
+    formula: 'V<sub>S</sub>/V<sub>P</sub> = N<sub>S</sub>/N<sub>P</sub>   and   I<sub>S</sub>/I<sub>P</sub> = V<sub>P</sub>/V<sub>S</sub>',
+    vars: [
+      { sym: 'V<sub>S</sub>, V<sub>P</sub>', unit: 'V', meaning: 'secondary and primary voltages' },
+      { sym: 'I<sub>S</sub>, I<sub>P</sub>', unit: 'A', meaning: 'secondary and primary currents' },
+      { sym: 'N<sub>S</sub>, N<sub>P</sub>', unit: '-', meaning: 'secondary and primary turns' },
+    ],
+    plain: 'Ideal transformers trade voltage for current through the turns ratio.',
+    whenToUse: 'Use for ideal transformer questions.',
+    commonTrap: 'Students often invert the current ratio.',
+  },
+  {
+    chapter: 'Ch 23',
+    name: 'Inductor formulas and RL timing',
+    formula: '&epsilon; = -L&Delta;I/&Delta;t,   E<sub>ind</sub> = 1/2 LI&sup2;,   &tau; = L/R',
+    vars: [
+      { sym: 'L', unit: 'henry (H)', meaning: 'inductance' },
+      { sym: '&Delta;I/&Delta;t', unit: 'A/s', meaning: 'rate of current change' },
+      { sym: '&tau;', unit: 's', meaning: 'RL time constant' },
+    ],
+    plain: 'Inductors resist current change, store magnetic energy, and make RL circuits exponential.',
+    whenToUse: 'Use when an RL circuit is switching on or off, or when an inductor stores energy.',
+    commonTrap: 'For RL circuits, the time constant is L/R, not R/L.',
+  },
+];
+
+const EXAM3_QUESTIONS = [
+  { chapter: 'Ch 22', topic: 'Magnets and field lines', type: 'conceptual', q: 'Which statement about magnetic poles is correct?', choices: ['A north pole can exist by itself', 'A south pole can exist by itself', 'Every magnet has both north and south poles', 'Magnetic poles only appear when current flows'], answer: 2, explain: 'Breaking a magnet creates smaller dipoles, not isolated poles. Magnets always have both north and south poles.' },
+  { chapter: 'Ch 22', topic: 'Magnets and field lines', type: 'conceptual', q: 'Magnetic field strength is greatest where field lines are:', choices: ['Most widely spaced', 'Most densely packed', 'Perfectly horizontal', 'Crossing each other'], answer: 1, explain: 'Denser magnetic field lines mean a stronger magnetic field.' },
+  { chapter: 'Ch 22', topic: 'Earth, ferromagnets, electromagnets', type: 'conceptual', q: 'Why does the north end of a compass point toward geographic north?', choices: ['Geographic north is a magnetic north pole', 'Geographic north lies near Earth’s magnetic south pole', 'Compasses follow electric fields', 'Compasses point toward gravity'], answer: 1, explain: 'The north-seeking end is attracted toward Earth’s magnetic south pole, which lies near geographic north.' },
+  { chapter: 'Ch 22', topic: 'Force on a moving charge', type: 'conceptual', q: 'A charged particle moves exactly parallel to a magnetic field. The magnetic force is:', choices: ['Maximum', 'Half maximum', 'Zero', 'Impossible to determine'], answer: 2, explain: 'F = |q|vB sin θ, so parallel motion gives θ = 0 and zero magnetic force.' },
+  { chapter: 'Ch 22', topic: 'Circular motion in a magnetic field', type: 'conceptual', q: 'A magnetic force on a free charge can change the particle’s:', choices: ['Speed only', 'Direction only', 'Mass only', 'Charge only'], answer: 1, explain: 'Magnetic force is perpendicular to the velocity, so it changes direction without doing work on the charge.' },
+  { chapter: 'Ch 22', topic: 'Current-carrying conductor and torque', type: 'conceptual', q: 'The torque on a current loop is zero when:', choices: ['sin θ = 1', 'sin θ = 0', 'The area is large', 'The current is constant'], answer: 1, explain: 'τ = NIAB sin θ, so torque is zero whenever sin θ = 0.' },
+  { chapter: 'Ch 22', topic: 'Fields produced by currents', type: 'conceptual', q: 'A long straight current-carrying wire produces magnetic field lines that are:', choices: ['Straight and radial', 'Circular around the wire', 'Parallel to the current only', 'Random'], answer: 1, explain: 'A long straight wire produces circular magnetic field lines around itself.' },
+  { chapter: 'Ch 22', topic: 'Ampere law and parallel conductors', type: 'conceptual', q: 'Two long parallel wires carrying current in the same direction will:', choices: ['Repel', 'Attract', 'Have no magnetic interaction', 'Only create electric force'], answer: 1, explain: 'Same-direction parallel currents attract. Opposite-direction currents repel.' },
+  { chapter: 'Ch 23', topic: 'Magnetic flux, Faraday law, and Lenz law', type: 'conceptual', q: 'Magnetic flux through a loop is largest when the field is:', choices: ['Parallel to the surface', 'Perpendicular to the surface', 'Zero', 'Always at 45 degrees'], answer: 1, explain: 'Flux is largest when B is perpendicular to the surface, which aligns B with the area normal.' },
+  { chapter: 'Ch 23', topic: 'Magnetic flux, Faraday law, and Lenz law', type: 'conceptual', q: 'Lenz’s law says the induced current opposes:', choices: ['The original field in every case', 'The change in magnetic flux', 'The loop resistance', 'The loop area'], answer: 1, explain: 'The induced current opposes the change in magnetic flux, not automatically the original field by itself.' },
+  { chapter: 'Ch 23', topic: 'Motional emf, transformers, and RL circuits', type: 'conceptual', q: 'A rod moves twice as fast in a standard motional-emf setup. The induced emf becomes:', choices: ['Half as large', 'The same', 'Twice as large', 'Four times as large'], answer: 2, explain: 'For ε = Blv, emf is directly proportional to v.' },
+  { chapter: 'Ch 23', topic: 'Motional emf, transformers, and RL circuits', type: 'conceptual', q: 'A transformer with more turns on the secondary than the primary is a:', choices: ['Step-down transformer', 'Step-up transformer', 'Current limiter', 'Back-emf device'], answer: 1, explain: 'If Ns > Np, then Vs > Vp for an ideal transformer.' },
+  { chapter: 'Ch 23', topic: 'Motional emf, transformers, and RL circuits', type: 'conceptual', q: 'The RL time constant is:', choices: ['R/L', 'L/R', 'RC', '1/LR'], answer: 1, explain: 'For RL circuits, τ = L/R.' },
+  { chapter: 'Ch 23', topic: 'Motional emf, transformers, and RL circuits', type: 'conceptual', q: 'After one RL time constant of current growth, the current is about:', choices: ['36.8% of final', '50% of final', '63.2% of final', '100% of final'], answer: 2, explain: 'During growth, I = I0(1 - e^-1) = 63.2% of the final current.' },
+  { chapter: 'Ch 23', topic: 'Magnetic flux, Faraday law, and Lenz law', type: 'conceptual', q: 'A magnet is held motionless inside a coil. The induced current is:', choices: ['Constant and nonzero', 'Zero because the flux is not changing', 'Maximum because the magnet is inside the loop', 'Always clockwise'], answer: 1, explain: 'Induction requires changing flux. If the flux is constant, there is no induced emf.' },
+  { chapter: 'Ch 22', topic: 'Force on a moving charge', type: 'calculation', q: 'A proton moves at 3.0×10^6 m/s perpendicular to a 0.40 T field. What magnetic force magnitude acts on it?', choices: ['1.9×10^-13 N', '4.8×10^-26 N', '7.5×10^-7 N', '2.1×10^-12 N'], answer: 0, explain: 'F = qvB = (1.60×10^-19)(3.0×10^6)(0.40) = 1.92×10^-13 N.' },
+  { chapter: 'Ch 22', topic: 'Circular motion in a magnetic field', type: 'calculation', q: 'An electron moves perpendicular to a 0.25 T field with speed 2.0×10^6 m/s. What is the radius of its circular path?', choices: ['4.6×10^-5 m', '2.0×10^-6 m', '1.8×10^-3 m', '7.3×10^-8 m'], answer: 0, explain: 'r = mv/(|q|B) = (9.11×10^-31×2.0×10^6)/(1.60×10^-19×0.25) ≈ 4.6×10^-5 m.' },
+  { chapter: 'Ch 22', topic: 'Fields produced by currents', type: 'calculation', q: 'What is the magnetic field 0.050 m from a long straight wire carrying 8.0 A?', choices: ['3.2×10^-5 T', '6.4×10^-7 T', '1.6×10^-4 T', '5.0×10^-2 T'], answer: 0, explain: 'B = μ0I/(2πr) = (4π×10^-7×8.0)/(2π×0.050) = 3.2×10^-5 T.' },
+  { chapter: 'Ch 22', topic: 'Fields produced by currents', type: 'calculation', q: 'A 20-turn circular loop of radius 0.040 m carries 3.0 A. What is the field at its center?', choices: ['9.4×10^-4 T', '1.9×10^-5 T', '4.7×10^-6 T', '3.0×10^-2 T'], answer: 0, explain: 'B = Nμ0I/(2R) = 20(4π×10^-7)(3.0)/(0.080) ≈ 9.4×10^-4 T.' },
+  { chapter: 'Ch 22', topic: 'Current-carrying conductor and torque', type: 'calculation', q: 'A 0.20 m wire carries 5.0 A perpendicular to a 0.60 T field. What force acts on the wire?', choices: ['0.60 N', '6.0 N', '0.12 N', '1.5 N'], answer: 0, explain: 'F = ILB = 5.0×0.20×0.60 = 0.60 N.' },
+  { chapter: 'Ch 22', topic: 'Ampere law and parallel conductors', type: 'calculation', q: 'Two long wires 0.20 m apart carry 4.0 A and 6.0 A in the same direction. What is the force per meter between them?', choices: ['2.4×10^-5 N/m', '1.2×10^-4 N/m', '4.8×10^-7 N/m', '7.5×10^-6 N/m'], answer: 0, explain: 'F/L = μ0I1I2/(2πr) = (4π×10^-7×24)/(2π×0.20) = 2.4×10^-5 N/m.' },
+  { chapter: 'Ch 23', topic: 'Magnetic flux, Faraday law, and Lenz law', type: 'calculation', q: 'A 0.25 m^2 loop sits in a 0.80 T field with the field perpendicular to the surface. What is the magnetic flux?', choices: ['0.20 Wb', '0.32 Wb', '1.05 Wb', '0.80 Wb'], answer: 0, explain: 'Flux = BA = 0.80×0.25 = 0.20 Wb.' },
+  { chapter: 'Ch 23', topic: 'Magnetic flux, Faraday law, and Lenz law', type: 'calculation', q: 'A 50-turn coil experiences a flux change of 0.12 Wb in 0.20 s. What is the magnitude of the induced emf?', choices: ['3.0 V', '12 V', '30 V', '0.60 V'], answer: 2, explain: 'Magnitude: NΔΦ/Δt = 50×0.12/0.20 = 30 V.' },
+  { chapter: 'Ch 23', topic: 'Motional emf, transformers, and RL circuits', type: 'calculation', q: 'A 0.30 m rod moves at 5.0 m/s perpendicular to a 0.80 T field. What motional emf is induced?', choices: ['1.2 V', '0.48 V', '12 V', '0.075 V'], answer: 0, explain: 'ε = Blv = 0.80×0.30×5.0 = 1.2 V.' },
+  { chapter: 'Ch 23', topic: 'Motional emf, transformers, and RL circuits', type: 'calculation', q: 'A generator coil has N = 100 turns, area 0.020 m^2, B = 0.50 T, and angular speed 120 rad/s. What is the maximum emf?', choices: ['60 V', '120 V', '12 V', '30 V'], answer: 1, explain: 'Maximum emf is the amplitude NABω = 100×0.020×0.50×120 = 120 V.' },
+  { chapter: 'Ch 23', topic: 'Motional emf, transformers, and RL circuits', type: 'calculation', q: 'A transformer has 200 primary turns and 800 secondary turns. If the primary voltage is 12 V, what is the secondary voltage?', choices: ['3 V', '24 V', '48 V', '800 V'], answer: 2, explain: 'Vs/Vp = Ns/Np = 800/200 = 4, so Vs = 48 V.' },
+  { chapter: 'Ch 23', topic: 'Motional emf, transformers, and RL circuits', type: 'calculation', q: 'An ideal transformer steps 120 V down to 12 V. If the primary current is 2.0 A, what is the secondary current?', choices: ['0.20 A', '2.0 A', '12 A', '20 A'], answer: 3, explain: 'Is/Ip = Vp/Vs = 120/12 = 10, so Is = 20 A.' },
+  { chapter: 'Ch 23', topic: 'Motional emf, transformers, and RL circuits', type: 'calculation', q: 'An inductor of 0.40 H carries 3.0 A. How much energy is stored in it?', choices: ['0.60 J', '1.8 J', '3.6 J', '0.20 J'], answer: 1, explain: 'E = 1/2 LI^2 = 0.5×0.40×9 = 1.8 J.' },
+  { chapter: 'Ch 23', topic: 'Motional emf, transformers, and RL circuits', type: 'calculation', q: 'An RL circuit has L = 0.50 H and R = 25 Ω. What is the time constant?', choices: ['12.5 s', '0.020 s', '50 s', '0.50 s'], answer: 1, explain: 'τ = L/R = 0.50/25 = 0.020 s.' },
+  { chapter: 'Ch 23', topic: 'Motional emf, transformers, and RL circuits', type: 'calculation', q: 'An RL circuit has final current 4.0 A. What current has built up after one time constant?', choices: ['1.47 A', '2.53 A', '3.68 A', '4.00 A'], answer: 1, explain: 'I = I0(1 - e^-1) = 0.632×4.0 = 2.53 A.' },
+];
+
     const DEFAULT_STUDY_PACK = {
-      title: 'Physics 2 Exam 2 Mastery Pack',
-      subtitle: 'Current, resistance, circuits, Kirchhoff, and RC circuits from the built-in course pack.',
-      scope: ['Chapter 20', 'Chapter 21'],
-      concepts: CONCEPTS,
-      formulas: FORMULAS,
-      questions: QUESTIONS,
+      title: 'Physics 2 Exam 3 Mastery Pack',
+      subtitle: 'Chapter 22 magnetism plus Chapter 23 induction, transformers, and RL circuits tuned for interleaved exam prep.',
+      scope: ['Chapter 22', 'Chapter 23'],
+      concepts: EXAM3_CONCEPTS,
+      formulas: EXAM3_FORMULAS,
+      questions: EXAM3_QUESTIONS,
       sourceSummary: [
         {
-          label: 'Built-in study pack',
+          label: 'Built-in Exam 3 pack',
           type: 'default',
-          detail: 'Generated from the original training material bundled into the app.',
+          detail: 'Built from the Chapter 22 and 23 slides, study sets, and formula sheet for Physics Exam 3.',
+          url: '',
+        },
+        {
+          label: 'Study-method upgrade',
+          type: 'default',
+          detail: 'The built-in loop now emphasizes retrieval, interleaving, worked examples, and miss review instead of passive rereading.',
           url: '',
         },
       ],
       coachNotes: [
-        'Use Learn first if the chapter feels rusty, then shift into Practice once the formula names feel familiar.',
-        'Your weak-topic tracker still applies on generated packs, so repeated misses will keep surfacing.',
+        'Best loop: read one card, close it, explain it from memory, then check yourself.',
+        'Interleave Chapter 22 and 23 in Practice instead of trying to finish one chapter before touching the other.',
+        'Treat every miss as a future retest. The results screen should become your error notebook.',
+        'Take the mock exam only after you can explain why each major formula belongs to its situation.',
       ],
     };
 
@@ -3027,7 +3304,7 @@ const QUESTIONS = [
             <select class="pack-switcher-select" onchange="selectPack(this.value)">
               ${packs.map((pack) => `
                 <option value="${escapeHtml(pack.id)}" ${pack.id === state.activePackId ? 'selected' : ''}>
-                  ${escapeHtml(pack.id === 'default' ? 'Built-in Starter Pack' : pack.title)}
+                  ${escapeHtml(pack.id === 'default' ? 'Built-in Exam 3 Pack' : pack.title)}
                 </option>
               `).join('')}
             </select>
@@ -3036,7 +3313,7 @@ const QUESTIONS = [
           </div>
           <div class="pack-switcher-note">
             ${state.activePackId === 'default'
-              ? 'You are on the built-in starter pack. Choose a saved pack or create a new one for another class.'
+              ? 'You are on the built-in Exam 3 pack. Choose a saved pack or create a new one for another class.'
               : `You are currently studying "${escapeHtml(getActiveStudyPack().title)}". Switch here anytime or create a fresh pack.`}
           </div>
         </div>`;
@@ -4122,7 +4399,7 @@ function initSoundHooks() {
             </div>
             <div style="margin-top:18px">
               <label class="field-label" for="exam-context-input">Optional exam note</label>
-              <textarea id="exam-context-input" class="textarea-input" placeholder="Optional. Example: Focus on joins, aggregate functions, and DDL for Exam 2." oninput="updateScopeStudioField('examContext', this.value)">${escapeHtml(state.scopeStudio.examContext)}</textarea>
+          <textarea id="exam-context-input" class="textarea-input" placeholder="Optional. Example: Focus on magnetic flux, Lenz law, and RL circuits for Exam 3." oninput="updateScopeStudioField('examContext', this.value)">${escapeHtml(state.scopeStudio.examContext)}</textarea>
             </div>
             <div class="btn-row">
               <button class="btn btn-primary" onclick="generateCustomPack()" ${canRun && !state.scopeStudio.busy ? '' : 'disabled'}>${isPreparing ? 'Preparing…' : isGenerating ? 'Generating…' : 'Generate Pack'}</button>
@@ -4447,7 +4724,7 @@ function initSoundHooks() {
         ? `Top weak spot: ${weakTopics[0][0]} (${weakTopics[0][1]} misses)`
         : 'No topics are flagged as weak yet.';
       const packBoxBody = usingDefaultPack
-        ? 'You are on the built-in starter pack. Swap packs here whenever you want the whole site to retune around a different class or exam.'
+        ? 'You are on the built-in Exam 3 pack. Swap packs here whenever you want the whole site to retune around a different class or exam.'
         : `Everything below is currently training from "${escapeHtml(pack.title)}". Switch or rebuild packs here before you queue.`;
 
       document.getElementById('main').innerHTML = `
@@ -4469,7 +4746,7 @@ function initSoundHooks() {
                 <div class="card-label">Choose pack / choose queue</div>
                 <div class="queue-badge">${firstRunState ? 'Champion Select' : `${level.tier.name} Loadout`}</div>
                 <h3>${firstRunState ? 'Lock a study pack before you enter queue' : 'Pick the content set before you pick the mode'}</h3>
-                <p>${firstRunState ? 'Upload class files and build a pack first, or stay on the starter pack if you just want to feel the loop immediately.' : packBoxBody}</p>
+                <p>${firstRunState ? 'Upload class files and build a pack first, or stay on the built-in Exam 3 pack if you want to jump straight into the study loop.' : packBoxBody}</p>
               </div>
               ${buildPackSwitcherPanel(firstRunState ? 'Choose a pack or create a new one' : 'Active pack selector')}
             </div>
@@ -4532,7 +4809,7 @@ function initSoundHooks() {
                 <div class="btn-row">
                   <button class="btn btn-primary btn-match" onclick="goMode('practice')">Find Match</button>
                   <button class="btn btn-secondary" onclick="${firstRunState ? "goMode('scope')" : "goMode('learn')"}">${firstRunState ? 'Create Pack' : 'Open Learn'}</button>
-                  ${firstRunState ? '' : '<button class="btn btn-secondary" onclick="goMode(\'formulas\')">Open Reference</button>'}
+            ${firstRunState ? '' : '<button class="btn btn-secondary" onclick="goMode(\'formulas\')">Open Reference</button>'}
                 </div>
               </div>
             </section>
@@ -4570,6 +4847,28 @@ function initSoundHooks() {
           </div>
           ${buildRankShowcase(level)}
           ${renderGameHud('Home Base')}
+        </div>
+        <div class="card" style="margin-top:16px">
+          <div class="card-label">Best study loop</div>
+          <h2 style="font-size:1.15rem">Physics Exam 3 should be trained like this</h2>
+          <div class="launch-insight-grid">
+            <div class="launch-insight">
+              <strong>1. Cold recall</strong>
+              <span>Read a Learn card, then close it and explain it from memory before moving on.</span>
+            </div>
+            <div class="launch-insight">
+              <strong>2. Interleave</strong>
+              <span>Mix Chapter 22 and 23 in Practice so you learn how to choose the right formula, not just remember the last one you saw.</span>
+            </div>
+            <div class="launch-insight">
+              <strong>3. Work misses</strong>
+              <span>Use the error notebook after every run. A missed question should become a retest, not a forgotten mistake.</span>
+            </div>
+            <div class="launch-insight">
+              <strong>4. Simulate</strong>
+              <span>Use the mock exam after a short warm-up so you practice under timing and formula-selection pressure.</span>
+            </div>
+          </div>
         </div>
         <div class="home-grid">
           <div class="home-card" onclick="goMode('learn')">
@@ -4740,6 +5039,21 @@ function initSoundHooks() {
               <div class="formula" style="margin-bottom:8px">${concept.formula}</div>
               <p>${concept.formulaNote || 'Know when to apply this relationship.'}</p>
             </div>` : ''}
+          ${concept.workedExample ? `
+            <div class="card" style="margin-top:16px;background:var(--surface2)">
+              <div class="card-label">Worked example</div>
+              <p>${concept.workedExample}</p>
+            </div>` : ''}
+          ${concept.selfCheck ? `
+            <div class="card" style="margin-top:16px;background:var(--surface2)">
+              <div class="card-label">Active recall check</div>
+              <p>${concept.selfCheck}</p>
+            </div>` : ''}
+          ${concept.commonTrap ? `
+            <div class="card" style="margin-top:16px;background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.18)">
+              <div class="card-label">Common trap</div>
+              <p>${concept.commonTrap}</p>
+            </div>` : ''}
           <div class="btn-row">
             <button class="btn btn-secondary" onclick="prevConcept()" ${state.learnIndex === 0 ? 'disabled' : ''}>← Previous</button>
             <button class="btn btn-primary" onclick="nextConcept()">${state.learnIndex < total - 1 ? 'Next →' : 'Move to Reference →'}</button>
@@ -4813,6 +5127,16 @@ function initSoundHooks() {
               <div class="card-label">Plain English</div>
             <p>${formula.plain}</p>
           </div>
+          ${formula.whenToUse ? `
+            <div class="card" style="margin-top:16px;background:var(--surface2)">
+              <div class="card-label">When to use it</div>
+              <p>${formula.whenToUse}</p>
+            </div>` : ''}
+          ${formula.commonTrap ? `
+            <div class="card" style="margin-top:16px;background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.18)">
+              <div class="card-label">Common trap</div>
+              <p>${formula.commonTrap}</p>
+            </div>` : ''}
           <div class="btn-row">
             <button class="btn btn-secondary" onclick="prevFormula()" ${state.formulaIndex === 0 ? 'disabled' : ''}>← Previous</button>
             <button class="btn btn-primary" onclick="nextFormula()">${state.formulaIndex < total - 1 ? 'Next →' : 'Start Practice →'}</button>
@@ -5019,6 +5343,31 @@ function initSoundHooks() {
       scrollTop();
     }
 
+    function buildErrorNotebook(results) {
+      const misses = results.filter((result) => !result.isRight);
+      if (!misses.length) {
+        return `
+          <div class="card" style="margin-top:16px;background:var(--surface2)">
+            <div class="card-label">Error notebook</div>
+            <p>No misses this run. That means there is nothing to log for re-drill right now.</p>
+          </div>`;
+      }
+
+      return `
+        <div class="card" style="margin-top:16px;background:var(--surface2)">
+          <div class="card-label">Error notebook</div>
+          <h2 style="font-size:1.05rem">Turn these misses into the next rep cycle</h2>
+          ${misses.map((result, index) => `
+            <div style="padding:14px 0;border-bottom:${index === misses.length - 1 ? 'none' : '1px solid var(--border)'}">
+              <p style="margin-bottom:6px"><strong>${escapeHtml(result.q.topic)}</strong> · ${escapeHtml(result.q.q)}</p>
+              <p style="color:var(--red);margin-bottom:6px">Your answer: ${result.chosen == null ? 'No answer' : escapeHtml(result.q.choices[result.chosen])}</p>
+              <p style="color:var(--green);margin-bottom:6px">Correct answer: ${escapeHtml(result.q.choices[result.q.answer])}</p>
+              <p style="margin-bottom:6px">${escapeHtml(result.q.explain)}</p>
+              <p style="color:var(--text-dim)">Retest prompt: explain aloud why the correct answer fits this setup before you requeue this topic.</p>
+            </div>`).join('')}
+        </div>`;
+    }
+
     function renderPracticeResults() {
       const total = state.practiceResults.length;
       const correct = state.practiceResults.filter((result) => result.isRight).length;
@@ -5049,7 +5398,8 @@ function initSoundHooks() {
             <button class="btn btn-secondary" onclick="startPractice()">Practice All Again</button>
             <button class="btn btn-primary" onclick="goMode('exam')">Take Mock Exam →</button>
           </div>
-        </div>`;
+        </div>
+        ${buildErrorNotebook(state.practiceResults)}`;
     }
 
     function startExam(bypassQueue = false) {
@@ -5244,6 +5594,7 @@ function initSoundHooks() {
             <button class="btn btn-primary" onclick="goHome()">Back Home</button>
           </div>
         </div>
+        ${buildErrorNotebook(answers)}
         <div class="card" style="margin-top:16px">
           <div class="card-label">Full review</div>
           <h2 style="font-size:1.05rem">Every exam question</h2>
