@@ -561,6 +561,37 @@
       text-transform: uppercase; letter-spacing: 0.08em;
       color: var(--yellow); margin-bottom: 4px;
     }
+    .concept-illustration-wrap {
+      margin-top: 10px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: radial-gradient(circle at top, rgba(96,165,250,0.12), rgba(15,23,42,0.96));
+    }
+    .concept-illustration {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+    }
+    .concept-illustration-empty {
+      margin-top: 10px;
+      min-height: 220px;
+      border-radius: 14px;
+      border: 1px dashed rgba(96,165,250,0.32);
+      background: linear-gradient(180deg, rgba(15,23,42,0.82), rgba(8,15,31,0.96));
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 18px;
+      gap: 10px;
+      color: var(--text-dim);
+    }
+    .concept-illustration-empty strong {
+      color: var(--text);
+      font-size: 1rem;
+    }
 
     /* ── ANSWER CHOICES ── */
     .choices { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
@@ -2011,6 +2042,7 @@
     const PACK_MODE_KEY = 'physicsBot_packMode';
     const SAVED_PACKS_KEY = 'physicsBot_savedPacks';
     const ACTIVE_PACK_ID_KEY = 'physicsBot_activePackId';
+    const ILLUSTRATION_CACHE_KEY = 'physicsBot_conceptIllustrations';
     const MAX_SCOPE_FILES = 18;
     const MAX_SCOPE_TOTAL_BYTES = 24 * 1024 * 1024;
     const EXAM_DURATION_SECONDS = 25 * 60;
@@ -2087,6 +2119,10 @@
         error: '',
         success: '',
       },
+      conceptIllustrations: {},
+      illustrationLoadingKey: '',
+      illustrationErrorKey: '',
+      illustrationErrorMessage: '',
       profile: {
         xp: 0,
         sessions: 0,
@@ -2110,6 +2146,14 @@
       }
     } catch (error) {
       state.profile = { ...state.profile };
+    }
+    try {
+      const savedIllustrations = localStorage.getItem(ILLUSTRATION_CACHE_KEY);
+      if (savedIllustrations) {
+        state.conceptIllustrations = JSON.parse(savedIllustrations);
+      }
+    } catch (error) {
+      state.conceptIllustrations = {};
     }
 
 const CONCEPTS = [
@@ -3186,6 +3230,13 @@ const EXAM3_QUESTIONS = [
         // Ignore storage failures.
       }
     }
+    function saveIllustrationCache() {
+      try {
+        localStorage.setItem(ILLUSTRATION_CACHE_KEY, JSON.stringify(state.conceptIllustrations));
+      } catch (error) {
+        // Ignore quota/storage failures.
+      }
+    }
 
     function saveCustomPackState() {
       try {
@@ -3272,6 +3323,78 @@ const EXAM3_QUESTIONS = [
 
     function getSavedPacks() {
       return state.savedPacks;
+    }
+
+    function hashString(value) {
+      let hash = 0;
+      const input = String(value || '');
+      for (let index = 0; index < input.length; index += 1) {
+        hash = ((hash << 5) - hash) + input.charCodeAt(index);
+        hash |= 0;
+      }
+      return Math.abs(hash).toString(36);
+    }
+
+    function getConceptIllustrationKey(concept) {
+      const pack = getActiveStudyPack();
+      const raw = [
+        state.activePackId,
+        pack.title,
+        concept.chapter,
+        concept.topic,
+        concept.title,
+        concept.body,
+        concept.formula || '',
+      ].join('|');
+      return `concept-${hashString(raw)}`;
+    }
+
+    function getConceptIllustration(concept) {
+      return state.conceptIllustrations[getConceptIllustrationKey(concept)] || null;
+    }
+
+    async function ensureConceptIllustration(concept, force = false) {
+      if (!concept) return;
+      const key = getConceptIllustrationKey(concept);
+      if (!force && state.conceptIllustrations[key]?.imageDataUrl) return;
+      if (state.illustrationLoadingKey === key) return;
+
+      state.illustrationLoadingKey = key;
+      state.illustrationErrorKey = '';
+      state.illustrationErrorMessage = '';
+      if (state.mode === 'learn') renderLearn();
+
+      try {
+        const response = await fetch('/api/generate-concept-illustration', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            chapter: concept.chapter,
+            topic: concept.topic,
+            title: concept.title,
+            body: concept.body,
+            formula: concept.formula || '',
+            analogy: concept.analogy || '',
+          }),
+        });
+        const payload = await response.json();
+        if (!response.ok || !payload.ok || !payload.imageDataUrl) {
+          throw new Error(payload.error || 'Illustration generation failed.');
+        }
+        state.conceptIllustrations[key] = {
+          imageDataUrl: payload.imageDataUrl,
+          generatedAt: new Date().toISOString(),
+        };
+        saveIllustrationCache();
+      } catch (error) {
+        state.illustrationErrorKey = key;
+        state.illustrationErrorMessage = error instanceof Error ? error.message : 'Illustration generation failed.';
+      } finally {
+        state.illustrationLoadingKey = '';
+        if (state.mode === 'learn') renderLearn();
+      }
     }
 
     function getPackSwitcherOptions() {
@@ -5034,6 +5157,10 @@ function initSoundHooks() {
       const concept = concepts[state.learnIndex];
       const total = concepts.length;
       const progress = ((state.learnIndex + 1) / total) * 100;
+      const illustrationKey = getConceptIllustrationKey(concept);
+      const illustration = getConceptIllustration(concept);
+      const illustrationLoading = state.illustrationLoadingKey === illustrationKey;
+      const illustrationError = state.illustrationErrorKey === illustrationKey ? state.illustrationErrorMessage : '';
 
       document.getElementById('main').innerHTML = `
         <div class="progress-wrap">
@@ -5049,6 +5176,21 @@ function initSoundHooks() {
           <div class="analogy">
             <div class="analogy-label">Intuition hook</div>
             <p>${concept.analogy}</p>
+          </div>
+          <div class="card" style="margin-top:16px;background:var(--surface2)">
+            <div class="card-label">Concept illustration</div>
+            ${illustration?.imageDataUrl
+              ? `<div class="concept-illustration-wrap">
+                  <img class="concept-illustration" src="${illustration.imageDataUrl}" alt="${escapeHtml(`${concept.title} illustration`)}" />
+                </div>`
+              : `<div class="concept-illustration-empty">
+                  <strong>${illustrationLoading ? 'Generating visual...' : 'No visual cached yet'}</strong>
+                  <span>${illustrationLoading ? 'The concept card still works while the illustration is being generated.' : 'This card can generate a diagram-style visual explainer on demand.'}</span>
+                </div>`}
+            ${illustrationError ? `<p style="margin-top:10px;color:var(--red)">${escapeHtml(illustrationError)}</p>` : ''}
+            <div class="btn-row" style="margin-top:12px">
+              <button class="btn btn-secondary" onclick="ensureConceptIllustration(getConcepts()[state.learnIndex], true)" ${illustrationLoading ? 'disabled' : ''}>${illustration?.imageDataUrl ? 'Refresh Illustration' : 'Generate Illustration'}</button>
+            </div>
           </div>
           <div class="card" style="margin-top:16px;background:var(--surface2)">
             <div class="card-label">Explanation</div>
@@ -5080,6 +5222,10 @@ function initSoundHooks() {
             <button class="btn btn-primary" onclick="nextConcept()">${state.learnIndex < total - 1 ? 'Next →' : 'Move to Reference →'}</button>
           </div>
         </div>`;
+
+      if (!illustration?.imageDataUrl && !illustrationLoading && !illustrationError) {
+        setTimeout(() => ensureConceptIllustration(concept), 0);
+      }
     }
 
     function prevConcept() {
